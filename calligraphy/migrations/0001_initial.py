@@ -54,6 +54,7 @@ class Page(object):
                                                      int(n.xy_coordinates[2]),
                                                      int(n.xy_coordinates[3])))
 
+
 class Character(object):
     def __init__(self, mark: str, x1: int, y1: int, x2: int, y2: int):
         self.mark = mark
@@ -99,9 +100,9 @@ def readjson(filename: str) -> [Charjson]:
 # See https://realpython.com/blog/python/data-migrations/
 
 def import_json(apps, schema_editor):
-    Book = apps.get_model("json_data", "Book")
-    Page = apps.get_model("json_data", "Page")
-    Character = apps.get_model("json_data", "Character")
+    Booki = apps.get_model("json_data", "Book")
+    Pagei = apps.get_model("json_data", "Page")
+    Characteri = apps.get_model("json_data", "Character")
 
     books = []
 
@@ -110,18 +111,18 @@ def import_json(apps, schema_editor):
         inserttobook(char, books)
 
     for book in books:
-        bk = Book(book_id=book.bid,
+        bk = Booki(book_id=book.bid,
                   book_title=book.title,
                   book_author=book.author)
         for pag in book.pages:
-            pg = Page(page_number=pag.numbers,
-                      page_parent = bk)
-            for chr in pag.characters:
-                ch = Character(char_mark=chr.mark,
-                               x1 = chr.x1,
-                               y1 = chr.y1,
-                               x2 = chr.x2,
-                               y2 = chr.y2,
+            pg = Pagei(page_number=pag.numbers,
+                      page_parent=bk)
+            for cher in pag.characters:
+                ch = Characteri(char_mark=cher.mark,
+                               x1=cher.x1,
+                               y1=cher.y1,
+                               x2=cher.x2,
+                               y2=cher.y2,
                                char_parent=pg)
                 ch.save()
             pg.save()
