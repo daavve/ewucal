@@ -17,7 +17,7 @@ class Page(models.Model):
 
 class Character(models.Model):
     page_parent = models.ForeignKey(Page, on_delete=models.CASCADE)
-    char_mark = models.CharField(max_length=1, blank=True)
+    char_mark = models.CharField(max_length=4, blank=True)
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
