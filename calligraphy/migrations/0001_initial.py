@@ -100,9 +100,9 @@ def readjson(filename: str) -> [Charjson]:
 # See https://realpython.com/blog/python/data-migrations/
 
 def import_json(apps, schema_editor):
-    Booki = apps.get_model("json_data", "Book")
-    Pagei = apps.get_model("json_data", "Page")
-    Characteri = apps.get_model("json_data", "Character")
+    Booki = apps.get_model("calligraphy", "Book")
+    Pagei = apps.get_model("calligraphy", "Page")
+    Characteri = apps.get_model("calligraphy", "Character")
 
     books = []
 
@@ -114,26 +114,30 @@ def import_json(apps, schema_editor):
         bk = Booki(book_id=book.bid,
                   book_title=book.title,
                   book_author=book.author)
+        bk.save()
         for pag in book.pages:
-            pg = Pagei(page_number=pag.numbers,
-                      page_parent=bk)
+            pg = Pagei(page_number=pag.number,
+                      book_parent=bk)
+            pg.save();
             for cher in pag.characters:
-                ch = Characteri(char_mark=cher.mark,
+                if cher.mark is None:
+                    chmark = ""
+                else:
+                    chmark = cher.mark
+                ch = Characteri(char_mark=chmark,
                                x1=cher.x1,
                                y1=cher.y1,
                                x2=cher.x2,
                                y2=cher.y2,
-                               char_parent=pg)
+                               page_parent=pg)
                 ch.save()
-            pg.save()
-        bk.save()
 
 
 class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = ['json_data'
+    dependencies = [
     ]
 
     operations = [
@@ -151,7 +155,7 @@ class Migration(migrations.Migration):
             name='Character',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('char_mark', models.CharField(blank=True, max_length=1)),
+                ('char_mark', models.CharField(blank=True, max_length=4)),
                 ('x1', models.IntegerField()),
                 ('y1', models.IntegerField()),
                 ('x2', models.IntegerField()),
