@@ -4,14 +4,135 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
+import json
 
+
+class Charjson(object):
+    def __init__(self, mark: str, author: str, work: str, work_id: str, page_id: str, coordinates: [str]):
+        self.chi_mark = mark
+        self.chi_author = author
+        self.chi_work = work
+        self.work_id = work_id
+        self.page_id = page_id
+        self.xy_coordinates = coordinates
+
+
+class Book(object):
+    def __init__(self, bid: int, title: str, author: str):
+        self.bid = bid
+        self.title = title
+        self.author = author
+        self.pages = []
+
+    def addnewpage(self, newchar: Charjson) -> None:
+        newpage = Page(int(newchar.page_id))
+        newpage.addchar(newchar)
+        self.pages.append(newpage)
+
+    def addchar(self, newchar: Charjson) -> None:
+        if len(self.pages) >= 1:
+            foundpage = False
+            for page in self.pages:
+                if page.number == int(newchar.page_id):
+                    foundpage = True
+                    page.addchar(newchar)
+                    break
+            if not foundpage:
+                self.addnewpage(newchar)
+        else:
+            self.addnewpage(newchar)
+
+
+class Page(object):
+    def __init__(self, number: int):
+        self.number = number
+        self.characters = []
+
+    def addchar(self, n: Charjson) -> None:
+        self.characters.append(Character(n.chi_mark, int(n.xy_coordinates[0]),
+                                                     int(n.xy_coordinates[1]),
+                                                     int(n.xy_coordinates[2]),
+                                                     int(n.xy_coordinates[3])))
+
+class Character(object):
+    def __init__(self, mark: str, x1: int, y1: int, x2: int, y2: int):
+        self.mark = mark
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+
+
+def buildnewbook(newchar: Charjson) -> Book:
+    newbook = Book(int(newchar.work_id), newchar.chi_work, newchar.chi_author)
+    newbook.addchar(newchar)
+    return newbook
+
+
+def inserttobook(newchar: Charjson, boks: [Book]) -> None:
+    if len(boks) >= 1:
+        foundbook = False
+        for book in boks:
+            if book.bid == int(newchar.work_id):
+                book.addchar(newchar)
+                foundbook = True
+                break
+        if not foundbook:
+            boks.append(buildnewbook(newchar))
+    else:
+        boks.append(buildnewbook(newchar))
+
+
+def readjson(filename: str) -> [Charjson]:
+    jsonfile = open(filename, "r")
+    readfile = json.load(jsonfile)
+    jsonfile.close()
+    characters = []
+    for r in readfile:
+        characters.append(
+            Charjson(r['chi_mark'], r['chi_author'], r['chi_work'], r['work_id'], r['page_id'], r['xy_coordinates']))
+    return characters
+
+
+
+
+# See https://realpython.com/blog/python/data-migrations/
+
+def import_json(apps, schema_editor):
+    Book = apps.get_model("json_data", "Book")
+    Page = apps.get_model("json_data", "Page")
+    Character = apps.get_model("json_data", "Character")
+
+    books = []
+
+    chars = readjson("dump.json")
+    for char in chars:
+        inserttobook(char, books)
+
+    for book in books:
+        bk = Book(book_id=book.bid,
+                  book_title=book.title,
+                  book_author=book.author)
+        for pag in book.pages:
+            pg = Page(page_number=pag.numbers,
+                      page_parent = bk)
+            for chr in pag.characters:
+                ch = Character(char_mark=chr.mark,
+                               x1 = chr.x1,
+                               y1 = chr.y1,
+                               x2 = chr.x2,
+                               y2 = chr.y2,
+                               char_parent=pg)
+                ch.save()
+            pg.save()
+        bk.save()
 
 
 class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
+    dependencies = ['json_data'
     ]
 
     operations = [
@@ -51,4 +172,5 @@ class Migration(migrations.Migration):
             name='page_parent',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Page'),
         ),
+        migrations.RunPython(import_json)
     ]
