@@ -85,7 +85,7 @@ def inserttobook(newchar: Charjson, boks: [Book]) -> None:
 
 
 def readjson(filename: str) -> [Charjson]:
-    jsonfile = open(filename, "r")
+    jsonfile = open(filename, "r", encoding="utf-8")
     readfile = json.load(jsonfile)
     jsonfile.close()
     characters = []
