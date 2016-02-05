@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'photologue',
-    'sortedm2m'  # Required for photologue
 ]
 
 MIDDLEWARE_CLASSES = [
