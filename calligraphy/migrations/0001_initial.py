@@ -177,7 +177,7 @@ class Character(object):
 
 
 def readjson(filename: str) -> [Charjson]:  # Not too bad, less than 70M
-    jsonfile = open(filename, "r")
+    jsonfile = open(filename, 'r', encoding='utf-8')
     readfile = json.load(jsonfile)
     jsonfile.close()
     characters = []
@@ -238,7 +238,7 @@ NOTCHARS = "﹒。o‵‧ ˙\n"
 
 def txt2char() -> [Charjson]:
     charsinpage = []
-    f = open(CHARTXTFILE, encoding="utf-8")
+    f = open(CHARTXTFILE, encoding='utf-8')
     filebuff = f.read()
     f.close()
     filebuff = filebuff.split('##########################################')[1]
@@ -289,7 +289,7 @@ def import_data(apps, schema_editor):
             for page in book.pages:
 
                 if page.have_page_image:
-                    page_img_path = File(open(page.getfilepath(), 'rb'))
+                    page_img_path = File(open(page.getfilepath(), 'rb', encoding='utf-8'))
                     curpage = Pagedb(page_number=page.number,
                                      parent_book=curbook,
                                      page_image=page_img_path)
@@ -308,7 +308,7 @@ def import_data(apps, schema_editor):
                                          y2=0)
                         curchar.save()
                     else:
-                        char_img_path = File(open(char.getfilepath(), 'rb'))  # We have image
+                        char_img_path = File(open(char.getfilepath(), 'rb', encoding='utf-8'))  # We have image
                         if char.mark is None:  # We have coordinates, but don't know the character
                             curchar = Chardb(parent_page=curpage,
                                              char_image=char_img_path,
