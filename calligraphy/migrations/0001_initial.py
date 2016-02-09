@@ -38,9 +38,9 @@ class Collection(object):
         self.title = title
         self.books = []
 
-    def addnewbook(self, newchar: Charjson) -> None:
+    def addnewbook(self, newchar: Charjson, have_page_image: bool) -> None:
         newbook = Book(int(newchar.work_id), newchar.chi_work, newchar.chi_author, self.title)
-        newbook.addchar(newchar)
+        newbook.addchar(newchar, have_page_image)
         self.books.append(newbook)
 
     def addchar(self, newchar: Charjson, have_page_image: bool) -> None:
@@ -48,31 +48,31 @@ class Collection(object):
             foundbook = False
             for book in self.books:
                 if book.bid == int(newchar.work_id):
-                    book.addchar(newchar)
+                    book.addchar(newchar, have_page_image)
                     foundbook = True
                     break
             if not foundbook:
-                self.addnewbook(newchar)
+                self.addnewbook(newchar, have_page_image)
         else:
-            self.addnewbook(newchar)
+            self.addnewbook(newchar, have_page_image)
 
-    def addpagetobook(self, newpage: Charjson) -> None:
+    def addpagetobook(self, newpage: Charjson, have_page_image: bool) -> None:
         newbook = Book(int(newpage.work_id), newpage.chi_work, newpage.chi_author, self.title)
-        newbook.addpage(newpage)
+        newbook.addpage(newpage, have_page_image)
         self.books.append(newbook)
 
-    def addpage(self, newpage: Charjson) -> None:
+    def addpage(self, newpage: Charjson, have_page_image: bool) -> None:
         if len(self.books) >= 1:
             foundbook = False
             for book in self.books:
                 if book.bid == int(newpage.work_id):
-                    book.addpage(newpage)
+                    book.addpage(newpage, have_page_image)
                     foundbook = True
                     break
             if not foundbook:
-                self.addpagetobook(newpage)
+                self.addpagetobook(newpage, have_page_image)
         else:
-            self.addpagetobook(newpage)
+            self.addpagetobook(newpage, have_page_image)
 
 
 class Book(object):
@@ -101,7 +101,7 @@ class Book(object):
         else:
             self.addnewpage(newchar, have_page_image)
 
-    def addpage(self, newpage: Charjson) -> None:
+    def addpage(self, newpage: Charjson, have_page_image: bool) -> None:
         if len(self.pages) >= 1:
             foundpage = False
             for page in self.pages:
@@ -109,9 +109,9 @@ class Book(object):
                     foundpage = True
                     break
             if not foundpage:
-                self.pages.append(Page(int(newpage.page_id), self.bid, self.collection))
+                self.pages.append(Page(int(newpage.page_id), self.bid, self.collection, have_page_image))
         else:
-            self.pages.append(Page(int(newpage.page_id), self.bid, self.collection))
+            self.pages.append(Page(int(newpage.page_id), self.bid, self.collection, have_page_image))
 
 
 class Page(object):
@@ -270,10 +270,10 @@ def import_data(apps, schema_editor):
         library.collections[0].addchar(char, False)
     pageonly = getpages()
     for page in pageonly:
-        library.collections[0].addpage(page)
+        library.collections[0].addpage(page, True)
     kosukepage = getpagesfromkosukebook()
     for page in kosukepage:
-        library.collections[1].addpage(page)
+        library.collections[1].addpage(page, True)
     txtchar = txt2char()
     for char in txtchar:
         library.collections[1].addchar(char, True)
