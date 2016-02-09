@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.files.storage import FileSystemStorage
+
+fs = FileSystemStorage(location='images')
 
 
 class Collection(models.Model):
@@ -17,7 +20,7 @@ class Page(models.Model):
     page_number = models.IntegerField()
     parent_book = models.ForeignKey(Book, on_delete=models.CASCADE)
     page_notes = models.TextField(blank=True)
-    page_image = models.ImageField(blank=True, upload_to='images/pages/')
+    page_image = models.ImageField(blank=True, storage=fs)
 
 
 class Character(models.Model):
@@ -28,7 +31,7 @@ class Character(models.Model):
     x2 = models.IntegerField(blank=True)
     y2 = models.IntegerField(blank=True)
     char_notes = models.TextField(blank=True)
-    char_image = models.ImageField(blank=True, upload_to='images/characters/')
+    char_image = models.ImageField(blank=True, storage=fs)
 
 
 

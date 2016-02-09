@@ -296,7 +296,7 @@ def import_data(apps, schema_editor):
                 else:
                     curpage = Pagedb(page_number=page.number,
                                      parent_book=curbook)
-                curpage.save() # NOTE, Need to change Image path in models
+                curpage.save()
 
 class Migration(migrations.Migration):
 
