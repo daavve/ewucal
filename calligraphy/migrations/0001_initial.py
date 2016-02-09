@@ -289,7 +289,7 @@ def import_data(apps, schema_editor):
             for page in book.pages:
 
                 if page.have_page_image:
-                    page_img_path = File(open(page.getfilepath(), "rb"))
+                    page_img_path = File(open(page.getfilepath(), 'rb'))
                     curpage = Pagedb(page_number=page.number,
                                      parent_book=curbook,
                                      page_image=page_img_path)
@@ -297,6 +297,32 @@ def import_data(apps, schema_editor):
                     curpage = Pagedb(page_number=page.number,
                                      parent_book=curbook)
                 curpage.save()
+                page_img_path.close()
+                for char in page.characters:
+                    if char.x1 == 0:  # We don't have coordinates, or image
+                        curchar = Chardb(parent_page=curpage,
+                                         char_mark=char.mark)
+                        curchar.save()
+                    else:
+                        char_img_path = File(open(char.getfilepath(), 'rb'))  # We have image
+                        if char.mark == "?": # We have coordinates, but don't know the character
+                            curchar = Chardb(parent_page=curpage,
+                                             char_image=char_img_path,
+                                             x1=char.x1,
+                                             y1=char.y1,
+                                             x2=char.x2,
+                                             y2=char.y2)
+                        else:  #We have coordinates, and character
+                            curchar = Chardb(parent_page=curpage,
+                                             char_image=char_img_path,
+                                             char_mark=char.mark,
+                                             x1=char.x1,
+                                             y1=char.y1,
+                                             x2=char.x2,
+                                             y2=char.y2)
+                        curchar.save()
+                        char_img_path.close()
+
 
 class Migration(migrations.Migration):
 
