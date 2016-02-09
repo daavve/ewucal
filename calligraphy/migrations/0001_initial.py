@@ -299,20 +299,20 @@ def import_data(apps, schema_editor):
                 curpage.save()
                 page_img_path.close()
                 for char in page.characters:
-                    if char.x1 == 0:  # We don't have coordinates, or image
+                    if char.x1 is None or char.x1 == 0:  # We don't have coordinates, or image
                         curchar = Chardb(parent_page=curpage,
                                          char_mark=char.mark)
                         curchar.save()
                     else:
                         char_img_path = File(open(char.getfilepath(), 'rb'))  # We have image
-                        if char.mark == "?": # We have coordinates, but don't know the character
+                        if char.mark is None:  # We have coordinates, but don't know the character
                             curchar = Chardb(parent_page=curpage,
                                              char_image=char_img_path,
                                              x1=char.x1,
                                              y1=char.y1,
                                              x2=char.x2,
                                              y2=char.y2)
-                        else:  #We have coordinates, and character
+                        else:  # We have coordinates, and character
                             curchar = Chardb(parent_page=curpage,
                                              char_image=char_img_path,
                                              char_mark=char.mark,
