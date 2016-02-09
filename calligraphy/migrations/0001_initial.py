@@ -132,7 +132,7 @@ class Page(object):
 
     def addnewchar(self, newchar: Charjson) -> None:
         if newchar.xy_coordinates[0] == '?':
-            self.characters.append(Character(newchar.chi_mark, 0, 0, 0, 0, self.bid, self.number, self.collection))
+            self.characters.append(Character(newchar.chi_mark, None, None, None, None, self.bid, self.number, self.collection))
         else:
             self.characters.append(Character(newchar.chi_mark, int(newchar.xy_coordinates[0]),
                                                                int(newchar.xy_coordinates[1]),
@@ -299,9 +299,13 @@ def import_data(apps, schema_editor):
                 curpage.save()
                 page_img_path.close()
                 for char in page.characters:
-                    if char.x1 is None or char.x1 == 0:  # We don't have coordinates, or image
+                    if char.x1 is None:  # We don't have coordinates, or image
                         curchar = Chardb(parent_page=curpage,
-                                         char_mark=char.mark)
+                                         char_mark=char.mark,
+                                         x1=0,
+                                         y1=0,
+                                         x2=0,
+                                         y2=0)
                         curchar.save()
                     else:
                         char_img_path = File(open(char.getfilepath(), 'rb'))  # We have image
