@@ -238,7 +238,7 @@ NOTCHARS = "﹒。o‵‧ ˙\n"
 
 def txt2char() -> [Charjson]:
     charsinpage = []
-    f = open(CHARTXTFILE, 'r,', encoding='utf-8')
+    f = open(CHARTXTFILE, 'r', encoding='utf-8')
     filebuff = f.read()
     f.close()
     filebuff = filebuff.split('##########################################')[1]
