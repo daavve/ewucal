@@ -177,7 +177,7 @@ class Character(object):
 
 
 def readjson(filename: str) -> [Charjson]:  # Not too bad, less than 70M
-    jsonfile = open(filename, 'rt', encoding='utf-8')
+    jsonfile = open(filename, 'r', encoding='utf-8')
     readfile = json.load(jsonfile)
     jsonfile.close()
     characters = []
@@ -238,7 +238,7 @@ NOTCHARS = "﹒。o‵‧ ˙\n"
 
 def txt2char() -> [Charjson]:
     charsinpage = []
-    f = open(CHARTXTFILE, 'rt,', encoding='utf-8')
+    f = open(CHARTXTFILE, 'r,', encoding='utf-8')
     filebuff = f.read()
     f.close()
     filebuff = filebuff.split('##########################################')[1]
