@@ -48,6 +48,10 @@ class Collection(object):
             foundbook = False
             for book in self.books:
                 if book.bid == int(newchar.work_id):
+                    if book.author is None or book.author == "?" or book.author == "":
+                        book.author = newchar.chi_author
+                    if book.title is None or book.title == "?" or book.title == "":
+                        book.title = newchar.chi_work
                     book.addchar(newchar, have_page_image)
                     foundbook = True
                     break
@@ -232,7 +236,7 @@ def getpagesfromkosukebook() -> [Charjson]:  # I know cut / paste coding is bad,
             imgfiles.append(Charjson("?", "王羲之", "集字聖教序 東普", booknum, imgname, ['?']))
     return imgfiles
 
-CHARTXTFILE = "fetch/scanned/1/tesseract_convert.txt"
+CHARTXTFILE = "tesseract_convert.txt"
 NOTCHARS = "﹒。o‵‧ ˙\n"
 
 
