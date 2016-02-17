@@ -4,27 +4,26 @@ from django.core.files.storage import FileSystemStorage
 fs = FileSystemStorage(location='images')
 
 
-class Collection(models.Model):
-    collection_name = models.CharField(max_length=16)
+class Author(models.Model):
+    author_name = models.CharField(max_length=16)
+    author_dynesty = models.CharField(max_length=16, blank=True)
+    author_notes = models.TextField(blank=True)
 
 
-class Book(models.Model):
-    parent_collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
-    book_title = models.CharField(max_length=16,blank=True)
-    book_author = models.CharField(max_length=16,blank=True)
-    book_transcriber = models.CharField(max_length=16,blank=True)
-    book_notes = models.TextField(blank=True)
+class Work(models.Model):
+    work_title = models.CharField(max_length=16,blank=True)
+    work_author = models.ForeignKey(Author)
+    work_transcriber = models.CharField(max_length=16,blank=True)
 
 
 class Page(models.Model):
     page_number = models.IntegerField()
-    parent_book = models.ForeignKey(Book, on_delete=models.CASCADE)
     page_notes = models.TextField(blank=True)
     page_image = models.ImageField(blank=True, storage=fs)
 
 
 class Character(models.Model):
-    parent_page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    parent_page = models.ForeignKey(Page)
     char_mark = models.CharField(max_length=4, blank=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
@@ -32,6 +31,3 @@ class Character(models.Model):
     y2 = models.IntegerField(blank=True)
     char_notes = models.TextField(blank=True)
     char_image = models.ImageField(blank=True, storage=fs)
-
-
-
