@@ -11,12 +11,15 @@ class Author(models.Model):
 
 
 class Work(models.Model):
+    work_id = models.IntegerField(primary_key=True, unique=True)
     work_title = models.CharField(max_length=16,blank=True)
     work_author = models.ForeignKey(Author)
     work_transcriber = models.CharField(max_length=16,blank=True)
 
 
 class Page(models.Model):
+    parent_work = models.ForeignKey(Work, blank=True)
+    page_book = models.IntegerField()
     page_number = models.IntegerField()
     page_notes = models.TextField(blank=True)
     page_image = models.ImageField(blank=True, storage=fs)
