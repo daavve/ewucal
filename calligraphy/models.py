@@ -22,6 +22,7 @@ class Work(models.Model):
 
 class Page(models.Model):
     page_image = models.ImageField(blank=True, storage=fs)
+    parent_work = models.ForeignKey(Work, blank=True)
 
 
 class Character(models.Model):
