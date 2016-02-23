@@ -1,7 +1,13 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
+from socket import gethostname
 
-fs = FileSystemStorage(location='images')
+# filestorage needs to be outside project path, or pycharm will index the pictures.  This is slow.
+HOSTNAME = gethostname()
+if HOSTNAME == 'ewucal_server' or HOSTNAME == 'calligraphy.ewuthesis.com':
+    fs = FileSystemStorage(location='images')
+else:
+    fs = FileSystemStorage(location='~/workspace/pycharm/ewucal_images/')
 
 
 class Author(models.Model):
@@ -10,13 +16,11 @@ class Author(models.Model):
 
 
 class Work(models.Model):
-    work_id = models.IntegerField(primary_key=True)
     work_author = models.ForeignKey(Author)
     work_transcript = models.TextField(blank=True)
 
 
 class Page(models.Model):
-    page_number = models.IntegerField()
     page_image = models.ImageField(blank=True, storage=fs)
 
 
