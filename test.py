@@ -16,11 +16,11 @@ def readfromjson() -> None:
     readfile = json.load(jsonfile)
     jsonfile.close()
     for r in readfile:
-#       print(r['name'])
-#       print(r['dynesty'])
+        name = r['name']
+        dynesty = r['dynesty']
         for w in r['works']:
-#           print(w['work_id'])
-#           print(w['text_block'])
+            work_id = w['work_id']
+            text_block = w['text_block']
             imgprefix = str(w['pages']['book_id'])
             for p in w['pages']['pages_id']:
                 fileimg = IMAGE_DIR + imgprefix + "-" + str(p)
@@ -31,9 +31,6 @@ def readfromjson() -> None:
                         if not os.path.isfile(fileimg):
                             raise Exception('Cannot find required image file', fileimg.split('.')[0])
             print(fileimg)
-
-            if fileimg is None:
-                print(imgprefix + "-" + p)
 
 
 
