@@ -10,7 +10,6 @@ from django.core import files
 
 from django.core.files.storage import FileSystemStorage
 
-fs = FileSystemStorage()
 
 
 HOSTNAME = socket.gethostname()
@@ -51,11 +50,8 @@ def read_cworks(apps) -> None:
                         fileimg = fileimg.split('.')[0] + ".png"
                         if not os.path.isfile(fileimg):
                             raise Exception('Cannot find required image file', fileimg.split('.')[0])
-                f = open(fileimg, mode='rb')
-                myfile = files.File(f).read()
-                d_page = Page(parent_work=d_work, page_image=myfile)
+                d_page = Page(parent_work=d_work, page_image=fileimg)
                 d_page.save
-                f.close()
 #                os.remove(fileimg)
 #  We might run out of room here, but I think its ok
 
@@ -89,7 +85,7 @@ class Migration(migrations.Migration):
                 ('y1', models.IntegerField(blank=True)),
                 ('x2', models.IntegerField(blank=True)),
                 ('y2', models.IntegerField(blank=True)),
-                ('char_image', models.ImageField(blank=True, storage=fs)),
+                ('char_image', models.ImageField(blank=True, storage=FileSystemStorage())),
                 ('parent_author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Author')),
             ],
         ),
@@ -97,7 +93,7 @@ class Migration(migrations.Migration):
             name='Page',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('page_image', models.ImageField(blank=True, storage=fs)),
+                ('page_image', models.ImageField(blank=True, storage=FileSystemStorage())),
             ],
         ),
         migrations.CreateModel(
