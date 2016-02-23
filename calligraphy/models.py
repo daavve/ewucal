@@ -1,12 +1,12 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 
-fs = FileSystemStorage(location='~/django_images')
+fs = FileSystemStorage(location='~/django_images/')
 
 
 class Author(models.Model):
-    author_name = models.CharField(max_length=16)
-    author_dynesty = models.CharField(max_length=16, blank=True)
+    author_name = models.CharField(max_length=64)
+    author_dynesty = models.CharField(max_length=64, blank=True)
 
 
 class Work(models.Model):
@@ -22,7 +22,7 @@ class Page(models.Model):
 class Character(models.Model):
     parent_page = models.ForeignKey(Page)
     parent_author = models.ForeignKey(Author)
-    char_mark = models.CharField(max_length=4, blank=True)
+    char_mark = models.CharField(max_length=64, blank=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
     x2 = models.IntegerField(blank=True)

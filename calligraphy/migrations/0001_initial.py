@@ -68,15 +68,15 @@ class Migration(migrations.Migration):
             name='Author',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('author_name', models.CharField(max_length=16)),
-                ('author_dynesty', models.CharField(blank=True, max_length=16)),
+                ('author_name', models.CharField(max_length=64)),
+                ('author_dynesty', models.CharField(blank=True, max_length=64)),
             ],
         ),
         migrations.CreateModel(
             name='Character',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('char_mark', models.CharField(blank=True, max_length=4)),
+                ('char_mark', models.CharField(blank=True, max_length=64)),
                 ('x1', models.IntegerField(blank=True)),
                 ('y1', models.IntegerField(blank=True)),
                 ('x2', models.IntegerField(blank=True)),
