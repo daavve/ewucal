@@ -28,9 +28,12 @@ def readfromjson() -> None:
                 if not os.path.isfile(fileimg):
                     fileimg = fileimg.split('.')[0] + ".tif"
                     if not os.path.isfile(fileimg):
-                        fileimg = None
-                if fileimg is None:
-                    print(imgprefix + "-" + p)
+                        fileimg = fileimg.split('.')[0] + ".png"
+                        if not os.path.isfile(fileimg):
+                            fileimg = None
+
+            if fileimg is None:
+                print(imgprefix + "-" + p)
 
 
 
