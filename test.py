@@ -29,7 +29,8 @@ def readfromjson() -> None:
                     fileimg = fileimg.split('.')[0] + ".tif"
                     if not os.path.isfile(fileimg):
                         fileimg = None
-                print(fileimg)
+                if fileimg is None:
+                    print(imgprefix + "-" + p)
 
 
 
