@@ -48,7 +48,7 @@ def read_cworks(apps) -> None:
                             raise Exception('Cannot find required image file', fileimg.split('.')[0])
                 d_page = Page(parent_work=d_work, page_image=fileimg)
                 d_page.save
-                os.remove(Page)
+                os.remove(fileimg)
 
 
 def import_data(apps, schemd_editor):
