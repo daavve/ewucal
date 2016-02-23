@@ -14,7 +14,7 @@ from django.core.files.storage import FileSystemStorage
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'ewucal_server' or HOSTNAME == 'calligraphy.ewuthesis.com':
-    IMAGE_DIR = "/home/django/CADAL-scripts/fetchimages/workslist/grabbedBooks/"
+    IMAGE_DIR = "/media/pages/"
 else:
     IMAGE_DIR = "/home/dave/workspace/pycharm/fetch/grabbedBooks/"
 
