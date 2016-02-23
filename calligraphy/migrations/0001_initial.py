@@ -5,6 +5,55 @@ from __future__ import unicode_literals
 import django.core.files.storage
 from django.db import migrations, models
 import django.db.models.deletion
+import json, socket, os
+
+
+HOSTNAME = socket.gethostname()
+if HOSTNAME == 'ewucal_server' or HOSTNAME == 'calligraphy.ewuthesis.com':
+    IMAGE_DIR = "/home/django/CADAL-scripts/fetchimages/workslist/grabbedBooks/"
+else:
+    IMAGE_DIR = "/home/dave/workspace/pycharm/fetch/grabbedBooks/"
+
+
+def read_cworks(apps) -> None:
+    jsonfile = open("c-works.json", mode="r", encoding='utf-8')
+    readfile = json.load(jsonfile)
+    jsonfile.close()
+    Author = apps.get_model("calligraphy", "Author")
+    Work = apps.get_model("calligraphy", "Work")
+    Page = apps.get_model("calligraphy", "Page")
+    for r in readfile:
+        name = r['name']
+        dynesty = r['dynesty']
+        if dynesty == '':
+            d_author = Author(author_name=name)
+        else:
+            d_author = Author(author_name=name, author_dynesty=dynesty)
+        d_author.save()
+        for w in r['works']:
+            text_block = w['text_block'].strip('\n')
+            if text_block == '':
+                d_work = Work(work_author=d_author)
+            else:
+                d_work = Work(work_author=d_author, work_transcript=text_block)
+            d_work.save()
+            imgprefix = str(w['pages']['book_id'])
+            for p in w['pages']['pages_id']:
+                fileimg = IMAGE_DIR + imgprefix + "-" + str(p)
+                if not os.path.isfile(fileimg):
+                    fileimg = fileimg.split('.')[0] + ".tif"
+                    if not os.path.isfile(fileimg):
+                        fileimg = fileimg.split('.')[0] + ".png"
+                        if not os.path.isfile(fileimg):
+                            raise Exception('Cannot find required image file', fileimg.split('.')[0])
+                d_page = Page(parent_work=d_author, page_image=fileimg)
+                d_page.save
+                os.remove(Page)
+
+
+def import_data(apps, schemd_editor):
+    read_cworks(apps)
+
 
 
 class Migration(migrations.Migration):
@@ -61,4 +110,5 @@ class Migration(migrations.Migration):
             name='parent_page',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Page'),
         ),
+        migrations.RunPython(import_data)
     ]
