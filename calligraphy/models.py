@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 
-fs = FileSystemStorage(location='~/django_images/')
+fs = FileSystemStorage()
 
 
 class Author(models.Model):

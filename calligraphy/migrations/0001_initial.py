@@ -7,6 +7,10 @@ from django.db import migrations, models
 import django.db.models.deletion
 import json, socket, os
 
+from django.core.files.storage import FileSystemStorage
+
+fs = FileSystemStorage()
+
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'ewucal_server' or HOSTNAME == 'calligraphy.ewuthesis.com':
@@ -81,7 +85,7 @@ class Migration(migrations.Migration):
                 ('y1', models.IntegerField(blank=True)),
                 ('x2', models.IntegerField(blank=True)),
                 ('y2', models.IntegerField(blank=True)),
-                ('char_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='images/'), upload_to='')),
+                ('char_image', models.ImageField(blank=True, storage=fs)),
                 ('parent_author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Author')),
             ],
         ),
@@ -89,7 +93,7 @@ class Migration(migrations.Migration):
             name='Page',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('page_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='images/'), upload_to='')),
+                ('page_image', models.ImageField(blank=True, storage=fs)),
             ],
         ),
         migrations.CreateModel(
