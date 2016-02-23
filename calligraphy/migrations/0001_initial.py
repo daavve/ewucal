@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
             name='Page',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('page_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='~/django_images'), upload_to='')),
+                ('page_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='~/django_images/'), upload_to='')),
             ],
         ),
         migrations.CreateModel(
