@@ -17,11 +17,11 @@ def readfromjson() -> None:
     readfile = json.load(jsonfile)
     jsonfile.close()
     for r in readfile:
-        print(r['name'])
-        print(r['dynesty'])
+#       print(r['name'])
+#       print(r['dynesty'])
         for w in r['works']:
-            print(w['work_id'])
-            print(w['text_block'])
+#           print(w['work_id'])
+#           print(w['text_block'])
             imgprefix = str(w['pages']['book_id'])
             for p in w['pages']['pages_id']:
                 fileimg = IMAGE_DIR + imgprefix + "-" + str(p)
