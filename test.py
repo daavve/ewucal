@@ -30,7 +30,7 @@ def readfromjson() -> None:
                         fileimg = fileimg.split('.')[0] + ".png"
                         if not os.path.isfile(fileimg):
                             raise Exception('Cannot find required image file', fileimg.split('.')[0])
-            print(fileimg)
+                print(fileimg)
 
 
 
