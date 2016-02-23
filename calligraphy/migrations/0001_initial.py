@@ -48,8 +48,8 @@ def read_cworks(apps) -> None:
                             raise Exception('Cannot find required image file', fileimg.split('.')[0])
                 d_page = Page(parent_work=d_work, page_image=fileimg)
                 d_page.save
-                os.remove(fileimg)
-
+#                os.remove(fileimg)
+#  We might run out of room here, but I think its ok
 
 def import_data(apps, schemd_editor):
     read_cworks(apps)
@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
                 ('y1', models.IntegerField(blank=True)),
                 ('x2', models.IntegerField(blank=True)),
                 ('y2', models.IntegerField(blank=True)),
-                ('char_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='~/django_images'), upload_to='')),
+                ('char_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='images/'), upload_to='')),
                 ('parent_author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Author')),
             ],
         ),
@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
             name='Page',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('page_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='~/django_images/'), upload_to='')),
+                ('page_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(location='images/'), upload_to='')),
             ],
         ),
         migrations.CreateModel(
