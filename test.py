@@ -4,7 +4,6 @@
 ##############################################################
 
 import json, os, socket
-
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'ewucal_server' or HOSTNAME == 'calligraphy.ewuthesis.com':
     IMAGE_DIR = "/home/django/CADAL-scripts/fetchimages/workslist/grabbedBooks/"
@@ -30,7 +29,8 @@ def readfromjson() -> None:
                     if not os.path.isfile(fileimg):
                         fileimg = fileimg.split('.')[0] + ".png"
                         if not os.path.isfile(fileimg):
-                            fileimg = None
+                            raise Exception('Cannot find required image file', fileimg.split('.')[0])
+            print(fileimg)
 
             if fileimg is None:
                 print(imgprefix + "-" + p)
