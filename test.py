@@ -30,7 +30,7 @@ def readfromjson() -> None:
                     if not os.path.isfile(fileimg):
                         fileimg = None
                 if fileimg is None:
-                    print(imgprefix + "-" + p)
+                    print(imgprefix + "/" + p)
 
 
 
