@@ -50,7 +50,7 @@ def read_cworks(apps) -> None:
                         fileimg = fileimg.split('.')[0] + ".png"
                         if not os.path.isfile(fileimg):
                             raise Exception('Cannot find required image file', fileimg.split('.')[0])
-                img = open(fileimg, mode='r')
+                img = open(fileimg, mode='rb')
                 imgl = img.read()
                 img.close()
                 d_page = Page(parent_work=d_work, page_image=imgl)
