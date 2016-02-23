@@ -4,7 +4,6 @@ from django.core.files.storage import FileSystemStorage
 fs = FileSystemStorage(location='~/django_images')
 
 
-
 class Author(models.Model):
     author_name = models.CharField(max_length=16)
     author_dynesty = models.CharField(max_length=16, blank=True)
