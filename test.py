@@ -7,7 +7,7 @@ import json, os, socket
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'ewucal_server' or HOSTNAME == 'calligraphy.ewuthesis.com':
-    IMAGE_DIR = "~/CADAL-scripts/fetchimages/workslist/grabbedBooks/"
+    IMAGE_DIR = "/home/django/CADAL-scripts/fetchimages/workslist/grabbedBooks/"
 else:
     IMAGE_DIR = "/home/dave/workspace/pycharm/fetch/grabbedBooks/"
 
