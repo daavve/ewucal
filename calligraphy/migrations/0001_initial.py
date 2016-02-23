@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
                 ('y1', models.IntegerField(blank=True)),
                 ('x2', models.IntegerField(blank=True)),
                 ('y2', models.IntegerField(blank=True)),
-                ('char_image', models.ImageField(blank=True, storage=fs)),
+                ('char_image', models.ImageField(blank=True, storage=fs, upload_to=fs)),
                 ('parent_author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Author')),
             ],
         ),
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
             name='Page',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('page_image', models.ImageField(blank=True, storage=fs)),
+                ('page_image', models.ImageField(blank=True, storage=fs, upload_to=fs)),
             ],
         ),
         migrations.CreateModel(
