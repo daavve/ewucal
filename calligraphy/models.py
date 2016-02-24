@@ -22,7 +22,8 @@ class Page(models.Model):
 
 class Character(models.Model):
     parent_page = models.ForeignKey(Page)
-    parent_author = models.ForeignKey(Author)
+    parent_author = models.ForeignKey(Author, blank=True)
+    parent_work = models.ForeignKey(Work, blank=True)
     char_mark = models.CharField(max_length=64, blank=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
