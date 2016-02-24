@@ -17,6 +17,7 @@ class Work(models.Model):
 class Page(models.Model):
     page_image = models.ImageField(blank=True, storage=fs)
     parent_work = models.ForeignKey(Work, blank=True)
+    page_transcript = models.TextField(blank=True)
 
 
 class Character(models.Model):
