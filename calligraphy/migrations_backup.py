@@ -10,8 +10,9 @@ from __future__ import unicode_literals
 import django.core.files.storage
 from django.db import migrations, models
 import django.db.models.deletion
-import socket, os, json
-
+import os
+import socket
+import json
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'bigArch':
@@ -36,11 +37,12 @@ def read_cworks(apps) -> None:
             d_author = Author(author_name=name, author_dynesty=dynesty)
         d_author.save()
         for w in r['works']:
+            work_id = int(w['work_id'])
             text_block = w['text_block'].strip('\n')
             if text_block == '':
-                d_work = Work(work_author=d_author)
+                d_work = Work(work_id=work_id, work_author=d_author)
             else:
-                d_work = Work(work_author=d_author, work_transcript=text_block)
+                d_work = Work(work_id=work_id, work_author=d_author, work_transcript=text_block)
             d_work.save()
             imgprefix = str(w['pages']['book_id'])
             for p in w['pages']['pages_id']:
