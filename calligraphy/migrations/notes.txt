@@ -1,0 +1,4 @@
+Migrations.
+
+To make a new empty migration
+    #python manage.py makemigrations --empty calligraphy
