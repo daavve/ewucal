@@ -51,8 +51,10 @@ def read_cworks(apps) -> None:
                 d_page = Page(parent_work=d_work, page_image=fileimg)
                 d_page.save
 
-    def import_data(apps, schemd_editor):
-        read_cworks(apps)
+
+
+def import_data(apps, schemd_editor):
+    read_cworks(apps)
 
 class Migration(migrations.Migration):
 
@@ -115,5 +117,5 @@ class Migration(migrations.Migration):
             name='parent_work',
             field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Work'),
         ),
-         migrations.RunPython(import_data)
+        migrations.RunPython(import_data)
     ]
