@@ -11,6 +11,7 @@ class Author(models.Model):
 
 class Work(models.Model):
     work_id = models.IntegerField(primary_key=True)
+    work_title = models.CharField(max_length=64, blank=True)
     work_author = models.ForeignKey(Author)
     work_transcript = models.TextField(blank=True)
 
