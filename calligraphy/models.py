@@ -20,15 +20,15 @@ class Page(models.Model):
     page_bookid = models.IntegerField(blank=True)
     page_pageid = models.IntegerField(blank=True)
     page_image = models.ImageField(blank=True, storage=fs)
-    parent_work = models.ForeignKey(Work, blank=True)
+    parent_work = models.ForeignKey(Work, null=True)
     page_transcript = models.TextField(blank=True)
 
 
 class Character(models.Model):
     parent_page = models.ForeignKey(Page)
     char_mark = models.CharField(max_length=64, blank=True)
-    char_author = models.ForeignKey(Author, blank=True)
-    char_work = models.ForeignKey(Work, blank=True)
+    char_author = models.ForeignKey(Author, null=True)
+    char_work = models.ForeignKey(Work, null=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
     x2 = models.IntegerField(blank=True)
