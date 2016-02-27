@@ -17,8 +17,8 @@ class Work(models.Model):
 
 
 class Page(models.Model):
-    page_bookid = models.IntegerField(blank=True)
-    page_pageid = models.IntegerField(blank=True)
+    page_bookid = models.IntegerField(null=True)
+    page_pageid = models.IntegerField(null=True)
     page_image = models.ImageField(blank=True, storage=fs)
     parent_work = models.ForeignKey(Work, null=True)
     page_transcript = models.TextField(blank=True)
