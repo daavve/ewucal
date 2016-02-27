@@ -35,8 +35,8 @@ def add_chars_from_filesystem(apps) -> None:
                         y1 = int(coords[1])
                         x2 = int(coords[2])
                         y2 = int(coords[3])
-                        page = Page.objects.filter(page_bookid=int(book)).filter(page_pageid=int(pagenum))[0]
-                        chrs = Char.objects.filter(parent_page=page).filter(x1=x1).filter(y1=y1).filter(x2=x2).filter(y2=y2)
+                        page = Page.objects.filter(page_bookid=int(book), page_pageid=int(pagenum))[0]
+                        chrs = Char.objects.filter(parent_page=page, x1=x1, y1=y1, x2=x2, y2=y2)
                         if len(chrs) == 0:
                             chr = Char(parent_page=page, x1=x1, y1=y1, x2=x2, y2=y2, char_image=filepath)
                             chr.save()
