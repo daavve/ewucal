@@ -36,7 +36,7 @@ def addchars(apps) -> None:
         if not os.path.isfile(path):
             Exception("file not found: ", path)
 
-        page = Page.objects.filter(page_bookid=int(bkid)).filter(page_pageid=int(pgid))[0]
+        page = Page.objects.filter(page_bookid=int(bkid), page_pageid=int(pgid))[0]
         char = Char(parent_page=page, char_mark=mark, char_image=path,
                     x1=int(x1), y1=int(y1), x2=int(x2), y2=int(y2))
         char.save()
