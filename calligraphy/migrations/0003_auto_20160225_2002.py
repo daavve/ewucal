@@ -36,7 +36,7 @@ def add_pages_from_filesystem(apps) -> None:
                 bkpg = f.strip('.png').split('-')
                 bk = int(bkpg[0])
                 pg = int(bkpg[1])
-                page = Page.objects.filter(page_bookid=bk).filter(page_pageid=pg)
+                page = Page.objects.filter(page_bookid=bk, page_pageid=pg)
                 if len(page) == 0:
                     pg = Page(page_image=pathname, page_bookid=bk, page_pageid=pg)
                     pg.save()
@@ -46,7 +46,7 @@ def add_pages_from_filesystem(apps) -> None:
                     bkpg = f.strip('.tif').split('-')
                     bk = int(bkpg[0])
                     pg = int(bkpg[1])
-                    page = Page.objects.filter(page_bookid=bk).filter(page_pageid=pg)
+                    page = Page.objects.filter(page_bookid=bk, page_pageid=pg)
                     if len(page) == 0:
                         pg = Page(page_image=pathname, page_bookid=bk, page_pageid=pg)
                         pg.save()
