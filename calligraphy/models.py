@@ -26,7 +26,6 @@ class Page(models.Model):
 
 class Character(models.Model):
     parent_page = models.ForeignKey(Page)
-    char_work = models.ForeignKey(Work, null=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
     x2 = models.IntegerField(blank=True)
