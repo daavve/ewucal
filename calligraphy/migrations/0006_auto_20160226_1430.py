@@ -20,8 +20,4 @@ class Migration(migrations.Migration):
             model_name='character',
             name='char_author',
         ),
-        migrations.RemoveField(
-            model_name='character',
-            name='char_mark',
-        ),
     ]
