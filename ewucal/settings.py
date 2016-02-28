@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'calligraphy.apps.calligraphy',
+    'calligraphy.apps.Calligraphy',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
