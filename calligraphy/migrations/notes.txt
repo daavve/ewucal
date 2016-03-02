@@ -1,3 +1,9 @@
+Data Fields:
+    I might need to add an author plain-text field to allow character sorting by authors.
+
+
+
+
 Migrations.
 
 To make a new empty migration

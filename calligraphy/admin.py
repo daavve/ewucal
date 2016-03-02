@@ -1,24 +1,29 @@
-#from django.contrib import admin
+from django.contrib import admin
 
-#from . import models
-
-
-#class CollectionAdmin(admin.ModelAdmin):
-#    list_display = ('collection_name', 'id')
+from . import models
 
 
-#class CollectionBook(admin.ModelAdmin):
-#    list_display = ('book_title', 'book_author')
+class CAuthor(admin.ModelAdmin):
+    list_display = ('id', 'author_name', 'author_dynesty')
+    list_filter = ['author_dynesty']
+    search_fields = ['author_name']
 
 
-#class CollectionPage(admin.ModelAdmin):
-#    list_display = ('page_number', 'page_image')
+class CWork(admin.ModelAdmin):
+    list_display = ('work_id', 'work_title', 'work_author', 'work_transcript')
+    search_fields = ['work_title', 'work_transcript']
 
 
-#class CollectionCharacter(admin.ModelAdmin):
-#    list_display = ('char_mark', 'x1', 'y1', 'x2', 'y2', 'char_image')
+class CPage(admin.ModelAdmin):
+    list_display = ('id', 'page_image', 'page_transcript')
+    search_fields = ['page_transcript']
 
-#admin.site.register(models.Collection, CollectionAdmin)
-#admin.site.register(models.Book, CollectionBook)
-#admin.site.register(models.Page, CollectionPage)
-#admin.site.register(models.Character, CollectionCharacter)
+
+class CCharacter(admin.ModelAdmin):
+    list_display = ('id', 'char_mark', 'x1', 'y1', 'x2', 'y2', 'char_image')
+    search_fields = ['char_mark']
+
+admin.site.register(models.Author, CAuthor)
+admin.site.register(models.Work, CWork)
+admin.site.register(models.Page, CPage)
+admin.site.register(models.Character, CCharacter)
