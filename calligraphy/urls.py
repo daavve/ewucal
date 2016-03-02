@@ -8,10 +8,12 @@
 # │   └── 1
 # │       ├── 10i.png
 # │       ├── 10t.png
+# │       ├── 4i.png
 #
 ############################################
 from django.conf.urls import url
 from . import views
+
 
 urlpatterns = [
     url(r'^pages/[0-9]{8}-[0-9]{8}.(?:jpg|png|tif)$', views.page_i)

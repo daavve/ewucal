@@ -7,5 +7,5 @@ from django.http import HttpResponse
 
 
 def page_i(request):
-    return HttpResponse("Page Request")
+    return HttpResponse("Image Request")
 
