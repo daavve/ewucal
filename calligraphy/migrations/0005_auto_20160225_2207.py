@@ -13,7 +13,7 @@ from stat import S_ISDIR
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'bigArch':
-    CHAR_DIR = "/home/dave/workspace/pycharm/fetch/chars/"
+    CHAR_DIR = "/home/dave/workspace/pycharm/media/chars/"
 else:
     CHAR_DIR = "/media/chars/"
 

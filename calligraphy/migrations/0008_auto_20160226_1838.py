@@ -12,7 +12,7 @@ import json
 import os
 
 if socket.gethostname() == 'bigArch':
-    MEDIA_DIR = "/home/dave/workspace/pycharm/fetch/"
+    MEDIA_DIR = "/home/dave/workspace/pycharm/media/"
 else:
     MEDIA_DIR = "/media/"
 

@@ -17,7 +17,7 @@ import json
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'bigArch':
-    IMAGE_DIR = "/home/dave/workspace/pycharm/fetch/pages/"
+    IMAGE_DIR = "/home/dave/workspace/pycharm/media/pages/"
 else:
     IMAGE_DIR = "/media/pages/"
 

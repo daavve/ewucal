@@ -12,7 +12,7 @@ import socket
 import os
 
 if socket.gethostname() == 'bigArch':
-    CHARS_DIR = "/home/dave/workspace/pycharm/fetch/chars"
+    CHARS_DIR = "/home/dave/workspace/pycharm/media/chars"
 else:
     CHARS_DIR = "/media/chars/"
 
