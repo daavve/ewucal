@@ -6,5 +6,6 @@
 from django.http import HttpResponse
 
 
-def index(request):
-    return HttpResponse("Calligraphy App.")
+def page_i(request):
+    return HttpResponse("Page Request")
+
