@@ -1,7 +1,7 @@
 #
 # ├── chars
 # │   ├── 06100004
-# │   │   ├── 00000009(266,179,402,296).jpg (0-1243,2-1840,21-1326,45-1938)
+# │   │   ├── 00000009(266,179,402,296).jpg (#-####) for each coordinate
 # ├── pages
 # │   ├── 06100004-00000009.(png,jpg,tif)
 # ├── scanned
@@ -16,5 +16,6 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^pages/[0-9]{8}-[0-9]{8}.(?:jpg|png|tif)$', views.page_i)
+    url(r'^pages/[0-9]{8}-[0-9]{8}\.(?:jpg|png|tif)$', views.page_i),
+    url(r'^chars/[0-9]{8}/[0-9]{8}\([0-9]{1,4},[0-9]{1,4},[0-9]{2,4},[0-9]{2,4}\)\.jpg$', views.char_i)
 ]
