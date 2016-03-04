@@ -14,8 +14,8 @@ def auth_list(request):
     cntxt = {'authors': authors}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-def auth_works(request):
-    return HttpResponse(str(request))
+def auth_works(request, auth_id):
+    return HttpResponse(str(auth_id))
 
 
 
