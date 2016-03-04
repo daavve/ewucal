@@ -5,30 +5,30 @@ fs = FileSystemStorage()
 
 
 class Author(models.Model):
-    author_name = models.CharField(max_length=64)
-    author_dynesty = models.CharField(max_length=64, blank=True)
+    name = models.CharField(max_length=64)
+    dynesty = models.CharField(max_length=64, blank=True)
 
 
 class Work(models.Model):
-    work_id = models.IntegerField(primary_key=True)
-    work_title = models.CharField(max_length=64, blank=True)
-    work_author = models.ForeignKey(Author)
-    work_transcript = models.TextField(blank=True)
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=64, blank=True)
+    author = models.ForeignKey(Author)
+    transcript = models.TextField(blank=True)
 
 
 class Page(models.Model):
-    page_bookid = models.IntegerField(null=True)
-    page_pageid = models.IntegerField(null=True)
-    page_image = models.ImageField(blank=True, storage=fs)
+    book_id = models.IntegerField(null=True)
+    page_id = models.IntegerField(null=True)
+    image = models.ImageField(blank=True, storage=fs)
     parent_work = models.ForeignKey(Work, null=True)
-    page_transcript = models.TextField(blank=True)
+    transcript = models.TextField(blank=True)
 
 
 class Character(models.Model):
     parent_page = models.ForeignKey(Page)
-    char_mark = models.CharField(max_length=64, blank=True)
+    mark = models.CharField(max_length=64, blank=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
     x2 = models.IntegerField(blank=True)
     y2 = models.IntegerField(blank=True)
-    char_image = models.ImageField(blank=True, storage=fs)
+    image = models.ImageField(blank=True, storage=fs)
