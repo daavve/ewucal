@@ -5,7 +5,7 @@
 
 from django.http import HttpResponse
 from django.template import loader
-from .models import Author
+from .models import Author, Work
 
 
 def auth_list(request):
@@ -15,7 +15,10 @@ def auth_list(request):
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 def auth_works(request, auth_id):
-    return HttpResponse(str(auth_id))
+    works = Work.objects.filter(author=auth_id)
+    tmplt = loader.get_template('calligraphy/works.html')
+    cntxt = {'works': works}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 
 
