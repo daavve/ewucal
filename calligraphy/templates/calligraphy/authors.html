@@ -8,7 +8,9 @@
 {% block content %}
 <h2>{% for author in authors %}</h2>
     <li>
-        {{ author.name }}
+        <a href={{ author.get_absolute_url }}>
+                {{ author.name }}
+        </a>
     </li>
     {% endfor %}
 {% endblock %}
