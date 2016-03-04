@@ -9,3 +9,4 @@ else:
     urlpatterns.append(url(r'^media/', include('calligraphy.urls')))
 
 urlpatterns.append(url(r'^admin/', admin.site.urls))
+urlpatterns.append(url(r'^', include('calligraphy.urls')))

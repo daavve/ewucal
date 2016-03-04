@@ -5,6 +5,8 @@
 
 from django.http import HttpResponse
 
+def base(request):
+    return HttpResponse("Base of the website")
 
 def page_i(request):
     return HttpResponse("Image Request")
