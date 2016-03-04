@@ -6,7 +6,7 @@ fs = FileSystemStorage()
 
 class Author(models.Model):
     name = models.CharField(max_length=64)
-    dynesty = models.CharField(max_length=64, blank=True)
+    dynasty = models.CharField(max_length=64, blank=True)
 
 
 class Work(models.Model):

@@ -4,8 +4,8 @@ from . import models
 
 
 class CAuthor(admin.ModelAdmin):
-    list_display = ('id', 'name', 'dynesty')
-    list_filter = ['dynesty']
+    list_display = ('id', 'name', 'dynasty')
+    list_filter = ['dynasty']
     search_fields = ['name']
 
 
