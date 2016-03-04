@@ -4,15 +4,15 @@
 ###################################################
 
 from django.http import HttpResponse
-from django.template import Context, loader
+from django.template import loader
 from .models import Author
 
 
 def auth_list(request):
     authors = Author.objects.all()
     tmplt = loader.get_template('calligraphy/authors.html')
-    cntxt = Context({'authors': authors})
-    return HttpResponse(tmplt.render(cntxt))
+    cntxt = {'authors': authors}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 def auth_works(request):
     return HttpResponse(str(request))
