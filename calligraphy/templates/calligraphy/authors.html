@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authors List</title>
+</head>
+<body>
+{% block content %}
+<h2>{% for author in authors %}</h2>
+    <li>
+        {{ author.name }}
+    </li>
+    {% endfor %}
+{% endblock %}
+</body>
+</html>
