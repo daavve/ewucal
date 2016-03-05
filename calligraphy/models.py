@@ -9,7 +9,7 @@ class Author(models.Model):
     dynasty = models.CharField(max_length=64, blank=True)
 
     def get_absolute_url(self):
-        return 'auth/' + str(self.id)
+        return '/auth/' + str(self.id)
 
 
 class Work(models.Model):
@@ -19,7 +19,7 @@ class Work(models.Model):
     transcript = models.TextField(blank=True)
 
     def get_absolute_url(self):
-        return 'work/' + str(self.id)
+        return '/work/' + str(self.id)
 
 
 class Page(models.Model):
@@ -30,7 +30,7 @@ class Page(models.Model):
     transcript = models.TextField(blank=True)
 
     def get_absolute_url(self):
-        return 'page/' + str(self.id)
+        return '/page/' + str(self.id)
 
 
 class Character(models.Model):
@@ -43,4 +43,4 @@ class Character(models.Model):
     image = models.ImageField(blank=True, storage=fs)
 
     def get_absolute_url(self):
-        return 'char/' + str(self.id)
+        return '/char/' + str(self.id)
