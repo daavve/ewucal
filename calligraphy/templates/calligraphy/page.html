@@ -1,0 +1,11 @@
+{% extends parent_template|default:"ewucal/base.html" %}
+
+{% block content %}
+<h2>{% for char in chars %}</h2>
+    <li>
+        <a href={{ char.get_absolute_url }}>
+                {{ char.mark }}
+        </a>
+    </li>
+    {% endfor %}
+{% endblock %}

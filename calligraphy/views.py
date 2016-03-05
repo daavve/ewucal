@@ -5,7 +5,7 @@
 
 from django.http import HttpResponse
 from django.template import loader
-from .models import Author, Work, Page
+from .models import Author, Work, Page, Character
 
 
 def auth_list(request):
@@ -26,6 +26,13 @@ def pages_in_work(request, work_id):
     pages = Page.objects.filter(parent_work=work_id)
     tmplt = loader.get_template('calligraphy/pages.html')
     cntxt = {'pages': pages}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
+
+def individual_page(request, page_id):
+    page = Page.objects.get(id=page_id)
+    chars = Character.objects.filter(parent_page=page_id)
+    tmplt = loader.get_template('calligraphy/page.html')
+    cntxt = {'chars': chars}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 
