@@ -6,6 +6,7 @@
 from django.http import HttpResponse
 from django.template import loader
 from .models import Author, Work, Page, Character
+from ewucal.settings import MEDIA_ROOT
 
 
 def auth_list(request):
@@ -33,7 +34,8 @@ def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)
     chars = Character.objects.filter(parent_page=page_id)
     tmplt = loader.get_template('calligraphy/page.html')
-    cntxt = {'chars': chars}
+    cntxt = {'chars': chars,
+             'image': page}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 
@@ -42,12 +44,3 @@ def individual_char(request, char_id):
     tmplt = loader.get_template('calligraphy/char.html')
     cntxt = {'char': char}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
-
-
-def page_i(request):
-    return HttpResponse("Image Request")
-
-
-def char_i(request):
-    return HttpResponse("Character Request")
-

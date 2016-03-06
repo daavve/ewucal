@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import socket
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -124,5 +125,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-MEDIA_ROOT = '/media/'
+
+
+
+
+if socket.gethostname() == 'bigArch':
+    MEDIA_URL = '/home/dave/workspace/pycharm/media/'
+    MEDIA_ROOT = '/home/dave/workspace/pycharm/media/'
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = '/media/'
 STATIC_URL = '/static/'
+
