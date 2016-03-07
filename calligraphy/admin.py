@@ -15,7 +15,7 @@ class CWork(admin.ModelAdmin):
 
 
 class CPage(admin.ModelAdmin):
-    list_display = ('id', 'image', 'transcript')
+    list_display = ('id', 'image', 'image_small', 'transcript')
     search_fields = ['transcript']
 
 

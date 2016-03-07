@@ -31,7 +31,7 @@ def add_pages_from_filesystem(apps) -> None:
                 pg = Page(page_image=pathname, page_bookid=bk, page_pageid=pg)
                 pg.save()
         else:
-            if f.endswith('.png'):
+            if f.endswith('.png') and not f.endswith('s.png'):  # Skip the small image version
                 pathname = os.path.join(IMAGE_DIR, f)
                 bkpg = f.strip('.png').split('-')
                 bk = int(bkpg[0])

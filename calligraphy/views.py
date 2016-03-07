@@ -35,7 +35,7 @@ def individual_page(request, page_id):
     chars = Character.objects.filter(parent_page=page_id)
     tmplt = loader.get_template('calligraphy/page.html')
     cntxt = {'chars': chars,
-             'image': page}
+             'page': page}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 

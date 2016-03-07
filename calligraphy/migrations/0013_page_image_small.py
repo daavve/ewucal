@@ -15,7 +15,7 @@ def addsmallimage(apps) -> None:
     page = Page.objects.all()
     for page in page:
         imgsplt = str(page.image).split('.')
-        newimg = imgsplt[0] + 's.' + imgsplt[1]
+        newimg = imgsplt[0] + 's.png'
         page.image_small = newimg
         page.save()
 
