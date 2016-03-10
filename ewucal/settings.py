@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'swampdragon'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -126,9 +127,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 
-
-
-
 if socket.gethostname() == 'bigArch':
     MEDIA_URL = '/home/dave/workspace/pycharm/media/'
     MEDIA_ROOT = '/home/dave/workspace/pycharm/media/'
@@ -137,3 +135,6 @@ else:
     MEDIA_ROOT = '/media/'
 STATIC_URL = '/static/'
 
+# SwampDragon settings
+SWAMP_DRAGON_CONNECTION = ('swampdragon.connections.sockjs_connection.DjangoSubscriberConnection', '/data')
+DRAGON_URL = '/dragon/'
