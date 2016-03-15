@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'swampdragon'
+    'jquery_ui'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -128,11 +128,12 @@ USE_TZ = True
 
 
 if socket.gethostname() == 'bigArch':
-    MEDIA_URL = '/home/dave/workspace/pycharm/media/'
     MEDIA_ROOT = '/home/dave/workspace/pycharm/media/'
+    STATIC_ROOT = '/home/dave/workspace/pycharm/static/'
+
 else:
-    MEDIA_URL = '/media/'
     MEDIA_ROOT = '/media/'
+MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 # SwampDragon settings
