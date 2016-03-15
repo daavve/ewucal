@@ -2,4 +2,6 @@
 
 {% block content %}
 <h2>{{  char.mark }}</h2>
+    {% load staticfiles %}
+  <img src="{% static char.image %}" />
 {% endblock %}
