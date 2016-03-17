@@ -26,7 +26,6 @@ class Page(models.Model):
     book_id = models.IntegerField(null=True)
     page_id = models.IntegerField(null=True)
     image = models.ImageField(blank=True, storage=fs)
-    image_small = models.ImageField(blank=True, storage=fs)
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
 
