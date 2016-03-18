@@ -6,7 +6,6 @@
 from django.http import HttpResponse
 from django.template import loader
 from .models import Author, Work, Page, Character
-from ewucal.settings import MEDIA_ROOT
 
 
 def auth_list(request):
