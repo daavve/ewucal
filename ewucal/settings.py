@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jquery_ui'
+    'jquery_ui',
+    'easy_thumbnails'
 ]
 
 MIDDLEWARE_CLASSES = [
