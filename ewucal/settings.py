@@ -137,7 +137,3 @@ else:
 
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
-
-# SwampDragon settings
-SWAMP_DRAGON_CONNECTION = ('swampdragon.connections.sockjs_connection.DjangoSubscriberConnection', '/data')
-DRAGON_URL = '/dragon/'
