@@ -29,7 +29,7 @@ class Page(models.Model):
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
 
 
@@ -44,3 +44,8 @@ class Character(models.Model):
 
     def get_absolute_url(self):
         return '/char/' + str(self.id)
+
+
+    def get_image(self) -> str:
+        print(str(self.image))
+        return '/media/' + str(self.image).split('/media/')[1]
