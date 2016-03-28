@@ -32,6 +32,9 @@ class Page(models.Model):
     def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
 
+    def get_image(self) -> str:
+        return '/media/' + str(self.image).split('/media/')[1]
+
 
 class Character(models.Model):
     parent_page = models.ForeignKey(Page)
@@ -47,5 +50,4 @@ class Character(models.Model):
 
 
     def get_image(self) -> str:
-        print(str(self.image))
         return '/media/' + str(self.image).split('/media/')[1]
