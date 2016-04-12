@@ -1,13 +1,57 @@
 {% extends parent_template|default:"ewucal/base.html" %}
 
 {% block content %}
-<h2>{% for char in chars %}</h2>
-    <li>
-        <a href={{ char.get_absolute_url }}>
-                {{ char.mark }}
-        </a>
-    </li>
-    {% endfor %}
   {% load staticfiles %}
-  <img src="{% static page.get_image %}" width="820" />
+  <div class="pane clearfix">
+    <img src="{% static page.get_image %}" />
+        <table class="coords">
+        <tr><td>crop x</td><td><input type="text" /></td></tr>
+        <tr><td>crop y</td><td><input type="text" /></td></tr>
+        <tr><td>crop width</td><td><input type="text" /></td></tr>
+        <tr><td>crop height</td><td><input type="text" /></td></tr>
+        <tr><td>image width</td><td><input type="text" /></td></tr>
+        <tr><td>image height</td><td><input type="text" /></td></tr>
+        <tr><td>lock proportion</td><td><input type="checkbox" checked="checked" /></td></tr>
+        </table>
+  </div>
+
+  <script type="text/javascript">
+$(document).ready(function(){
+  // Apply jrac on some image.
+  $('.pane img').jrac({
+    'crop_width': 250,
+    'crop_height': 120,
+    'crop_left': 100,
+    'crop_top': 100,
+    'image_height': 450,
+    'viewport_onload': function() {
+      var $viewport = this;
+      var inputs = $viewport.$container.parent('.pane').find('.coords input:text');
+      var events = ['jrac_crop_x','jrac_crop_y','jrac_crop_width','jrac_crop_height','jrac_image_width','jrac_image_height'];
+      for (var i = 0; i < events.length; i++) {
+        var event_name = events[i];
+        // Register an event with an element.
+        $viewport.observator.register(event_name, inputs.eq(i));
+        // Attach a handler to that event for the element.
+        inputs.eq(i).bind(event_name, function(event, $viewport, value) {
+          $(this).val(value);
+        })
+        // Attach a handler for the built-in jQuery change event, handler
+        // which read user input and apply it to relevent viewport object.
+        .change(event_name, function(event) {
+          var event_name = event.data;
+          $viewport.$image.scale_proportion_locked = $viewport.$container.parent('.pane').find('.coords input:checkbox').is(':checked');
+          $viewport.observator.set_property(event_name,$(this).val());
+        })
+      }
+    }
+  })
+  // React on all viewport events.
+  .bind('jrac_events', function(event, $viewport) {
+    var inputs = $(this).parents('.pane').find('.coords input');
+    inputs.css('background-color',($viewport.observator.crop_consistent())?'chartreuse':'salmon');
+  });
+});
+  </script>
+
 {% endblock %}
