@@ -11,16 +11,7 @@ $(document).ready(function(){
   // Apply jrac on some image.
   $('.pane img').jrac({
     'image_height': 450,
-    'viewport_onload': function() {
-      var $viewport = this;
-      var inputs = $viewport.$container.parent('.pane').find('.coords input:text');
-    }
   })
-  // React on all viewport events.
-  .bind('jrac_events', function(event, $viewport) {
-    var inputs = $(this).parents('.pane').find('.coords input');
-    inputs.css('background-color',($viewport.observator.crop_consistent())?'chartreuse':'salmon');
-  });
 });
   </script>
 
