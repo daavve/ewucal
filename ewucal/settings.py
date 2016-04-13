@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'jquery',
     'jquery_ui',
-    'jrac'
 ]
 
 MIDDLEWARE_CLASSES = [

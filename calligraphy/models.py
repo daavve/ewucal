@@ -52,3 +52,6 @@ class Character(models.Model):
 
     def get_image(self) -> str:
         return '/media/' + str(self.image).split('/media/')[1]
+
+    def get_id(self) -> str:
+        return '#' + str(self.id)

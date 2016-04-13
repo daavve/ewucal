@@ -2,17 +2,65 @@
 
 {% block content %}
   {% load staticfiles %}
+  <style>
+  .page_container {
+    margin-bottom: 1em;
+}
+
+.page_viewport {
+  position: relative;
+  overflow: hidden;
+  border:1px solid #ccc;
+  width:640px;
+  height:480px;
+  border: dashed 5px #999;
+}
+
+.page_viewport img
+
+.page_zoom_slider_label {
+    margin-top: .5em;
+}
+  </style>
+
+
   <div class="pane clearfix">
     <img src="{% static page.get_image %}" />
   </div>
 
   <script type="text/javascript">
-$(document).ready(function(){
-  // Apply jrac on some image.
-  $('.pane img').jrac({
-    'image_height': 450,
-  })
-});
+
+    (function ( $ ){
+      $.fn.iWindow = function() {
+
+    var settings = {
+      'width': 450,
+      'zoom_min': 100,
+      'zoom_max': 3000,
+      'viewport_resize': true,
+    };
+
+    var $image = $(this);
+    $.extend($image, {
+      scale_proportion_locked: true,
+      start_height: $image.height(),
+      start_width: $image.width(),
+      zoom_ratio: $image.height() / $image.width()
+    });
+    $image.width(settings.width ).height(settings.width * settings.zoom_ratio)
+    $image.css({'left': 0, 'top': 0});
+
+    var $viewport = $image.parent();
+    var $container = $viewport.parent();
+
+  }})( jQuery )
+
+
+  $(document).ready(function(){
+    $('.pane img').iWindow({})
+  } );
+
+
   </script>
 
 {% endblock %}
