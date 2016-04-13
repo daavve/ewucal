@@ -1,0 +1,7 @@
+Interesting:
+
+When in development mode Django serves static files in this order:
+
+1) Any open projects
+2) the file located in /usr/lib
+    <It then displays a misleading message, suggesting the file is gotten from $STATIC.>
