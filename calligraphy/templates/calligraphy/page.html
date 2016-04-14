@@ -21,44 +21,97 @@
 .page_zoom_slider_label {
     margin-top: .5em;
 }
+  .char_box {
+  position: absolute;
+  border: 2px solid #40ff18;
+}
+
   </style>
 
 
-  <div class="pane clearfix">
+  <div class="pane">
     <img src="{% static page.get_image %}" />
   </div>
 
   <script type="text/javascript">
 
-    (function ( $ ){
-      $.fn.iWindow = function() {
-
-    var settings = {
-      'width': 450,
-      'zoom_min': 100,
-      'zoom_max': 3000,
-      'viewport_resize': true,
-    };
-
-    var $image = $(this);
-    $.extend($image, {
-      scale_proportion_locked: true,
-      start_height: $image.height(),
-      start_width: $image.width(),
-      zoom_ratio: $image.height() / $image.width()
-    });
-    $image.width(settings.width ).height(settings.width * settings.zoom_ratio)
-    $image.css({'left': 0, 'top': 0});
-
-    var $viewport = $image.parent();
-    var $container = $viewport.parent();
-
-  }})( jQuery )
+    function iWindow ( $ ){
+      var settings = {
+        'width': 450,
+        'zoom_min': 100,
+        'zoom_max': 3000,
+        'viewport_resize': true,
+      };
 
 
-  $(document).ready(function(){
-    $('.pane img').iWindow({})
-  } );
+
+      var $image = $('.pane img')
+      $.extend($image, {
+        scale_proportion_locked: true,
+        start_height: $image.height(),
+        start_width: $image.width(),
+        zoom_ratio: $image.height() / $image.width()
+      });
+      $image.width(settings.width ).height(settings.width * $image.zoom_ratio)
+      $image.css({'left': 0, 'top': 0});
+      $image.css('position','absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
+
+      var $viewport = $image.parent();
+
+//      $viewport.append('<div class="page_viewport" />')
+
+      var $container = $viewport.parent();
+
+      //A bunch of variables for dynamic resizing
+      var scaleLeft = $image.width() / settings.zoom_max
+      var scaleTop = scaleLeft *  $image.zoom_ratio
+      var offsetLeft = 0
+      var offsetTop = 0
+
+      var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
+      .slider({
+        value: $image.width(),
+        min: settings.zoom_min,
+        max: settings.zoom_max,
+        slide: function (event, ui) {
+          var height = Math.round($image.zoom_ratio * ui.value);
+          $image.height(height);
+          $image.width(ui.value);
+          scaleLeft = ui.value / settings.zoom_max
+          scaleTop = scaleLeft * $image.zoom_ratio
+          var newLeft = Math.round(offsetLeft * scaleLeft + $viewport.width() / 2)
+          var newTop = Math.round(offsetTop * scaleTop + $viewport.height() / 2)
+          $image.css({'left': newLeft, 'top': newTop});
+          }
+      });
+      $container.append($zoom_widget);
+
+      // Make the viewport resizeable
+      if (settings.viewport_resize) {
+        $viewport.resizable();
+      }
+
+      // Enable the image draggable interaction
+      $image.draggable({
+        drag: function (event, ui) {
+          offsetLeft = Math.round((ui.position.left - $viewport.width() / 2) / scaleLeft)
+          offsetTop = Math.round((ui.position.top - $viewport.height() / 2) / scaleTop)
+        }
+      });
+
+       var $crop = $('<div class="char_box"></div>')
+          .css({
+            'width': 50,
+            'height': 50,
+            'left':100,
+            'top':100
+          }).draggable();
+            $crop.resizable()
+      $viewport.append($crop);
+  }
+
+
+  $(document).ready( iWindow )
 
 
   </script>
