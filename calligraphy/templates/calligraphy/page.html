@@ -22,7 +22,6 @@
     margin-top: .5em;
 }
   .char_box {
-  position: absolute;
   border: 2px solid #40ff18;
 }
 
@@ -35,12 +34,25 @@
 
   <script type="text/javascript">
 
+      function buildABox(x1, y1) {
+          var $charBox = $('<div class="char_box"></div>')
+                  .css({
+                      'width': 50,
+                      'height': 50,
+                      'left': x1,
+                      'top': y1,
+                      'position': 'absolute'
+
+                  }).draggable({scroll: false,
+                                addClasses: false}).resizable();
+          return $charBox
+      }
+
     function iWindow ( $ ){
       var settings = {
         'width': 450,
         'zoom_min': 100,
-        'zoom_max': 3000,
-        'viewport_resize': true,
+        'zoom_max': 3000
       };
 
 
@@ -96,18 +108,19 @@
         drag: function (event, ui) {
           offsetLeft = Math.round((ui.position.left - $viewport.width() / 2) / scaleLeft)
           offsetTop = Math.round((ui.position.top - $viewport.height() / 2) / scaleTop)
-        }
+        },
+          scroll: false,
+          addClasses: false
       });
 
-       var $charBox = $('<div class="char_box"></div>')
-          .css({
-            'width': 50,
-            'height': 50,
-            'left':100,
-            'top':100
-          }).draggable();
-            $charBox.resizable()
-      $viewport.append($charBox);
+       var $charBox1 = buildABox(50, 50)
+        var $charBox2 = buildABox(150, 150)
+
+
+      $viewport.append($charBox1)
+
+        $viewport.append($charBox2)
+
   }
 
 
