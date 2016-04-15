@@ -34,11 +34,11 @@
 
   <script type="text/javascript">
 
-      function buildABox(x1, y1) {
+      function buildABox(x1, y1, x2, y2) {
           var $charBox = $('<div class="char_box"></div>')
                   .css({
-                      'width': 50,
-                      'height': 50,
+                      'width': x2 - x1,
+                      'height': y2 - y1,
                       'left': x1,
                       'top': y1,
                       'position': 'absolute'
@@ -113,13 +113,11 @@
           addClasses: false
       });
 
-       var $charBox1 = buildABox(50, 50)
-        var $charBox2 = buildABox(150, 150)
+        {% for char in chars %}
+            var $gotbox = buildABox({{  char.x1 }}, {{ char.y1 }}, {{  char.x2 }}, {{  char.y2 }})
+            $viewport.append($gotbox)
+        {% endfor %}
 
-
-      $viewport.append($charBox1)
-
-        $viewport.append($charBox2)
 
   }
 
