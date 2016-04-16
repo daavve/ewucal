@@ -59,11 +59,11 @@
 
       var $image = $('.pane img')
       $.extend($image, {
-        scale_proportion_locked: true,
-        start_height: $image.height(),
-        start_width: $image.width(),
-        zoom_ratio: $image.height() / $image.width()
-      });
+        start_height: {{ page.image_length }},
+        start_width: {{ page.image_width }},
+        zoom_ratio: {{ page.image_length }} / {{ page.image_width }}
+      })
+
       $image.width(settings.width ).height(settings.width * $image.zoom_ratio)
       $image.css({'left': 0, 'top': 0});
       $image.css('position','absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
