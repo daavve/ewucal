@@ -57,18 +57,17 @@
 
 
 
-      var $image = $('.pane img')
-      $.extend($image, {
-        start_height: {{ page.image_length }},
-        start_width: {{ page.image_width }},
-        zoom_ratio: {{ page.image_length }} / {{ page.image_width }}
-      })
+      var $image = $('.pane img').extend({
+                  start_height: {{ page.image_length }},
+                  start_width: {{ page.image_width }},
+                  zoom_ratio: {{ page.image_length }} / {{ page.image_width }}})
+
 
       $image.width(settings.width ).height(settings.width * $image.zoom_ratio)
       $image.css({'left': 0, 'top': 0});
       $image.css('position','absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
 
-      var $viewport = $image.parent();
+      var $viewport = $image.parent().resizable()
 
 //      $viewport.append('<div class="page_viewport" />')
 
@@ -98,11 +97,6 @@
       });
       $container.append($zoom_widget);
 
-      // Make the viewport resizeable
-      if (settings.viewport_resize) {
-        $viewport.resizable();
-      }
-
       // Enable the image draggable interaction
       $image.draggable({
         drag: function (event, ui) {
@@ -117,14 +111,9 @@
             var $gotbox = buildABox({{  char.x1 }}, {{ char.y1 }}, {{  char.x2 }}, {{  char.y2 }})
             $viewport.append($gotbox)
         {% endfor %}
-
-
   }
 
-
   $(document).ready( iWindow )
-
-
   </script>
 
 {% endblock %}
