@@ -44,7 +44,8 @@
                       'position': 'absolute'
 
                   }).draggable({scroll: false,
-                                addClasses: false}).resizable();
+                                addClasses: false
+              }).resizable();
           return $charBox
       }
 
@@ -53,24 +54,21 @@
         'width': 450,
         'zoom_min': 100,
         'zoom_max': 3000
-      };
+      }
 
 
 
       var $image = $('.pane img').extend({
                   start_height: {{ page.image_length }},
                   start_width: {{ page.image_width }},
-                  zoom_ratio: {{ page.image_length }} / {{ page.image_width }}})
+                  zoom_ratio: {{ page.image_length }} / {{ page.image_width }} })
 
 
-      $image.width(settings.width ).height(settings.width * $image.zoom_ratio)
+      $image.width(settings.width ).height(Math.round(settings.width * $image.zoom_ratio))
       $image.css({'left': 0, 'top': 0});
       $image.css('position','absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
 
       var $viewport = $image.parent().resizable()
-
-//      $viewport.append('<div class="page_viewport" />')
-
       var $container = $viewport.parent();
 
       //A bunch of variables for dynamic resizing
@@ -97,7 +95,6 @@
       });
       $container.append($zoom_widget);
 
-      // Enable the image draggable interaction
       $image.draggable({
         drag: function (event, ui) {
           offsetLeft = Math.round((ui.position.left - $viewport.width() / 2) / scaleLeft)

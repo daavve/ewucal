@@ -73,7 +73,7 @@ function playSWF(sFile, pageSize)
     mask.style.display = "block";
 
     mask.style.width = document.body.scrollWidth + "px";
-    mask.style.height = (document.body.scrollHeight > sHeight) ? (document.body.scrollHeight + 50) : (sHeight + 50)  + "px";
+    mask.style.height = (document.body.scrollHeight > sHeight) ? (document.body.scrollHeight + 50) : (sHeight + 50)  + "px"; //Condition ? value_if_true : value_if_false:  This conditional might result in the bounding boxes being incorrect
 
 
     var finalSWF = "";
