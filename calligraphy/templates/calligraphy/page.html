@@ -47,6 +47,7 @@
       var $image = $('.pane img').extend({
                   start_height: {{ page.image_length }},
                   start_width: {{ page.image_width }},
+                  width_factor: settings.zoom_max / {{ page.image_width }},
                   zoom_ratio: {{ page.image_length }} / {{ page.image_width }} })
 
 
@@ -93,15 +94,18 @@
       function buildABox(x1, y1, width, height) {
           var $charBox = $('<div class="char_box"></div>')
                   .css({
-                      'left': x1 * scaleLeft,
-                      'top': y1 * scaleTop,
-                      'width': width * scaleLeft,
-                      'height': height * scaleTop,
+                      'left': 0,
+                      'top': 0,
+                      'width': 0,
+                      'height': 0,
                       'position': 'absolute'
 
                   }).draggable({scroll: false,
                                 addClasses: false
-              }).resizable();
+              }).resizable().extend({x1: Math.round(x1 * $image.width_factor),
+                                     y1: Math.round(y1 * $image.width_factor * $image.zoom_ratio),
+                                    xlen: Math.round(width * $image.width_factor),
+                                    ylen: Math.round(height * $image.width_factor * $image.zoom_ratio)});
           return $charBox
       }
 
