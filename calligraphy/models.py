@@ -45,6 +45,13 @@ class Character(models.Model):
     y1 = models.IntegerField(blank=True)
     x2 = models.IntegerField(blank=True)
     y2 = models.IntegerField(blank=True)
+
+    newx1 = models.IntegerField(blank=True)
+    newy1 = models.IntegerField(blank=True)
+    newwidth = models.IntegerField(blank=True)
+    newheight = models.IntegerField(blank=True)
+
+
     image = models.ImageField(blank=True, storage=fs)
 
     def get_absolute_url(self):
