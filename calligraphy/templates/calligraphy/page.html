@@ -63,6 +63,20 @@
       var scaleTop = scaleLeft *  $image.zoom_ratio
       var offsetLeft = 0
       var offsetTop = 0
+      var boxes = new Set()
+
+      function updateBoxPosition(box){
+          box.left = Math.round(offsetLeft * box.x1 + $viewport.width() / 2)
+          box.top = Math.round(offsetTop * box.y1 + $viewport.width() / 2)
+          box.width = Math.round(offsetLeft * box.xlen)
+          box.length = Math.round(offsetTop * box.ylen)
+      }
+
+      function updateBoxes(boxes){
+          for (let box of boxes) updateBoxPosition(box);
+      }
+
+
 
       var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
       .slider({
@@ -78,6 +92,7 @@
           var newLeft = Math.round(offsetLeft * scaleLeft + $viewport.width() / 2)
           var newTop = Math.round(offsetTop * scaleTop + $viewport.height() / 2)
           $image.css({'left': newLeft, 'top': newTop});
+            updateBoxes(boxes)
           }
       });
       $container.append($zoom_widget);
@@ -86,6 +101,7 @@
         drag: function (event, ui) {
           offsetLeft = Math.round((ui.position.left - $viewport.width() / 2) / scaleLeft)
           offsetTop = Math.round((ui.position.top - $viewport.height() / 2) / scaleTop)
+            updateBoxes(boxes)
         },
           scroll: false,
           addClasses: false
@@ -104,8 +120,8 @@
                                 addClasses: false
               }).resizable().extend({x1: Math.round(x1 * $image.width_factor),
                                      y1: Math.round(y1 * $image.width_factor * $image.zoom_ratio),
-                                    xlen: Math.round(width * $image.width_factor),
-                                    ylen: Math.round(height * $image.width_factor * $image.zoom_ratio)});
+                                     xlen: Math.round(width * $image.width_factor),
+                                     ylen: Math.round(height * $image.width_factor * $image.zoom_ratio)});
           return $charBox
       }
 
@@ -115,6 +131,7 @@
         {% for char in chars %}
             var $gotbox = buildABox({{  char.newx1 }}, {{ char.newy1 }}, {{  char.newwidth }}, {{  char.newheight }})
             $viewport.append($gotbox)
+            boxes.add($gotbox)
         {% endfor %}
   }
 
