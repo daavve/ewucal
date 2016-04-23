@@ -34,20 +34,6 @@
 
   <script type="text/javascript">
 
-      function buildABox(x1, y1, x2, y2) {
-          var $charBox = $('<div class="char_box"></div>')
-                  .css({
-                      'width': x2 - x1,
-                      'height': y2 - y1,
-                      'left': x1,
-                      'top': y1,
-                      'position': 'absolute'
-
-                  }).draggable({scroll: false,
-                                addClasses: false
-              }).resizable();
-          return $charBox
-      }
 
     function iWindow ( $ ){
       var settings = {
@@ -104,8 +90,26 @@
           addClasses: false
       });
 
+      function buildABox(x1, y1, width, height) {
+          var $charBox = $('<div class="char_box"></div>')
+                  .css({
+                      'left': x1 * scaleLeft,
+                      'top': y1 * scaleTop,
+                      'width': width * scaleLeft,
+                      'height': height * scaleTop,
+                      'position': 'absolute'
+
+                  }).draggable({scroll: false,
+                                addClasses: false
+              }).resizable();
+          return $charBox
+      }
+
+
+
+
         {% for char in chars %}
-            var $gotbox = buildABox({{  char.x1 }}, {{ char.y1 }}, {{  char.x2 }}, {{  char.y2 }})
+            var $gotbox = buildABox({{  char.newx1 }}, {{ char.newy1 }}, {{  char.newwidth }}, {{  char.newheight }})
             $viewport.append($gotbox)
         {% endfor %}
   }
