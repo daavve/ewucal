@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             #     var sHeight = (sWidth * size[1]) / size[0] + 40;
             parent_page = char.parent_page
             width_ratio = parent_page.image_width / 820
-            height_ratio = width_ratio * (parent_page.image_length - 40) / parent_page.image_width
+            height_ratio = parent_page.image_width / (width_ratio * (parent_page.image_length - 40))
             char.newx1 = int(char.x1 * width_ratio)
             char.newy1 = int(char.y1 * height_ratio)
             char.newwidth = int((char.x2 - char.x1) * width_ratio)
