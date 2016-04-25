@@ -87,8 +87,8 @@
           'left': Math.round($image.scale_factor *($box.x1 + $image.offset_left) + $viewport.middle_x),
           'top': Math.round($image.scale_factor * ($box.y1 + $image.offset_top) + $viewport.middle_y),
           'width': Math.round($image.scale_factor * $box.xlen),
-          'length': Math.round($image.scale_factor * $box.ylen)},
-          console.log($box.x1, $image.offset_left)
+          'height': Math.round($image.scale_factor * $box.ylen)},
+          console.log($box.xlen, $box.ylen)
         )
       }
 
