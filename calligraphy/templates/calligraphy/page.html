@@ -35,7 +35,7 @@
   <script type="text/javascript">
 
 
-    function iWindow ( $ ){
+    function iWindow ( $ ) {
       var settings = {
         'longset_side': 500,
         'zoom_max': 20, // 100X initial zoom
@@ -44,25 +44,25 @@
       var src_image_length = {{ page.image_length }}
       var src_image_width = {{ page.image_width }}
 
-    var $image = $('.pane img').extend({
-      'start_width': null,
-      'min_width': null,
-      'max_width': null,
-      'lw_ratio': null,
-      'scale_factor': null,
-      'zoom_factor': null,
-      'offset_top': null,
-      'offset_left': null,
-      'middle_x': null,
-      'middle_y': null
-    })
+      var $image = $('.pane img').extend({
+        'start_width': null,
+        'min_width': null,
+        'max_width': null,
+        'lw_ratio': null,
+        'scale_factor': null,
+        'zoom_factor': null,
+        'offset_top': null,
+        'offset_left': null,
+        'middle_x': null,
+        'middle_y': null
+      })
 
-     if (src_image_length > src_image_width) {
-         $image.min_width =  src_image_width * settings.longset_side / src_image_length
-     }
-    else {
-         $image.min_width = settings.longset_side
-     }
+      if (src_image_length > src_image_width) {
+        $image.min_width = src_image_width * settings.longset_side / src_image_length
+      }
+      else {
+        $image.min_width = settings.longset_side
+      }
       $image.start_width = src_image_width
       $image.max_width = $image.min_width * settings.zoom_max
       $image.lw_ratio = src_image_length / src_image_width
@@ -72,97 +72,93 @@
 
       $image.width($image.min_width).height($image.min_width * $image.lw_ratio)
       $image.css({'left': 0, 'top': 0});
-      $image.css('position','absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
+      $image.css('position', 'absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
 
       var $viewport = $image.parent().resizable()
+      $viewport.extend({
+        'middle_x': Math.round($viewport.width() / 2),
+        'middle_y': Math.round($viewport.height() / 2)
+      })
       var $container = $viewport.parent();
+      var boxes = new Set()
 
-      //A bunch of variables for dynamic resizing
-      var scaleLeft = $image.width / settings.width
-      var scaleTop = scaleLeft *  $image.zoom_ratio
-      var offsetLeft
-      var offsetTop
-      var newTop
-      var newLeft
- //     var boxes = new Set()
+      function updateBoxPosition($box) {
+        $box.css({
+          'left': Math.round($image.scale_factor *($box.x1 + $image.offset_left) + $viewport.middle_x),
+          'top': Math.round($image.scale_factor * ($box.y1 + $image.offset_top) + $viewport.middle_y),
+          'width': Math.round($image.scale_factor * $box.xlen),
+          'length': Math.round($image.scale_factor * $box.ylen)},
+          console.log($box.x1, $image.offset_left)
+        )
+      }
 
-//      function updateBoxPosition($box){
-//        $box.css({
-//          'left' : Math.round(scaleLeft * $box.x1 + newLeft),
-//          'top' : Math.round(scaleTop * $box.y1 + newTop),
-//          'width' : Math.round(scaleLeft * $box.xlen),
-//          'length' : Math.round(scaleTop * $box.ylen)
-//      })
-//            console.log($box.ylen, scaleTop, $box.xlen, scaleLeft)
-//      }
+      function updateBoxes() {
+        for (let $box of boxes) updateBoxPosition($box);
 
-//      function updateBoxes(){
-//          for (let $box of boxes) updateBoxPosition($box);
-//        console.log(newTop, newLeft)
-
-//      }
-
-
+      }
 
       var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
-      .slider({
-        value: $image.longest_side,
-        min: $image.min_width,
-        max: $image.max_width,
-        slide: function (event, ui) {
-          $image.width(ui.value).height(Math.round(ui.value * $image.lw_ratio))
-          $image.scale_factor = ui.value / $image.start_width
-//          $image.offset_left = Math.round(offsetLeft * scaleLeft + $viewport.width() / 2)
-
-          $image.css({
-            'left': Math.round($image.offset_left * $image.scale_factor + $viewport.width() / 2 ),
-            'top': Math.round($image.offset_top * $image.scale_factor + $viewport.height() / 2)});
-//            updateBoxes()
-          }
-      });
+          .slider({
+            value: $image.longest_side,
+            min: $image.min_width,
+            max: $image.max_width,
+            slide: function (event, ui) {
+              $image.width(ui.value).height(Math.round(ui.value * $image.lw_ratio))
+              $image.scale_factor = ui.value / $image.start_width
+              $image.css({
+                'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
+                'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
+              });
+              updateBoxes()
+            }
+          });
       $container.append($zoom_widget);
 
       $image.draggable({
         drag: function (event, ui) {
           $viewport.middle_x = Math.round($viewport.width() / 2)
           $viewport.middle_y = Math.round($viewport.height() / 2)
-          $image.offset_left = (ui.position.left - $viewport.width() / 2) / $image.scale_factor
+          $image.offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor
           console.log($image.offset_left)
-          $image.offset_top = (ui.position.top - $viewport.height() / 2) / $image.scale_factor
+          $image.offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor
 //          newLeft = ui.position.left
 //          newTop = ui.position.top
-//            updateBoxes()
+          updateBoxes()
         },
-          scroll: false,
-          addClasses: false
-      })}
+        scroll: false,
+        addClasses: false
+      })
 
-//      function buildABox(cx1, cy1, cwidth, cheight) {
-//          var $charBox = $('<div class="char_box"></div>')
-//                  .css({
-//                      'left': Math.round(cx1 * $image.width_factor),
-//                      'top': Math.round(cy1 * $image.width_factor),
-//                      'width': Math.round(cwidth * $image.width_factor),
-//                      'height': Math.round(cheight * $image.width_factor),
-//                      'position': 'absolute'
+      function buildABox(cx1, cy1, cwidth, cheight) {
+        var $charBox = $('<div class="char_box"></div>')
+            .css({
+              'left': cx1,
+              'top': cy1,
+              'width': cwidth,
+              'height': cheight,
+              'position': 'absolute'
 
-//                  }).draggable({scroll: false,
-//                                addClasses: false
-//              }).resizable().extend({'x1': Math.round(cx1 * $image.width_factor),
-//                                     'y1': Math.round(cy1 * $image.width_factor),
-//                                     'xlen': Math.round(cwidth * $image.width_factor),
-//                                     'ylen': Math.round(cheight * $image.width_factor)})
-//          return $charBox;
-//      }
+            }).draggable({
+              scroll: false,
+              addClasses: false
+            }).resizable().extend({
+              'x1': cx1,
+              'y1': cy1,
+              'xlen': cwidth,
+              'ylen': cheight
+            })
+        return $charBox;
+      }
 
 
 
 
-//         for char in chars %}
-//            var $gotbox = buildABox(   char.newx1 }},  char.newy1 }},   char.newwidth }},   char.newheight }})
-//            $viewport.append($gotbox)
-//            boxes.add($gotbox)
-//         endfor %}
+      {% for char in chars %}
+        var $gotbox = buildABox({{  char.newx1 }}, {{ char.newy1 }}, {{  char.newwidth }}, {{  char.newheight }})
+        $viewport.append($gotbox)
+        boxes.add($gotbox)
+      {% endfor %}
+    }
 
   $(document).ready( iWindow )
   </script>
