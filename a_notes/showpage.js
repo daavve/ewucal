@@ -61,6 +61,8 @@ function maskHidePage()
     mask.style.display = "none";
 }
 
+
+
 function playSWF(sFile, pageSize)
 {
     var size = pageSize.split("-");

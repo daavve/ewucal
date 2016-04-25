@@ -84,12 +84,11 @@
 
       function updateBoxPosition($box) {
         $box.css({
-          'left': Math.round($image.scale_factor *($box.x1 + $image.offset_left) + $viewport.middle_x),
-          'top': Math.round($image.scale_factor * ($box.y1 + $image.offset_top) + $viewport.middle_y),
-          'width': Math.round($image.scale_factor * $box.xlen),
-          'height': Math.round($image.scale_factor * $box.ylen)},
-          console.log($box.xlen, $box.ylen)
-        )
+          'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
+          'top': Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
+          'width': Math.round($image.scale_factor * $box.x_len),
+          'height': Math.round($image.scale_factor * $box.y_len)
+        })
       }
 
       function updateBoxes() {
@@ -119,33 +118,30 @@
           $viewport.middle_x = Math.round($viewport.width() / 2)
           $viewport.middle_y = Math.round($viewport.height() / 2)
           $image.offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor
-          console.log($image.offset_left)
           $image.offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor
-//          newLeft = ui.position.left
-//          newTop = ui.position.top
           updateBoxes()
         },
         scroll: false,
         addClasses: false
       })
 
-      function buildABox(cx1, cy1, cwidth, cheight) {
+      function buildABox(x1, y1, x2, y2) {
+        var zoom_factor = $image.start_width / 820
         var $charBox = $('<div class="char_box"></div>')
             .css({
-              'left': cx1,
-              'top': cy1,
-              'width': cwidth,
-              'height': cheight,
+              'left': x1,
+              'top': y1,
+              'width':  x2 - x1,
+              'height': y2 - y1,
               'position': 'absolute'
-
             }).draggable({
               scroll: false,
               addClasses: false
             }).resizable().extend({
-              'x1': cx1,
-              'y1': cy1,
-              'xlen': cwidth,
-              'ylen': cheight
+              'x_top': x1 * zoom_factor,
+              'y_top': y1 * zoom_factor,
+              'x_len': (x2 - x1) * zoom_factor,
+              'y_len': (y2 - y1) * zoom_factor
             })
         return $charBox;
       }
@@ -154,7 +150,7 @@
 
 
       {% for char in chars %}
-        var $gotbox = buildABox({{  char.newx1 }}, {{ char.newy1 }}, {{  char.newwidth }}, {{  char.newheight }})
+        var $gotbox = buildABox({{ char.x1 }}, {{ char.y1 }}, {{  char.x2 }}, {{  char.y2 }})
         $viewport.append($gotbox)
         boxes.add($gotbox)
       {% endfor %}
