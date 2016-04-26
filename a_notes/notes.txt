@@ -10,3 +10,7 @@ When in development mode Django serves static files in this order:
 Also:
 
 1)  I bet I can use jquery to toggle making a new box,  probably by adding a button on the side that switches the mouse from "drag stuff around mode"  "into draw a box around a new character" mode.
+
+2)  Since the boxes do not map directly to the location, add some scroll bars to adjust the offset factors for various settings.  See if settings are consistant between documents.
+
+2) From what I can tell, some of the coordinates we have for bounding boxes are not accurate.  We might need to implement some sort of image search functionality to extract the bounding box.
