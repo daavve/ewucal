@@ -5,3 +5,8 @@ When in development mode Django serves static files in this order:
 1) Any open projects
 2) the file located in /usr/lib
     <It then displays a misleading message, suggesting the file is gotten from $STATIC.>
+
+
+Also:
+
+1)  I bet I can use jquery to toggle making a new box,  probably by adding a button on the side that switches the mouse from "drag stuff around mode"  "into draw a box around a new character" mode.
