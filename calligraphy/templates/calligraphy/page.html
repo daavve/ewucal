@@ -126,13 +126,13 @@
       })
 
       function buildABox(x1, y1, x2, y2) {
-        var zoom_factor = $image.start_width / 820
+        var zoom_factor = $image.start_width / 694
         var $charBox = $('<div class="char_box"></div>')
             .css({
-              'left': x1,
-              'top': y1,
-              'width':  x2 - x1,
-              'height': y2 - y1,
+              'left': x1 * zoom_factor,
+              'top': y1 * zoom_factor,
+              'width':  (x2 - x1)  * zoom_factor,
+              'height': (y2 - y1) * zoom_factor,
               'position': 'absolute'
             }).draggable({
               scroll: false,
@@ -141,10 +141,52 @@
               'x_top': x1 * zoom_factor,
               'y_top': y1 * zoom_factor,
               'x_len': (x2 - x1) * zoom_factor,
-              'y_len': (y2 - y1) * zoom_factor
+              'y_len': (y2 - y1) * zoom_factor,
+              'x_top_initial': x1,
+              'y_top_initial': y1,
+              'x_len_initial': x2 -x1,
+              'y_len_initial': y2 - y1,
             })
         return $charBox;
       }
+
+     function x_scale_update($box, new_scale){
+       $box.x_top = $box.x_top_initial * new_scale
+       $box.x_len = $box.x_len_initial * new_scale
+     }
+
+      var $x_scale_slider = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
+          .slider({
+            value: 694,
+            min: 594,
+            max: 794,
+            slide: function (event, ui) {
+              console.log("new x", ui.value)
+              var new_zoom = $image.start_width / ui.value
+              for (let $box of boxes) x_scale_update($box, new_zoom);
+              updateBoxes()
+            }
+          });
+      $container.append($x_scale_slider);
+
+      function y_scale_update($box, new_scale){
+       $box.y_top = $box.y_top_initial * new_scale
+       $box.y_len = $box.y_len_initial * new_scale
+     }
+
+      var $y_scale_slider = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
+          .slider({
+            value: 694,
+            min: 594,
+            max: 794,
+            slide: function (event, ui) {
+              console.log("new y", ui.value)
+              var new_zoom = $image.start_width / ui.value
+              for (let $box of boxes) y_scale_update($box, new_zoom);
+              updateBoxes()
+            }
+          });
+      $container.append($y_scale_slider);
 
 
 
