@@ -15,6 +15,8 @@ Also:
 
 2) From what I can tell, some of the coordinates we have for bounding boxes are not accurate.  We might need to implement some sort of image search functionality to extract the bounding box.
 
+--Change Images on Mouseover--
+
 
    /* Teaser image swap function */
     $('img.swap').hover(function () {
@@ -34,3 +36,42 @@ $(function() {
             $(this).attr("src", src);
         });
 });
+
+
+--AJAXY stuff with django server--
+
+<script type="text/javascript">
+    var frm = $('#FORM-ID');
+    frm.submit(function () {
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                $("#SOME-DIV").html(data);
+            },
+            error: function(data) {
+                $("#MESSAGE-DIV").html("Something went wrong!");
+            }
+        });
+        return false;
+    });
+</script>
+
+def save_note(request, space_name):
+
+    """
+    Saves the note content and position within the table.
+    """
+    place = get_object_or_404(Space, url=space_name)
+    note_form = NoteForm(request.POST or None)
+
+    if request.method == "POST" and request.is_ajax:
+        msg = "The operation has been received correctly."
+        print request.POST
+
+    else:
+        msg = "GET petitions are not allowed for this view."
+
+    return HttpResponse(msg)
+
