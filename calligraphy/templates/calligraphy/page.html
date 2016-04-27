@@ -137,7 +137,7 @@
             }).draggable({
               scroll: false,
               addClasses: false
-            }).resizable().extend({
+            }).extend({
               'x_top': x1 * zoom_factor,
               'y_top': y1 * zoom_factor,
               'x_len': (x2 - x1) * zoom_factor,
@@ -159,7 +159,7 @@
           .slider({
             value: 694,
             min: 594,
-            max: 794,
+            max: 2000,
             slide: function (event, ui) {
               console.log("new x", ui.value)
               var new_zoom = $image.start_width / ui.value
@@ -178,7 +178,7 @@
           .slider({
             value: 694,
             min: 594,
-            max: 794,
+            max: 2000,
             slide: function (event, ui) {
               console.log("new y", ui.value)
               var new_zoom = $image.start_width / ui.value
