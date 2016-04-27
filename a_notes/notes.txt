@@ -14,3 +14,23 @@ Also:
 2)  Since the boxes do not map directly to the location, add some scroll bars to adjust the offset factors for various settings.  See if settings are consistant between documents.
 
 2) From what I can tell, some of the coordinates we have for bounding boxes are not accurate.  We might need to implement some sort of image search functionality to extract the bounding box.
+
+
+   /* Teaser image swap function */
+    $('img.swap').hover(function () {
+        this.src = '/images/signup_big_hover.png';
+    }, function () {
+        this.src = '/images/signup_big.png';
+    });
+
+$(function() {
+    $("img")
+        .mouseover(function() {
+            var src = $(this).attr("src").match(/[^\.]+/) + "over.gif";
+            $(this).attr("src", src);
+        })
+        .mouseout(function() {
+            var src = $(this).attr("src").replace("over.gif", ".gif");
+            $(this).attr("src", src);
+        });
+});
