@@ -56,3 +56,20 @@ class Character(models.Model):
 
     def get_id(self) -> str:
         return '#' + str(self.id)
+
+class RelatedChars(object): # This class exists to hold all chars and related ones
+    def __init__(self, inChar: Character):
+        self.mainchar = inChar
+        self.relatedChars = []
+        self.populateRelatedChars(inChar)
+
+    def populateRelatedChars(self, inChar: Character) -> None:
+        chars = Character.objects.filter(mark=inChar.mark)
+        myAuth = inChar.parent_page.parent_work.author
+        for char in chars:
+            if char.parent_page.parent_work is not None: # Fix this shit!
+                if myAuth == char.parent_page.parent_work.author:
+                    self.relatedChars.append(char)
+
+
+

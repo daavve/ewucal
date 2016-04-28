@@ -188,11 +188,8 @@
           });
       $container.append($y_scale_slider);
 
-
-
-
-      {% for char in chars %}
-        var $gotbox = buildABox({{ char.x1 }}, {{ char.y1 }}, {{  char.x2 }}, {{  char.y2 }})
+      {% for relChar in relChars %}
+        var $gotbox = buildABox({{ relChar.mainchar.x1 }}, {{ relChar.mainchar.y1 }}, {{  relChar.mainchar.x2 }}, {{  relChar.mainchar.y2 }})
         $viewport.append($gotbox)
         boxes.add($gotbox)
       {% endfor %}
