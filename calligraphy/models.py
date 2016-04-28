@@ -42,8 +42,8 @@ class Character(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
 
-    parent_page = models.ForeignKey(Page)
-    parent_author = models.ForeignKey(Author)
+    parent_page = models.ForeignKey(Page, null=True)
+    parent_author = models.ForeignKey(Author, null=True)
     parent_work = models.ForeignKey(Work, null=True)
     mark = models.CharField(max_length=64, blank=True)
     x1 = models.IntegerField(blank=True)
