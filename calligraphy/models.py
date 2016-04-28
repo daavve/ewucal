@@ -69,7 +69,7 @@ class RelatedChars(object): # This class exists to hold all chars and related on
         self.populateRelatedChars(inChar)
 
     def populateRelatedChars(self, inChar: Character) -> None:
-        chars = Character.objects.filter(mark=inChar.mark, char_author=inChar.parent_author)
+        chars = Character.objects.filter(mark=inChar.mark, author_name=inChar.author_name)
         for char in chars:
             self.relatedChars.append(char)
 

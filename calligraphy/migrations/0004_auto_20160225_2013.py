@@ -24,7 +24,7 @@ def addchars(apps) -> None:
     jsonfile.close()
     for r in readfile:
         mark = r['chi_mark']
-        author = r['chi_mark']
+        author = r['chi_author']
         work = r['chi_work']
         bkid = r['work_id']
         pgid = r['page_id']
