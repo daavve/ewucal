@@ -5,8 +5,11 @@
 
 from django.http import HttpResponse
 from django.template import loader
-from .models import Author, Work, Page, Character
+from .models import Author, Work, Page, Character, RelatedChars
 
+
+# TODO: Author list temporarily modified to only display authors that
+#  Have works with annotated charactars
 
 def auth_list(request):
     authors = Author.objects.all()
@@ -28,18 +31,21 @@ def pages_in_work(request, work_id):
     cntxt = {'pages': pages}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-
-def individual_page(request, page_id):
-    page = Page.objects.get(id=page_id)
-    chars = Character.objects.filter(parent_page=page_id)
-    tmplt = loader.get_template('calligraphy/page.html')
-    cntxt = {'chars': chars,
-             'page': page}
-    return HttpResponse(tmplt.render(context=cntxt, request=request))
-
-
+# NOTE: Not currently used
 def individual_char(request, char_id):
     char = Character.objects.get(id=char_id)
     tmplt = loader.get_template('calligraphy/char.html')
     cntxt = {'char': char}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
+
+
+def individual_page(request, page_id):
+    page = Page.objects.get(id=page_id)
+    chars = Character.objects.filter(parent_page=page_id)
+    relChars = []
+    for char in chars:
+        relChars.append(RelatedChars(char))
+    tmplt = loader.get_template('calligraphy/page.html')
+    cntxt = {'relChars': relChars,
+             'page': page}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
