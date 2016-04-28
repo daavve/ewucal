@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calligraphy', '0009_remove_character_char_work'),
+        ('calligraphy', '0008_auto_20160226_1838'),
     ]
 
     operations = [
