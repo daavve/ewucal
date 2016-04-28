@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 ('x2', models.IntegerField(blank=True)),
                 ('y2', models.IntegerField(blank=True)),
                 ('char_image', models.ImageField(blank=True, storage=django.core.files.storage.FileSystemStorage(), upload_to='')),
-                ('char_author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Author')),
+                ('parent_author', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='calligraphy.Author')),
                 ('parent_work_name', models.CharField(blank=True, max_length=64)),
                 ('author_name', models.CharField(blank=True, max_length=64)),
             ],
