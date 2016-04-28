@@ -24,6 +24,8 @@ def addchars(apps) -> None:
     jsonfile.close()
     for r in readfile:
         mark = r['chi_mark']
+        author = r['chi_mark']
+        work = r['chi_work']
         bkid = r['work_id']
         pgid = r['page_id']
         cord = r['xy_coordinates']
@@ -38,7 +40,8 @@ def addchars(apps) -> None:
 
         page = Page.objects.filter(page_bookid=int(bkid), page_pageid=int(pgid))[0]
         char = Char(parent_page=page, char_mark=mark, char_image=path,
-                    x1=int(x1), y1=int(y1), x2=int(x2), y2=int(y2))
+                    x1=int(x1), y1=int(y1), x2=int(x2), y2=int(y2),
+                    author_name=author, parent_work_name=work)
         char.save()
 
 

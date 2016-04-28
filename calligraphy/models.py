@@ -39,9 +39,12 @@ class Page(models.Model):
 
 
 class Character(models.Model):
+    author_name = models.CharField(max_length=64, blank=True)
+    parent_work_name = models.CharField(max_length=64, blank=True)
+
     parent_page = models.ForeignKey(Page)
     parent_author = models.ForeignKey(Author)
-    char_work = models.ForeignKey(Work, null=True)
+    parent_work = models.ForeignKey(Work, null=True)
     mark = models.CharField(max_length=64, blank=True)
     x1 = models.IntegerField(blank=True)
     y1 = models.IntegerField(blank=True)
@@ -66,12 +69,9 @@ class RelatedChars(object): # This class exists to hold all chars and related on
         self.populateRelatedChars(inChar)
 
     def populateRelatedChars(self, inChar: Character) -> None:
-        chars = Character.objects.filter(mark=inChar.mark)
-        myAuth = inChar.parent_page.parent_work.author
+        chars = Character.objects.filter(mark=inChar.mark, char_author=inChar.parent_author)
         for char in chars:
-            if char.parent_page.parent_work is not None: # Fix this shit!
-                if myAuth == char.parent_page.parent_work.author:
-                    self.relatedChars.append(char)
+            self.relatedChars.append(char)
 
 
 
