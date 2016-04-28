@@ -14,7 +14,7 @@ import os
 if socket.gethostname() == 'bigArch':
     MEDIA_DIR = "/home/dave/workspace/pycharm/media/"
 else:
-    MEDIA_DIR = "/media/"
+    MEDIA_DIR = "/media/media/"
 
 def readjson(apps) -> None:
     Author = apps.get_model("calligraphy", "Author")

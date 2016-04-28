@@ -12,7 +12,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calligraphy', '0006_auto_20160226_1430'),
+        ('calligraphy', '0005_auto_20160225_2207'),
     ]
 
     operations = [

@@ -77,3 +77,9 @@ def save_note(request, space_name):
 
 
 Many pages have no associated work.
+
+
+Note:
+
+It was not a good idea to expect the relations of the extracted data would be complete.  They are not.
+I have to go back and add some relations I deleted previously.
