@@ -134,9 +134,8 @@
               'width':  (x2 - x1)  * zoom_factor,
               'height': (y2 - y1) * zoom_factor,
               'position': 'absolute'
-            }).draggable({
-              scroll: false,
-              addClasses: false
+            }).selectable({
+              autoRefresh: false
             }).extend({
               'x_top': x1 * zoom_factor,
               'y_top': y1 * zoom_factor,
@@ -146,6 +145,7 @@
               'y_top_initial': y1,
               'x_len_initial': x2 -x1,
               'y_len_initial': y2 - y1,
+              'related_chars': null
             })
         return $charBox;
       }
@@ -161,7 +161,6 @@
             min: 594,
             max: 2000,
             slide: function (event, ui) {
-              console.log("new x", ui.value)
               var new_zoom = $image.start_width / ui.value
               for (let $box of boxes) x_scale_update($box, new_zoom);
               updateBoxes()
@@ -180,7 +179,6 @@
             min: 594,
             max: 2000,
             slide: function (event, ui) {
-              console.log("new y", ui.value)
               var new_zoom = $image.start_width / ui.value
               for (let $box of boxes) y_scale_update($box, new_zoom);
               updateBoxes()
@@ -188,8 +186,9 @@
           });
       $container.append($y_scale_slider);
 
-      {% for relChar in relChars %}
+       {% for relChar in relChars %}
         var $gotbox = buildABox({{ relChar.mainchar.x1 }}, {{ relChar.mainchar.y1 }}, {{  relChar.mainchar.x2 }}, {{  relChar.mainchar.y2 }})
+        $gotbox.related_chars = new Set()
         $viewport.append($gotbox)
         boxes.add($gotbox)
       {% endfor %}
