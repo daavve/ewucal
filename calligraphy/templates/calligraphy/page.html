@@ -25,6 +25,10 @@
   border: 2px solid #40ff18;
 }
 
+    .hover_box {
+  border: 2px solid #63a0ff;
+}
+
   </style>
 
 
@@ -146,7 +150,7 @@
               'x_len_initial': x2 -x1,
               'y_len_initial': y2 - y1,
               'related_chars': null
-            })
+            }).hover(function(){$(this).toggleClass('hover_box')})
         return $charBox;
       }
 
