@@ -21,12 +21,16 @@
 .page_zoom_slider_label {
     margin-top: .5em;
 }
-  .char_box {
+.char_box {
   border: 2px solid #40ff18;
 }
 
-    .char_box_hover {
+.char_box_hover {
   border: 2px solid #63a0ff;
+}
+
+.char_box_select {
+  border: 2px solid #ff5b60;
 }
 
   </style>
@@ -139,7 +143,11 @@
               'height': (y2 - y1) * zoom_factor,
               'position': 'absolute'
             }).selectable({
-              autoRefresh: false
+              autoRefresh: false,
+              stop: function( event, ui ) {
+                $(this).toggleClass('char_box_select')
+                $(this).selected = true
+              }
             }).extend({
               'x_top': x1 * zoom_factor,
               'y_top': y1 * zoom_factor,
@@ -149,9 +157,15 @@
               'y_top_initial': y1,
               'x_len_initial': x2 -x1,
               'y_len_initial': y2 - y1,
-              'related_chars': null
-            }).hover(function(){$(this).toggleClass('char_box_hover')})
+              'related_chars': null,
+              'selected': false
+            }).hover(function(){
+              if(!$(this).selected) {
+                $(this).toggleClass('char_box_hover')
+              }}
+              )
         return $charBox;
+
       }
 
      function x_scale_update($box, new_scale){
