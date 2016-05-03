@@ -85,7 +85,8 @@
       var $viewport = $image.parent().resizable()
       $viewport.extend({
         'middle_x': Math.round($viewport.width() / 2),
-        'middle_y': Math.round($viewport.height() / 2)
+        'middle_y': Math.round($viewport.height() / 2),
+        'last_selected': null
       })
       var $container = $viewport.parent();
       var boxes = new Set()
@@ -146,7 +147,11 @@
               autoRefresh: false,
               stop: function( event, ui ) {
                 $(this).toggleClass('char_box_select')
-                $(this).selected = true
+                if($viewport.last_selected) {
+                    $viewport.last_selected.removeClass('ui-selected')
+                    $viewport.last_selected.toggleClass('char_box_select')
+                }
+                $viewport.last_selected = $(this)
               }
             }).extend({
               'x_top': x1 * zoom_factor,
@@ -160,7 +165,7 @@
               'related_chars': null,
               'selected': false
             }).hover(function(){
-              if(!$(this).selected) {
+              if(!$(this).hasClass('ui-selected')) {
                 $(this).toggleClass('char_box_hover')
               }}
               )
