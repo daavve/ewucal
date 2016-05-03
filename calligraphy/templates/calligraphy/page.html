@@ -186,8 +186,8 @@
           });
       $container.append($y_scale_slider);
 
-       {% for relChar in relChars %}
-        var $gotbox = buildABox({{ relChar.mainchar.x1 }}, {{ relChar.mainchar.y1 }}, {{  relChar.mainchar.x2 }}, {{  relChar.mainchar.y2 }})
+       {% for char in a_chars %}
+        var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
         $gotbox.related_chars = new Set()
         $viewport.append($gotbox)
         boxes.add($gotbox)
