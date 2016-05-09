@@ -31,6 +31,7 @@ def pages_in_work(request, work_id):
     cntxt = {'pages': pages}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
+
 # NOTE: Not currently used
 def individual_char(request, char_id):
     char = Character.objects.get(id=char_id)
