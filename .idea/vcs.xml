@@ -2,8 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../django-jrac" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../jrac" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../python-django-jrac" vcs="Git" />
   </component>
 </project>
