@@ -15,29 +15,7 @@ Also:
 
 2) From what I can tell, some of the coordinates we have for bounding boxes are not accurate.  We might need to implement some sort of image search functionality to extract the bounding box.
 
---Change Images on Mouseover--
-
-
-   /* Teaser image swap function */
-    $('img.swap').hover(function () {
-        this.src = '/images/signup_big_hover.png';
-    }, function () {
-        this.src = '/images/signup_big.png';
-    });
-
-$(function() {
-    $("img")
-        .mouseover(function() {
-            var src = $(this).attr("src").match(/[^\.]+/) + "over.gif";
-            $(this).attr("src", src);
-        })
-        .mouseout(function() {
-            var src = $(this).attr("src").replace("over.gif", ".gif");
-            $(this).attr("src", src);
-        });
-});
-
-
+-
 --AJAXY stuff with django server--
 
 <script type="text/javascript">
@@ -83,3 +61,36 @@ Note:
 
 It was not a good idea to expect the relations of the extracted data would be complete.  They are not.
 I have to go back and add some relations I deleted previously.
+
+
+<div class="mycarousel"> <-------------------------------| Root element
+    <div> <------------------------------| List element  |
+        <p>...</p> <-----| Item element  |               |
+        <p>...</p> <-----| Item element  |               |
+    </div> <-----------------------------|               |
+</div> <-------------------------------------------------|
+
+
+
+You can do this but you need to keep a reference to the carousel around and call reset on it. This can be achieved by using the initCallback option you pass to the jcarousel function.
+
+function carousel_callback( carousel, state) {
+    // BWA-HA...I have the carousel now....FEEL THE POWER!
+
+    // reset empties it out
+    $('#reset-caro').click( function( evt ) {
+        carousel.reset();
+    });
+
+    // here's how to call add
+    $('#add-to').click( function( evt ) {
+        // ..this just adds to the first spot..modify as needed
+        carousel.add(0, "<li>O HAI!</li>");
+    });
+}
+
+$(document).ready(function() {
+    $('#mycarousel').jcarousel( {
+        initCallback: carousel_callback
+    });
+});
