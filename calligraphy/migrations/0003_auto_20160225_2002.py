@@ -15,7 +15,7 @@ HOSTNAME = socket.gethostname()
 if HOSTNAME == 'bigArch':
     IMAGE_DIR = "/home/dave/workspace/pycharm/media/pages/"
 else:
-    IMAGE_DIR = "/media/media/pages/"
+    IMAGE_DIR = "/media/pages/"
 
 
 def add_pages_from_filesystem(apps) -> None:

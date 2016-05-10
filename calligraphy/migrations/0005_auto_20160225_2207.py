@@ -15,7 +15,7 @@ HOSTNAME = socket.gethostname()
 if HOSTNAME == 'bigArch':
     CHAR_DIR = "/home/dave/workspace/pycharm/media/chars/"
 else:
-    CHAR_DIR = "/media/media/chars/"
+    CHAR_DIR = "/media/chars/"
 
 
 def add_chars_from_filesystem(apps) -> None:

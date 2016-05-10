@@ -14,7 +14,7 @@ import os
 if socket.gethostname() == 'bigArch':
     CHARS_DIR = "/home/dave/workspace/pycharm/media/chars/"
 else:
-    CHARS_DIR = "/media/media/chars/"
+    CHARS_DIR = "/media/chars/"
 
 def addchars(apps) -> None:
     Page = apps.get_model("calligraphy", "Page")
