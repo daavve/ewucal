@@ -24,7 +24,3 @@ urlpatterns = [
     url(r'^char/(?P<char_id>[0-9]+)$', views.individual_char),
     url(r'^$', views.auth_list)
 ]
-
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
