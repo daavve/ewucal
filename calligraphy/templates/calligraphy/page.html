@@ -173,7 +173,6 @@
               }}
               )
         return $charBox;
-
       }
 
      function x_scale_update($box, new_scale){
@@ -217,14 +216,20 @@
         $gotbox.related_chars = new Set()
          {% for related_char in char.relatedChars %}
           // {{ related_char.id }}
-
          {% endfor %}
-
-
-        $viewport.append($gotbox)
         boxes.add($gotbox)
+        $viewport.append($gotbox)
       {% endfor %}
     }
+
+/*    <div class="mycarousel"> <-------------------------------| Root element
+    <div> <------------------------------| List element  |
+        <p>...</p> <-----| Item element  |               |
+        <p>...</p> <-----| Item element  |               |
+    </div> <-----------------------------|               |
+</div> <-------------------------------------------------| */
+
+
 
   $(document).ready( iWindow )
   </script>
