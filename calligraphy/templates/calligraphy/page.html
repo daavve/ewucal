@@ -213,10 +213,15 @@
 
        {% for char in a_chars %}
         var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
-        $gotbox.related_chars = new Set()
-         {% for related_char in char.relatedChars %}
-          // {{ related_char.id }}
-         {% endfor %}
+        $gotbox.related_chars = $('<div class="{{ char.mainchar.id }}"> \
+           <div>\
+         {% for related_char in char.relatedChars %} \
+          <p> {{ related_char.get_image }} </p> \
+         {% endfor %} \
+           </div> \
+           </div>')
+
+
         boxes.add($gotbox)
         $viewport.append($gotbox)
       {% endfor %}
