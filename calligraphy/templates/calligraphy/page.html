@@ -33,6 +33,12 @@
   border: 2px solid #ff5b60;
 }
 
+.jcarousel {
+    position: relative;
+    overflow: hidden;
+    width: 300px;
+}
+
   </style>
 
 
@@ -153,6 +159,9 @@
                 if($viewport.last_selected) {
                     $viewport.last_selected.removeClass('ui-selected')
                     $viewport.last_selected.toggleClass('char_box_select')
+                        $('.jcarousel ul')
+        .append($(this).related_chars)
+                    $('.jcarousel').jcarousel('reload');
                 }
                 $viewport.last_selected = $(this)
               }
