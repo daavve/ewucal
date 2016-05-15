@@ -95,7 +95,7 @@
 
 
   <div class="pane">
-    <img src="{% static page.get_image %}" />
+    <img src="{% static page.get_image %}" >
   </div>
 
   <script type="text/javascript">
@@ -308,7 +308,7 @@
         $gotbox.related_chars = $('<div class="{{ char.mainchar.id }}"> \
            <div>\
          {% for related_char in char.relatedChars %} \
-          <li><img src="{% static  related_char.get_image %}" /> </li> \
+          <li><img src="{% static related_char.get_image %}" > </li> \
          {% endfor %} \
            </div> \
            </div>')
