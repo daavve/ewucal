@@ -33,11 +33,63 @@
   border: 2px solid #ff5b60;
 }
 
+/** Begin jCarousel section **/
+
+  .jcarousel-wrapper {
+    margin: auto;
+    position: relative;
+    width: 600px;
+    height: 400px;
+}
+
+/** Carousel **/
+
 .jcarousel {
     position: relative;
     overflow: hidden;
-    width: 300px;
 }
+
+.jcarousel ul {
+    width: 20000em;
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.jcarousel li {
+    float: left;
+}
+
+
+.jcarousel-control-prev,
+.jcarousel-control-next {
+    position: absolute;
+    top: 200px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    background: #4E443C;
+    color: #fff;
+    text-decoration: none;
+    font: 24px/27px Arial, sans-serif;
+}
+
+.jcarousel-control-prev {
+    left: -50px;
+}
+
+.jcarousel-control-next {
+    right: -50px;
+}
+
+.jcarousel-control-prev.inactive,
+.jcarousel-control-next.inactive {
+    opacity: .5;
+    cursor: default;
+}
+
+  /** End jCarousel stuff **/
 
   </style>
 
@@ -51,7 +103,38 @@
 
     function iWindow ( $ ) {
 
-      $('.jcarousel').jcarousel();
+    // jcarousel initialization
+
+      (function($) {
+    $(function() {
+        $('.jcarousel').jcarousel();
+
+        $('.jcarousel-control-prev')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '-=1'
+            });
+
+        $('.jcarousel-control-next')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '+=1'
+            });
+    });
+})(jQuery);
+
+
+    // End jcarousel initialization
 
       var settings = {
         'longset_side': 500,
@@ -225,7 +308,7 @@
         $gotbox.related_chars = $('<div class="{{ char.mainchar.id }}"> \
            <div>\
          {% for related_char in char.relatedChars %} \
-          <p> {{ related_char.get_image }} </p> \
+          <li><img src="{% static  related_char.get_image %}" /> </li> \
          {% endfor %} \
            </div> \
            </div>')
