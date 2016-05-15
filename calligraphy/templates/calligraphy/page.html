@@ -105,8 +105,20 @@
 
     // jcarousel initialization
 
-      (function($) {
-    $(function() {
+    function rebuild_jcarousel($inchar) {
+      var carousel = $('.jcarousel'),
+          item = carousel.find('li:eq(0)');
+
+      if (carousel.jcarousel('visible').index(item) < 0) {
+        item.remove();
+      }
+
+      $('.jcarousel ul').append($inchar.related_chars)
+
+      carousel.jcarousel('reload')
+    }
+
+    var mycarosel = $(function() {
         $('.jcarousel').jcarousel();
 
         $('.jcarousel-control-prev')
@@ -131,7 +143,7 @@
                 target: '+=1'
             });
     });
-})(jQuery);
+
 
 
     // End jcarousel initialization
@@ -242,9 +254,7 @@
                 if($viewport.last_selected) {
                     $viewport.last_selected.removeClass('ui-selected')
                     $viewport.last_selected.toggleClass('char_box_select')
-                        $('.jcarousel ul')
-        .append($(this).related_chars)
-                    $('.jcarousel').jcarousel('reload');
+                     rebuild_jcarousel($(this))
                 }
                 $viewport.last_selected = $(this)
               }
@@ -306,11 +316,15 @@
        {% for char in a_chars %}
         var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
         $gotbox.related_chars = $('<div class="{{ char.mainchar.id }}"> \
-           <div>\
+           <div class="jcarousel">\
+           <ul> \
          {% for related_char in char.relatedChars %} \
           <li><img src="{% static related_char.get_image %}" > </li> \
          {% endfor %} \
+           </ul>\
            </div> \
+           <a href="#" class="jcarousel-control-prev">&lsaquo;</a> \
+           <a href="#" class="jcarousel-control-next">&rsaquo;</a> \
            </div>')
 
         boxes.add($gotbox)
