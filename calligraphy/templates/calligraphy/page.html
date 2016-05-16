@@ -33,88 +33,38 @@
   border: 2px solid #ff5b60;
 }
 
-/** Begin jCarousel section **/
-
-  .jcarousel-wrapper {
-    margin: auto;
-    position: relative;
-    width: 600px;
-    height: 400px;
-}
-
-/** Carousel **/
-
-.jcarousel {
-    position: relative;
-    overflow: hidden;
-}
-
-.jcarousel ul {
-    width: 20000em;
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.jcarousel li {
-    float: left;
-}
-
-
-.jcarousel-control-prev,
-.jcarousel-control-next {
-    position: absolute;
-    top: 200px;
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    background: #4E443C;
-    color: #fff;
-    text-decoration: none;
-    font: 24px/27px Arial, sans-serif;
-}
-
-.jcarousel-control-prev {
-    left: -50px;
-}
-
-.jcarousel-control-next {
-    right: -50px;
-}
-
-.jcarousel-control-prev.inactive,
-.jcarousel-control-next.inactive {
-    opacity: .5;
-    cursor: default;
-}
-
-  /** End jCarousel stuff **/
 
   </style>
-
 
   <div class="pane">
     <img src="{% static page.get_image %}" >
   </div>
+
+  {% for char in a_chars %}
+     <ul id="{{ char.mainchar.id }}" class="jcarousel-skin-{{ char.mainchar.id }}">
+     {% for related_char in char.relatedChars %}
+       <li><img src="{% static related_char.get_image %}" > </li>
+     {% endfor %}
+     </ul>
+  {% endfor %}
+
+
+
 
   <script type="text/javascript">
 
 
     function iWindow ( $ ) {
 
-    // jcarousel initialization
+    var last_carousel
 
     function rebuild_jcarousel($inchar) {
-      var carousel = $('.jcarousel'),
-          item = carousel.find('li:eq(0)');
 
-      if (carousel.jcarousel('visible').index(item) < 0) {
-        item.remove();
+      if(last_carousel)
+      {
+        last_carousel.destroy()
       }
-
-      $inchar.jcarousel({})
-
+      last_carousel = new $($inchar.related_char).jcarousel()
     }
 
 
@@ -287,16 +237,7 @@
 
        {% for char in a_chars %}
         var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
-        $gotbox.related_chars = $('<div class="{{ char.mainchar.id }}"> \
-           <ul> \
-         {% for related_char in char.relatedChars %} \
-          <li><img src="{% static related_char.get_image %}" > </li> \
-         {% endfor %} \
-           </ul>\
-           <a href="#" class="jcarousel-control-prev">&lsaquo;</a> \
-           <a href="#" class="jcarousel-control-next">&rsaquo;</a> \
-           </div>')
-
+        $gotbox.related_chars = "#" + {{ char.mainchar.id }}
         boxes.add($gotbox)
         $viewport.append($gotbox)
       {% endfor %}
