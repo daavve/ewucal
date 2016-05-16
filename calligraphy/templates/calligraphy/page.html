@@ -113,40 +113,11 @@
         item.remove();
       }
 
-      $('.jcarousel ul').append($inchar.related_chars)
+      $inchar.jcarousel({})
 
-      carousel.jcarousel('reload')
     }
 
-    var mycarosel = $(function() {
-        $('.jcarousel').jcarousel();
 
-        $('.jcarousel-control-prev')
-            .on('jcarouselcontrol:active', function() {
-                $(this).removeClass('inactive');
-            })
-            .on('jcarouselcontrol:inactive', function() {
-                $(this).addClass('inactive');
-            })
-            .jcarouselControl({
-                target: '-=1'
-            });
-
-        $('.jcarousel-control-next')
-            .on('jcarouselcontrol:active', function() {
-                $(this).removeClass('inactive');
-            })
-            .on('jcarouselcontrol:inactive', function() {
-                $(this).addClass('inactive');
-            })
-            .jcarouselControl({
-                target: '+=1'
-            });
-    });
-
-
-
-    // End jcarousel initialization
 
       var settings = {
         'longset_side': 500,
@@ -254,6 +225,7 @@
                 if($viewport.last_selected) {
                     $viewport.last_selected.removeClass('ui-selected')
                     $viewport.last_selected.toggleClass('char_box_select')
+                    $viewport.last_selected = $(this)
                      rebuild_jcarousel($(this))
                 }
                 $viewport.last_selected = $(this)
@@ -316,13 +288,11 @@
        {% for char in a_chars %}
         var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
         $gotbox.related_chars = $('<div class="{{ char.mainchar.id }}"> \
-           <div class="jcarousel">\
            <ul> \
          {% for related_char in char.relatedChars %} \
           <li><img src="{% static related_char.get_image %}" > </li> \
          {% endfor %} \
            </ul>\
-           </div> \
            <a href="#" class="jcarousel-control-prev">&lsaquo;</a> \
            <a href="#" class="jcarousel-control-next">&rsaquo;</a> \
            </div>')
