@@ -33,24 +33,8 @@
   border: 2px solid #ff5b60;
 }
 
-/** demo carrotcell styles
-*/
-.carrotCell {
-	margin: 20px 0;
-	border: dashed 1px #ccc;
-}
-
-.carrotCellView {
-	margin: 0 20px;
-}
-
-
-
-
-
-.charOuter { width: 560px; }
-.charCellView {width: 500px; }
-.charCellView li { width: 100px; }
+#defaultKitten {
+    width: 560px; }
 
   </style>
 
@@ -59,9 +43,9 @@
   </div>
 
 
-	<div id="charViewer" class="charOuter">
-    <div class = "charCellView">
-		  <ol>
+    <div id="defaultKitten" class="carrotCell">
+    <div class = "carrotCellView">
+          <ol>
             <li>
             <span>321</span>
               <img src="/media/chars/06100007/00000089(572%2C201%2C617%2C280).jpg" />
@@ -131,10 +115,11 @@
             <span>5071</span>
               <img src="/media/chars/06100007/00000113(657%2C261%2C690%2C288).jpg" />
             </li>
-		  </ol>
+          </ol>
     </div>
-    <ol class="navi"></ol>
-	</div>
+    <div class="prev">prev</div>
+    <div class="next">next</div> 
+    </div>
 
 
 
@@ -144,10 +129,11 @@
 
     function iWindow ( $ ) {
 
-      var relChar = $('#charViewer').carrotCell({
-          navi: true,
-          makeNavi: true
-      })
+        window.carrotDemos = window.carrotDemos || {};
+        carrotDemos.setup = function() {
+            $("#defaultKitten").carrotCell();
+        }
+        carrotDemos.setup();
 
 
 
