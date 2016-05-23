@@ -130,10 +130,8 @@
     function iWindow ( $ ) {
 
         window.carrotDemos = window.carrotDemos || {};
-        carrotDemos.setup = function() {
-            $("#defaultKitten").carrotCell();
-        }
-        carrotDemos.setup();
+        var reloadKitten = $("#defaultKitten").carrotCell();
+        var reloadKittenAPI = $(reloadKitten).data("carrotCell")
 
 
 
@@ -246,11 +244,9 @@
                     $viewport.last_selected.removeClass('ui-selected')
                     $viewport.last_selected.toggleClass('char_box_select')
                     $viewport.last_selected = $(this)
-                    //rel_char.reloadWith('<li><span>1</span><img src="/media/chars/06100007/00000053(102%2C613%2C164%2C662).jpg" /></li>')
-                    var rel_char = $(relChar).data("carrotCell")
-                    rel_char.empty()
                 }
                 $viewport.last_selected = $(this)
+                reloadKittenAPI.reloadWith($(this).attr("related_chars"))
               }
             }).extend({
               'x_top': x1 * zoom_factor,
@@ -309,7 +305,7 @@
 
        {% for char in a_chars %}
         var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
-        $gotbox.related_chars = $(' \
+        $gotbox.attr("related_chars", ' \
          {% for related_char in char.relatedChars %} \
             <li> \
             <span>{{  related_char.id }}</span> \
