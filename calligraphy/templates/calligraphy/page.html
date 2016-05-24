@@ -33,7 +33,7 @@
   border: 2px solid #ff5b60;
 }
 
-#defaultKitten {
+#reloadKitten {
     width: 560px; }
 
   </style>
@@ -42,14 +42,16 @@
     <img src="{% static page.get_image %}" >
   </div>
 
-
-    <div id="defaultKitten" class="carrotCell">
+    <div class="charWindow">
+    <div id="reloadKitten" class="carrotCell">
     <div class = "carrotCellView">
           <ol>
           </ol>
     </div>
+    <ol class="navi"></ol>	
     <div class="prev">prev</div>
     <div class="next">next</div> 
+    </div>
     </div>
 
 
@@ -59,9 +61,22 @@
 
 
     function iWindow ( $ ) {
-
+        
+        
+        
+        
+        function reload() {
+            reloadKitten = $("#reloadKitten").carrotCell({
+            navi: true,
+            makeNavi: true})
+            reloadKittenAPI = $(reloadKitten).data("carrotCell")
+        }
         window.carrotDemos = window.carrotDemos || {};
-        var reloadKitten = $("#defaultKitten").carrotCell();
+
+        var reloadKitten = $("#reloadKitten").carrotCell({
+            navi: true,
+            makeNavi: true
+        })
         var reloadKittenAPI = $(reloadKitten).data("carrotCell")
 
 
@@ -178,6 +193,7 @@
                 }
                 $viewport.last_selected = $(this)
                 reloadKittenAPI.reloadWith($(this).attr("related_chars"))
+                reload()
               }
             }).extend({
               'x_top': x1 * zoom_factor,
