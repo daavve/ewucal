@@ -8,7 +8,6 @@
   {% load staticfiles %}
 
   <link href="{{ STATIC_URL }}css/excite-bike/jquery-ui.css" rel="stylesheet" />
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main.css">
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/carrotcell.css">
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/carrotskin.css">
 
@@ -22,7 +21,7 @@
            src="{{ STATIC_URL }}js/velocity.js"> // Recommended dependency for jCarrotCell
   </script>
   <script type="text/javascript"
-           src="{{ STATIC_URL }}js/jCarrotCell.js"> // Used for the image carrousel
+           src="{{ STATIC_URL }}js/jCarrotCell.custom.js"> // Used for the image carrousel
   </script>
     {% block content %}
 
