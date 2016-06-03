@@ -34,7 +34,7 @@
 }
 
 #reloadKitten {
-    width: 560px; }
+    width: 800px; }
 
   </style>
 
@@ -60,13 +60,15 @@
 
     function iWindow ( $ ) {
         
-        
-        
-        
         function reload() {
             reloadKitten = $("#reloadKitten").carrotCell({
             navi: true,
             makeNavi: true})
+            
+            $("#reloadKitten li img").click(function() {
+            alert(this.id);
+        })
+            
             reloadKittenAPI = $(reloadKitten).data("carrotCell")
         }
         window.carrotDemos = window.carrotDemos || {};
@@ -253,8 +255,7 @@
         $gotbox.attr("related_chars", ' \
          {% for related_char in char.relatedChars %} \
             <li> \
-            <span>{{  related_char.id }}</span> \
-              <img src="{% static related_char.get_image %}" /> \
+              <img id="{{ related_char.id }}" src="{% static related_char.get_image %}" /> \
             </li> \
         {% endfor %} ')
         boxes.add($gotbox)
