@@ -33,7 +33,7 @@
   border: 2px solid #ff5b60;
 }
 
-#reloadKitten {
+#relatedChars {
     width: 800px; }
 
   </style>
@@ -42,7 +42,7 @@
     <img src="{% static page.get_image %}" >
   </div>
 
-    <div id="reloadKitten" class="carrotCell">
+    <div id="relatedChars" class="carrotCell">
     <div class = "carrotCellView">
           <ol>
           </ol>
@@ -57,27 +57,30 @@
 
   <script type="text/javascript">
 
+//TODO: jCarrotCell works with Jquery2, but not Jquery3
+
 
     function iWindow ( $ ) {
         
         function reload() {
-            reloadKitten = $("#reloadKitten").carrotCell({
+            relatedChars = $("#relatedChars").carrotCell({
             navi: true,
             makeNavi: true})
             
-            $("#reloadKitten li img").click(function() {
+            
+            $("#relatedChars li img").click(function() {
             alert(this.id);
         })
             
-            reloadKittenAPI = $(reloadKitten).data("carrotCell")
+            relatedCharsAPI = $(relatedChars).data("carrotCell")
         }
         window.carrotDemos = window.carrotDemos || {};
 
-        var reloadKitten = $("#reloadKitten").carrotCell({
+        var relatedChars = $("#relatedChars").carrotCell({
             navi: true,
             makeNavi: true
         })
-        var reloadKittenAPI = $(reloadKitten).data("carrotCell")
+        var relatedCharsAPI = $(relatedChars).data("carrotCell")
 
 
 
@@ -192,7 +195,7 @@
                     $viewport.last_selected = $(this)
                 }
                 $viewport.last_selected = $(this)
-                reloadKittenAPI.reloadWith($(this).attr("related_chars"))
+                relatedCharsAPI.reloadWith($(this).attr("related_chars"))
                 reload()
               }
             }).extend({
