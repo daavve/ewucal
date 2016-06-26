@@ -52,6 +52,7 @@
     <div class="next">next</div> 
     </div>
 
+    <button>Submit</button>
 
 
 
@@ -61,6 +62,10 @@
 
 
     function iWindow ( $ ) {
+        
+        var submitButton = $( ".Submit").button()
+        
+        
         
         function reload() {
             relatedChars = $("#relatedChars").carrotCell({
