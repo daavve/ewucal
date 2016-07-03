@@ -226,7 +226,7 @@
             slide: function (event, ui) {
               var new_zoom = $image.start_width / ui.value
               for (let $box of boxes) x_scale_update($box, new_zoom);
-              updateBoxes()
+              update_boxes()
             }
           });
       $container.append($x_scale_slider);
@@ -239,7 +239,7 @@
             slide: function (event, ui) {
               var new_zoom = $image.start_width / ui.value
               for (let $box of boxes) y_scale_update($box, new_zoom);
-              updateBoxes()
+              update_boxes()
             }
           });
       $container.append($y_scale_slider);
