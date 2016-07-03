@@ -52,7 +52,7 @@
     <div class="next">next</div> 
     </div>
 
-    <button>Submit</button>
+    <button>Submit Changes</button>
 
 
 
@@ -62,34 +62,84 @@
 
 
     function iWindow ( $ ) {
-        
-        var submitButton = $( ".Submit").button()
-        
-        
-        
+        //Helper-Functions
         function reload() {
             relatedChars = $("#relatedChars").carrotCell({
             navi: true,
             makeNavi: true})
-            
-            
-            $("#relatedChars li img").click(function() {
-            alert(this.id);
-        })
-            
             relatedCharsAPI = $(relatedChars).data("carrotCell")
         }
-        window.carrotDemos = window.carrotDemos || {};
+        function updateBoxPosition($box) {
+            $box.css({
+                'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
+                'top': Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
+                'width': Math.round($image.scale_factor * $box.x_len),
+                'height': Math.round($image.scale_factor * $box.y_len)
+            })
+        }
+        function update_boxes() {
+            for (let $box of boxes) updateBoxPosition($box);
+        }
+        function y_scale_update($box, new_scale){
+            $box.y_top = $box.y_top_initial * new_scale
+            $box.y_len = $box.y_len_initial * new_scale
+        }
+        function x_scale_update($box, new_scale){
+            $box.x_top = $box.x_top_initial * new_scale
+            $box.x_len = $box.x_len_initial * new_scale
+        }
+        function build_a_box(x1, y1, x2, y2){
+            var zoom_factor = $image.start_width / 694
+            var $charBox = $('<div class="char_box"></div>').css({
+                'left': x1 * zoom_factor,
+                'top': y1 * zoom_factor,
+                'width':  (x2 - x1)  * zoom_factor,
+                'height': (y2 - y1) * zoom_factor,
+                'position': 'absolute'
+                }).selectable({
+                    autoRefresh: false,
+                    stop: function( event, ui ) {
+                        $(this).toggleClass('char_box_select')
+                        if($viewport.last_selected) {
+                            $viewport.last_selected.removeClass('ui-selected')
+                            $viewport.last_selected.toggleClass('char_box_select')
+                            $viewport.last_selected = $(this)
+                        }
+                        $viewport.last_selected = $(this)
+                        relatedCharsAPI.reloadWith($(this).attr("related_chars"))
+                        reload()
+                    }
+                }).extend({
+                    'x_top': x1 * zoom_factor,
+                    'y_top': y1 * zoom_factor,
+                    'x_len': (x2 - x1) * zoom_factor,
+                    'y_len': (y2 - y1) * zoom_factor,
+                    'x_top_initial': x1,
+                    'y_top_initial': y1,
+                    'x_len_initial': x2 -x1,
+                    'y_len_initial': y2 - y1,
+                    'related_chars': null,
+                    'selected': false
+                }).hover(function(){
+                    if(!$(this).hasClass('ui-selected')) {
+                        $(this).toggleClass('char_box_hover')
+                    }
+                })
+        return $charBox;
+        }
+
+
+
+        $( "button" ).button().click(function( event ) {
+            event.preventDefault();
+            alert("clicked!");
+        })
 
         var relatedChars = $("#relatedChars").carrotCell({
             navi: true,
             makeNavi: true
         })
         var relatedCharsAPI = $(relatedChars).data("carrotCell")
-
-
-
-
 
       var settings = {
         'longset_side': 500,
@@ -138,20 +188,6 @@
       var $container = $viewport.parent();
       var boxes = new Set()
 
-      function updateBoxPosition($box) {
-        $box.css({
-          'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
-          'top': Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
-          'width': Math.round($image.scale_factor * $box.x_len),
-          'height': Math.round($image.scale_factor * $box.y_len)
-        })
-      }
-
-      function updateBoxes() {
-        for (let $box of boxes) updateBoxPosition($box);
-
-      }
-
       var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
           .slider({
             value: $image.longest_side,
@@ -164,7 +200,7 @@
                 'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
               });
-              updateBoxes()
+              update_boxes()
             }
           });
       $container.append($zoom_widget);
@@ -175,57 +211,12 @@
           $viewport.middle_y = Math.round($viewport.height() / 2)
           $image.offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor
           $image.offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor
-          updateBoxes()
+          update_boxes()
         },
         scroll: false,
         addClasses: false
       })
 
-      function buildABox(x1, y1, x2, y2) {
-        var zoom_factor = $image.start_width / 694
-        var $charBox = $('<div class="char_box"></div>')
-            .css({
-              'left': x1 * zoom_factor,
-              'top': y1 * zoom_factor,
-              'width':  (x2 - x1)  * zoom_factor,
-              'height': (y2 - y1) * zoom_factor,
-              'position': 'absolute'
-            }).selectable({
-              autoRefresh: false,
-              stop: function( event, ui ) {
-                $(this).toggleClass('char_box_select')
-                if($viewport.last_selected) {
-                    $viewport.last_selected.removeClass('ui-selected')
-                    $viewport.last_selected.toggleClass('char_box_select')
-                    $viewport.last_selected = $(this)
-                }
-                $viewport.last_selected = $(this)
-                relatedCharsAPI.reloadWith($(this).attr("related_chars"))
-                reload()
-              }
-            }).extend({
-              'x_top': x1 * zoom_factor,
-              'y_top': y1 * zoom_factor,
-              'x_len': (x2 - x1) * zoom_factor,
-              'y_len': (y2 - y1) * zoom_factor,
-              'x_top_initial': x1,
-              'y_top_initial': y1,
-              'x_len_initial': x2 -x1,
-              'y_len_initial': y2 - y1,
-              'related_chars': null,
-              'selected': false
-            }).hover(function(){
-              if(!$(this).hasClass('ui-selected')) {
-                $(this).toggleClass('char_box_hover')
-              }}
-              )
-        return $charBox;
-      }
-
-     function x_scale_update($box, new_scale){
-       $box.x_top = $box.x_top_initial * new_scale
-       $box.x_len = $box.x_len_initial * new_scale
-     }
 
       var $x_scale_slider = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
           .slider({
@@ -239,11 +230,6 @@
             }
           });
       $container.append($x_scale_slider);
-
-      function y_scale_update($box, new_scale){
-       $box.y_top = $box.y_top_initial * new_scale
-       $box.y_len = $box.y_len_initial * new_scale
-     }
 
       var $y_scale_slider = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
           .slider({
@@ -259,7 +245,7 @@
       $container.append($y_scale_slider);
 
        {% for char in a_chars %}
-        var $gotbox = buildABox({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
+        var $gotbox = build_a_box({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
         $gotbox.attr("related_chars", ' \
          {% for related_char in char.relatedChars %} \
             <li> \
