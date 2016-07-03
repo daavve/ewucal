@@ -13,9 +13,6 @@
 ############################################
 from django.conf.urls import url
 from . import views
-from django.conf.urls.static import static  # According to "Django By Example, I should never do this in production
-from django.conf import settings            # Aparently I should always use an Apache-like server to send media.
-
 
 urlpatterns = [
     url(r'^auth/(?P<auth_id>[0-9]+)$', views.works_by_author),
