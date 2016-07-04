@@ -125,6 +125,7 @@
                         $(this).toggleClass('char_box_hover')
                     }
                 })
+                updateBoxPosition($charBox)
         return $charBox;
         }
 
@@ -172,8 +173,6 @@
       $image.max_width = $image.min_width * settings.zoom_max
       $image.lw_ratio = src_image_length / src_image_width
       $image.scale_factor = $image.min_width / $image.start_width
-      $image.offset_left = 0
-      $image.offset_top = 0
 
       $image.width($image.min_width).height($image.min_width * $image.lw_ratio)
       $image.css({'left': 0, 'top': 0});
@@ -185,6 +184,8 @@
         'middle_y': Math.round($viewport.height() / 2),
         'last_selected': null
       })
+      $image.offset_left = -$viewport.middle_x / $image.scale_factor
+      $image.offset_top = -$viewport.middle_y / $image.scale_factor
       var $container = $viewport.parent();
       var boxes = new Set()
 
