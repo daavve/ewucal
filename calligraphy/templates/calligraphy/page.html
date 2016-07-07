@@ -91,10 +91,6 @@
         function build_a_box(x1, y1, x2, y2){
             var zoom_factor = $image.start_width / 694
             var $charBox = $('<div class="char_box"></div>').css({
-                'left': x1 * zoom_factor,
-                'top': y1 * zoom_factor,
-                'width':  (x2 - x1)  * zoom_factor,
-                'height': (y2 - y1) * zoom_factor,
                 'position': 'absolute'
                 }).selectable({
                     autoRefresh: false,

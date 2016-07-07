@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from .models import Author, Work, Page, Character, RelatedChars
 
+import json
 
 # TODO: Author list temporarily modified to only display authors that
 #  Have works with annotated charactars
