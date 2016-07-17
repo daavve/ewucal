@@ -37,7 +37,7 @@ function showPage(evt)
     }
     xmlhttp.onreadystatechange=function()
     {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)  //Do this if you already have a response
         {
             var info = xmlhttp.responseText;
             var pageSize = info.split("#")[0];
@@ -50,7 +50,9 @@ function showPage(evt)
            mask.innerHTML= playSWF(variablesNum, pageSize);
         }
     }
-    xmlhttp.open("GET", encodeURI("GetPageSize?bookID=" + variables[0] + "&pageID=" + variables[1] + "&characterFile=" + characterFile), true);
+    // Always do this, note:  Possibly means we submit unnecessary requests.
+    
+    xmlhttp.open("GET", encodeURI("GetPageSize?bookID=" + variables[0] + "&pageID=" + variables[1] + "&characterFile=" + characterFile), true);  //This request is asynchronous
     xmlhttp.send();
 }
 

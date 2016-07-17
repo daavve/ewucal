@@ -80,16 +80,7 @@
         function update_boxes() {
             for (let $box of boxes) updateBoxPosition($box);
         }
-        function y_scale_update($box, new_scale){
-            $box.y_top = $box.y_top_initial * new_scale
-            $box.y_len = $box.y_len_initial * new_scale
-        }
-        function x_scale_update($box, new_scale){
-            $box.x_top = $box.x_top_initial * new_scale
-            $box.x_len = $box.x_len_initial * new_scale
-        }
         function build_a_box(x1, y1, x2, y2){
-            var zoom_factor = $image.start_width / 694
             var $charBox = $('<div class="char_box"></div>').css({
                 'position': 'absolute'
                 }).selectable({
@@ -106,14 +97,10 @@
                         reload()
                     }
                 }).extend({
-                    'x_top': x1 * zoom_factor,
-                    'y_top': y1 * zoom_factor,
-                    'x_len': (x2 - x1) * zoom_factor,
-                    'y_len': (y2 - y1) * zoom_factor,
-                    'x_top_initial': x1,
-                    'y_top_initial': y1,
-                    'x_len_initial': x2 -x1,
-                    'y_len_initial': y2 - y1,
+                    'x_top': x1,
+                    'y_top': y1,
+                    'x_len': x2 - x1,
+                    'y_len': y2 - y1,
                     'related_chars': null,
                     'selected': false
                 }).hover(function(){
@@ -214,35 +201,28 @@
         addClasses: false
       })
 
+// src_image_length
+// src_image_width
+//  var sHeight = (sWidth * size[1]) / size[0] + 40;
 
-      var $x_scale_slider = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
-          .slider({
-            value: 694,
-            min: 594,
-            max: 2000,
-            slide: function (event, ui) {
-              var new_zoom = $image.start_width / ui.value
-              for (let $box of boxes) x_scale_update($box, new_zoom);
-              update_boxes()
-            }
-          });
-      $container.append($x_scale_slider);
+//      var src_image_length = 6292
+//      var src_image_width = 4327
 
-      var $y_scale_slider = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
-          .slider({
-            value: 694,
-            min: 594,
-            max: 2000,
-            slide: function (event, ui) {
-              var new_zoom = $image.start_width / ui.value
-              for (let $box of boxes) y_scale_update($box, new_zoom);
-              update_boxes()
-            }
-          });
-      $container.append($y_scale_slider);
+
+
+        var image_scale_width = src_image_width / 800
+        var image_scale_length = ((image_scale_width) * src_image_length) / src_image_width
+        
+        console.log(image_scale_width)
+
+
 
        {% for char in a_chars %}
-        var $gotbox = build_a_box({{ char.mainchar.x1 }}, {{ char.mainchar.y1 }}, {{  char.mainchar.x2 }}, {{  char.mainchar.y2 }})
+        var char_x1 = {{ char.mainchar.x1 }} * image_scale_width
+        var char_y1 = {{ char.mainchar.y1 }} * image_scale_length
+        var char_x2 = {{ char.mainchar.x2 }} * image_scale_width
+        var char_y2 = {{ char.mainchar.y2 }} * image_scale_length
+        var $gotbox = build_a_box(char_x1, char_y1, char_x2, char_y2)
         $gotbox.attr("related_chars", ' \
          {% for related_char in char.relatedChars %} \
             <li> \
