@@ -201,27 +201,12 @@
         addClasses: false
       })
 
-// src_image_length
-// src_image_width
-//  var sHeight = (sWidth * size[1]) / size[0] + 40;
-
-//      var src_image_length = 6292
-//      var src_image_width = 4327
-
-
-
-        var image_scale_width = src_image_width / 800
-        var image_scale_length = ((image_scale_width) * src_image_length) / src_image_width
-        
-        console.log(image_scale_width)
-
-
 
        {% for char in a_chars %}
-        var char_x1 = {{ char.mainchar.x1 }} * image_scale_width
-        var char_y1 = {{ char.mainchar.y1 }} * image_scale_length
-        var char_x2 = {{ char.mainchar.x2 }} * image_scale_width
-        var char_y2 = {{ char.mainchar.y2 }} * image_scale_length
+        var char_x1 = {{ char.mainchar.x1 }}
+        var char_y1 = {{ char.mainchar.y1 }}
+        var char_x2 = {{ char.mainchar.x2 }}
+        var char_y2 = {{ char.mainchar.y2 }}
         var $gotbox = build_a_box(char_x1, char_y1, char_x2, char_y2)
         $gotbox.attr("related_chars", ' \
          {% for related_char in char.relatedChars %} \
