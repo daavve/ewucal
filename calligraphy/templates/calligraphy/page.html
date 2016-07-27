@@ -211,9 +211,12 @@
         var char_y2 = {{ char.mainchar.y2 }}
         var $gotbox = build_a_box(char_x1, char_y1, char_x2, char_y2)
         $gotbox.attr("related_chars", ' \
-            <li> \
-              <img id="{{ char.mainchar.id }}" src="{% static char.mainchar.get_image %}" /> \
-            </li>')
+            {% for char_rel in char.relatedChars %} \
+                <li> \
+                    <img id="{{ char.mainchar.id }}" src="{% static char.mainchar.get_image %}" /> \
+                </li> \
+            {% endfor %} \
+        ')
         boxes.add($gotbox)
         $viewport.append($gotbox)
       {% endfor %}
