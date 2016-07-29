@@ -213,7 +213,7 @@
         $gotbox.attr("related_chars", ' \
             {% for char_rel in char.relatedChars %} \
                 <li> \
-                    <img id="{{ char.mainchar.id }}" src="{% static char.mainchar.get_image %}" /> \
+                    <img id="{{ char_rel.id }}" src="{% static char_rel.get_image %}" /> \
                 </li> \
             {% endfor %} \
         ')
