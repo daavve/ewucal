@@ -1,0 +1,27 @@
+Python script to fetch character details
+
+import requests
+payload = {"hz": "又"}
+r = requests.get('http://www.cadal.zju.edu.cn/NewCalligraphy/GetMeaning', params=payload)
+r.text
+
++---+----+----+----+----+----+----+
+|   | 2  | 3  | 4  | 5  | 6  | 7  |
+| 1 +----+----+----+----+----+----+
+|   | 8  | 9  | 10 | 11 | 12 | 13 |
++---+----+----+----+----+----+----+
+
+Block number of requests
+
+'<div class="_hanzi"><div class="_hanzi01">又    [1]
+
+</div><div class="_hanzi02"><div class="_hanzi02_shang">
+
+<div class="_hanzi021">繁体 </div><div class="_hanzi022">又         </div> [2][3]
+<div class="_hanzi021">笔画</div> <div class="_hanzi022">2</div> [4][5]
+<div class="_hanzi021">造字法</div> <div class="_hanzi025">象形；像手形                                            </div> [6][7]
+
+</div><div class="_line"></div><div class="_hanzi02_xia">
+<div class="_hanzi021">部首</div><div class="_hanzi022">又         </div> [8][9]
+<div class="_hanzi021">五笔</div> <div class="_hanzi022">CCCC      </div> [10][11]
+<div class="_hanzi021">结构</div> <div class="_hanzi025">单一结构                                              </div></div></div></div>' [12][13]

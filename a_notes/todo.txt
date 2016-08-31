@@ -1,0 +1,14 @@
+1)  Find out why the image dissapears on Firefox
+2)  Correct database to take into account new .tiff pages converted to smaller png
+3)  fix JSON so it represents character positions accurately
+4)  build functionality to generate JSON character archive on request from user.
+5)  Might modify json to include extra info like image link, etc.  -- Maybe have user make custom JSON using checkboxes.
+
+
+
+\subsection{if you want to enable image uploading by users}
+
+My professor keeps letting me know that I need to enable uploading of images onto the webserver.  I haven't implemented it yet.  But it shouldn't be too terribly hard.
+
+https://pixabay.com/en/blog/posts/direct-image-uploads-in-tinymce-4-42/
+
