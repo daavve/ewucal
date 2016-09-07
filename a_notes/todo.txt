@@ -4,6 +4,7 @@
 4)  build functionality to generate JSON character archive on request from user.
 5)  Might modify json to include extra info like image link, etc.  -- Maybe have user make custom JSON using checkboxes.
 6)  When new window opens, highlight..... and maybe zoom-in on newly selected character
+7)  In the comparison slider at the bottom have an image of the character being compared as a reference, probably.
 
 
 
