@@ -3,6 +3,7 @@
 3)  fix JSON so it represents character positions accurately
 4)  build functionality to generate JSON character archive on request from user.
 5)  Might modify json to include extra info like image link, etc.  -- Maybe have user make custom JSON using checkboxes.
+6)  When new window opens, highlight..... and maybe zoom-in on newly selected character
 
 
 
