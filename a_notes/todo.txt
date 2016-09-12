@@ -1,6 +1,6 @@
 1)  Find out why the image dissapears on Firefox
 2)  Correct database to take into account new .tiff pages converted to smaller png
-3)  fix JSON so it represents character positions accurately
+3)  fix JSON so it represents character positions accurately.  Also, have the website periodically update json from existing information
 4)  build functionality to generate JSON character archive on request from user.
 5)  Might modify json to include extra info like image link, etc.  -- Maybe have user make custom JSON using checkboxes.
 6)  When new window opens, highlight..... and maybe zoom-in on newly selected character
@@ -11,6 +11,7 @@
 11) If we select one character that has multiple copies in the work, then highlight ALL copies of that char in the current work.
 12) Figure out on firefox why the image size keeps falling to zero.  I think I might be making firefox work too hard.......
 13) Have the origional work, and the comparison work side-by-side (definate ajax with images here)!
+14) Users seem to expect to use the mousewheel to zoom in/out of images.  Implement this.
 
 
 \subsection{if you want to enable image uploading by users}
