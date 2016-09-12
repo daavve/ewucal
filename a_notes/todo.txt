@@ -7,7 +7,10 @@
 7)  By the comparison slider at the bottom have an image of the character being compared as a reference, probably.
 8)  Have a next-page, previous page part to navigate the work.
 9)  Maybe to a navigatable document tree on the side.
-
+10) Maybe make scroll bar logorythmic instead of linear.  That would make it more like the interactive maps people are already used to.
+11) If we select one character that has multiple copies in the work, then highlight ALL copies of that char in the current work.
+12) Figure out on firefox why the image size keeps falling to zero.  I think I might be making firefox work too hard.......
+13) Have the origional work, and the comparison work side-by-side (definate ajax with images here)!
 
 
 \subsection{if you want to enable image uploading by users}
