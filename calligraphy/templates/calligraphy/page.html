@@ -41,24 +41,23 @@
   <div class="pane">
     <img src="{% static page.get_image %}" >
   </div>
-    <div class="row">
-      <div class="col-sm-8">
-        <div id="relatedChars" class="carrotCell">
-          <div class = "carrotCellView">
-            <ol>
-            </ol>
-          </div>
-          <ol class="navi"></ol>	
-          <div class="prev">prev</div>
-          <div class="next">next</div>
+  <div class="row">
+    <div class="col-lg-8">
+      <div id="relatedChars" class="carrotCell">
+        <div class = "carrotCellView">
+          <ol>
+          </ol>
         </div>
-        <div class="col-sm-4" style="background-color: green">
-          This is a column...
-        </div>
+        <ol class="navi"></ol>	
+        <div class="prev">prev</div>
+        <div class="next">next</div>
       </div>
     </div>
-  
-    <button>{{ page.image_type_httpRequest }}</button>
+    <div class="col-lg-4" style="background-color: green">
+      This is a column...
+    </div>
+  </div>
+  <button>{{ page.image_type_httpRequest }}</button>
 
 
 
