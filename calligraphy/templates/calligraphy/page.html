@@ -45,7 +45,9 @@
       </div>
     </div>
     <div class="col-lg-4" style="background-color: green">
-      This is a column...
+      <span>
+        <img src="" id="leftThumbnail"><img src="" id="rightThumbnail">
+      </span>
     </div>
   </div>
   
@@ -89,22 +91,28 @@
         function update_boxes() {
             for (let $box of boxes) updateBoxPosition($box);
         }
+
+        function char_click( event, ui, me){
+          $(me).toggleClass('char_box_select'){}
+            if($viewport.last_selected) {
+              $viewport.last_selected.removeClass('ui-selected')
+                $viewport.last_selected.toggleClass('char_box_select')
+                  $viewport.last_selected = $(me)
+              }
+             $viewport.last_selected = $(me)
+             relatedCharsAPI.reloadWith($(me).attr("related_chars"))
+              reload()
+            } 
+          } 
+        }
+
+
         function build_a_box(x1, y1, x2, y2){
             var $charBox = $('<div class="char_box"></div>').css({
                 'position': 'absolute'
                 }).selectable({
                     autoRefresh: false,
-                    stop: function( event, ui ) {
-                        $(this).toggleClass('char_box_select')
-                        if($viewport.last_selected) {
-                            $viewport.last_selected.removeClass('ui-selected')
-                            $viewport.last_selected.toggleClass('char_box_select')
-                            $viewport.last_selected = $(this)
-                        }
-                        $viewport.last_selected = $(this)
-                        relatedCharsAPI.reloadWith($(this).attr("related_chars"))
-                        reload()
-                    }
+                    stop: function(event, ui){char_click(event, ui, this)}
                 }).extend({
                     'x_top': x1,
                     'y_top': y1,
