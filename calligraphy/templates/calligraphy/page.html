@@ -238,7 +238,7 @@
                 </li> \
             {% endfor %} \
         ');
-        $gotbox.attr("id", '{% print(char) %}');
+        $gotbox.attr("id", '{{ char.id }}');
         boxes.add($gotbox)
         $viewport.append($gotbox)
       {% endfor %}
