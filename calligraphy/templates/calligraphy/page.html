@@ -39,12 +39,12 @@
   </style>
 
   <div class="row">
-    <div class="col-lg-8" style="background-color: red" >
+    <div class="col-lg-8 col-md-8 col-sm-8" style="background-color: red" >
       <div class="pane">
         <img src="{% static page.get_image %}" >
       </div>
     </div>
-    <div class="col-lg-4" style="background-color: green">
+    <div class="col-lg-4 col-md-4 col-sm-4" style="background-color: green">
       <span>
         <img src="" id="leftThumbnail"><img src="" id="rightThumbnail">
       </span>
@@ -106,7 +106,7 @@
           var thisCharacterImage = $(me).attr('image');
 
           console.log("clicked: { id: " + thisCharacterId + ", image: " + thisCharacterImage + "}");
-
+          $("#leftThumbnail").attr("src", thisCharacterImage);
 
           reload();    
         }
