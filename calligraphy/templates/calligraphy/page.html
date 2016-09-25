@@ -94,15 +94,14 @@
 
         function char_click( event, ui, me){
           $(me).toggleClass('char_box_select');    
-            if($viewport.last_selected) {   
-              $viewport.last_selected.removeClass('ui-selected');    
-              $viewport.last_selected.toggleClass('char_box_select');  
-              $viewport.last_selected = $(me);
-            }   
-            $viewport.last_selected = $(me);   
-            relatedCharsAPI.reloadWith($(me).attr("related_chars"));  
-            reload();    
-          }
+          if($viewport.last_selected) {   
+            $viewport.last_selected.removeClass('ui-selected');    
+            $viewport.last_selected.toggleClass('char_box_select');  
+            $viewport.last_selected = $(me);
+          }   
+          $viewport.last_selected = $(me);   
+          relatedCharsAPI.reloadWith($(me).attr("related_chars"));  
+          reload();    
         }
 
         function build_a_box(x1, y1, x2, y2){
