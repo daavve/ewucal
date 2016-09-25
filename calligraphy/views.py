@@ -47,7 +47,7 @@ def individual_page(request, page_id):
     a_chars = []
     for char in chars:
         a_chars.append(RelatedChars(char))
-    tmplt = loader.get_template('calligraphy/page.html')
+    tmplt = loader.get_template('calligraphy/page_new.html')
     cntxt = {'a_chars': a_chars,
              'page': page}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
