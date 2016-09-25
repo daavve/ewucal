@@ -93,26 +93,26 @@
         }
 
         function char_click( event, ui, me){
-          $(me).toggleClass('char_box_select'){}
-            if($viewport.last_selected) {
-              $viewport.last_selected.removeClass('ui-selected')
-                $viewport.last_selected.toggleClass('char_box_select')
-                  $viewport.last_selected = $(me)
-              }
-             $viewport.last_selected = $(me)
-             relatedCharsAPI.reloadWith($(me).attr("related_chars"))
-              reload()
-            } 
-          } 
+          $(me).toggleClass('char_box_select');    
+            if($viewport.last_selected) {   
+              $viewport.last_selected.removeClass('ui-selected');    
+              $viewport.last_selected.toggleClass('char_box_select');  
+              $viewport.last_selected = $(me);
+            }   
+            $viewport.last_selected = $(me);   
+            relatedCharsAPI.reloadWith($(me).attr("related_chars"));  
+            reload();    
+          }
         }
-
 
         function build_a_box(x1, y1, x2, y2){
             var $charBox = $('<div class="char_box"></div>').css({
                 'position': 'absolute'
                 }).selectable({
                     autoRefresh: false,
-                    stop: function(event, ui){char_click(event, ui, this)}
+                    stop: function(event, ui){
+                      char_click(event, ui, this);
+                    }
                 }).extend({
                     'x_top': x1,
                     'y_top': y1,
@@ -126,7 +126,7 @@
                     }
                 })
                 updateBoxPosition($charBox)
-        return $charBox;
+          return $charBox;
         }
 
 
