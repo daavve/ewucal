@@ -175,7 +175,44 @@
       $viewport.append($gotbox)
     {% endfor %}
   }
-
-
 $(document).ready( iWindow )
 */
+
+var pageObject;
+var charObjects;
+var carRelatives = {};
+
+function doFailThing(){
+  console.log("------------ Failure to load page object --------------");
+};
+
+function getPageCharacters(){
+  $.ajax({
+    url: "",
+    dataType: "json",
+    method: "POST",
+    data: {docId, pageId}
+  }).success(function(data){});
+}
+
+
+
+$(document).ready(function(){
+  var pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId"));
+
+  // get the page object from the server
+  $.ajax({
+    url: "/page/" + pageId,
+    dataType: "json",
+    method: "POST",
+    data: {docId: pageId}
+  }).success(function(data){
+    pageObject = data;
+
+    // get the pages chacacter objects
+    getPageCharacters();  
+  }).fail(function(){
+    doFailThing():
+  });
+
+});

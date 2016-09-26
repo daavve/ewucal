@@ -56,14 +56,12 @@ def individual_page(request, page_id):
             page_id = request.GET.get('docId', None)
             chars = Character.objects.filter(parent_page=8930)
             data = serializers.serialize("json", chars, safe=False)
-            return HttpResponse(json.dump({"hi": "there"}, skipkeys=True), content_type='application/json'))
-         
-         
-         
-            
+            return HttpResponse(json.dump("{'hi': 'there'}", skipkeys=True), content_type='application/json'))
+
+
+
+
 #          chars = Character.objects.filter(parent_page=page_id)
 #         a_chars = []
 #         for char in chars:
 #           a_chars.append(RelatedChars(char))
-
-

@@ -2,6 +2,9 @@
 {% block content %}
   {% load staticfiles %}
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
+
+  <div id="pageIdHolder" pageId="{{ page.id }}"></div>
+
   <div class="row">
     <div class="col-lg-8 col-md-8 col-sm-8" style="background-color: red" >
       <div class="pane">
