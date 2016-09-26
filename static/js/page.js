@@ -180,19 +180,63 @@ $(document).ready( iWindow )
 
 var pageObject;
 var charObjects;
-var carRelatives = {};
+var charRelativesMap = {};
 
-function doFailThing(){
-  console.log("------------ Failure to load page object --------------");
+function doFailThing(jqXHR, textStatus, url){
+  console.log("---- failure during request to: " + url + " ---------------");
+  console.log("Request failed: " + textStatus);
 };
 
 function getPageCharacters(){
+  var url = "";
   $.ajax({
-    url: "",
+    url: url,
     dataType: "json",
     method: "POST",
     data: {docId, pageId}
-  }).success(function(data){});
+  }).success(function(data){
+    charObjects = data;
+
+    charObjects.forEach(function(thisChar){
+      buildCharInPage(thisChar);
+      addRelatives();
+    }, this);
+  }).fail(function(jqXHR, textStatus){
+    doFailThing(jqXHR, textStatus, url):
+  });;
+}
+
+function addRaletives(thisChar){
+  var url = "";
+  $.ajax({
+    url: url,
+    dataType: "json",
+    method: "POST",
+    data: {docId, pageId}
+  }).success(function(relatives){
+    if(!charRelativesMap[thisChar.id])
+      charRelativesMap[thisChar.id] = [];
+
+    relatives.forEach(function(thisRelative){
+      // TODO: Implement this check if this relative is already in our map before
+      //       inserting it
+      // 9/25/2016
+      // - Michael Peterson
+
+      charRelativesMap[thisChar.id].append(thisRelative);
+    });
+  }).fail(function(jqXHR, textStatus){
+    doFailThing(jqXHR, textStatus, url):
+  });;
+}
+
+// This function should render the bounding box around the characters on the
+// as well as wire up any event handlers they need etc.
+function buildCharInPage(thisChar){
+  // TODO: Implement this function
+  // 9/25/2016
+  // - Michael Peterson
+
 }
 
 
@@ -201,18 +245,22 @@ $(document).ready(function(){
   var pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId"));
 
   // get the page object from the server
+  var url = "/page/" + pageId;
   $.ajax({
-    url: "/page/" + pageId,
+    url: url,
     dataType: "json",
     method: "POST",
     data: {docId: pageId}
   }).success(function(data){
     pageObject = data;
+    console.log(data);
+    // TODO: update page image with the source url found in pageObject
+    // 9/25/2016
+    // - Michael Peterson
 
     // get the pages chacacter objects
-    getPageCharacters();  
-  }).fail(function(){
-    doFailThing():
+    getPageCharacters();
+  }).fail(function(jqXHR, textStatus){
+    doFailThing(jqXHR, textStatus, url):
   });
-
 });
