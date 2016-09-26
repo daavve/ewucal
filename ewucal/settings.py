@@ -122,8 +122,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
+# STATIC STUFF ONLY MATTERS WITH EMBEDDED DEBUG SERVER,  NOT NGINX
 
 if socket.gethostname() == 'bigArch':
     MEDIA_ROOT = '/home/dave/workspace/pycharm/media/'
