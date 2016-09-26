@@ -1,8 +1,6 @@
 //TODO: jCarrotCell works with Jquery2, but not Jquery3
 //TODO: jCarrotCell chops off image edges on rectangular images
-
-
-
+/*
   function iWindow ( $ ) {
       //Helper-Functions
       function reload() {
@@ -180,3 +178,4 @@
 
 
 $(document).ready( iWindow )
+*/

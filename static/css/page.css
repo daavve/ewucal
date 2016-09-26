@@ -1,0 +1,32 @@
+.page_container {
+  margin-bottom: 1em;
+}
+
+.page_viewport {
+position: relative;
+overflow: hidden;
+border:1px solid #ccc;
+width:640px;
+height:480px;
+border: dashed 5px #999;
+}
+
+.page_viewport img
+
+.page_zoom_slider_label {
+  margin-top: .5em;
+}
+.char_box {
+border: 2px solid #40ff18;
+}
+
+.char_box_hover {
+border: 2px solid #63a0ff;
+}
+
+.char_box_select {
+border: 2px solid #ff5b60;
+}
+
+#relatedChars {
+  width: 800px; }
