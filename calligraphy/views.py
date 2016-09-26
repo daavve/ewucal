@@ -53,7 +53,7 @@ def individual_page(request, page_id):
         return HttpResponse(tmplt.render(context=cntxt, request=request))
     else:
         if request.method == 'POST':
-            page_id = request.GET.get('pageId', None)
+            page_id = request.POST.get('pageId', None)
             chars = Character.objects.filter(parent_page=page_id)
             data = serializers.serialize("json", chars)
             return JsonResponse(data, safe=False)
