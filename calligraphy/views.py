@@ -10,6 +10,9 @@ from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars
 import json
 
+from django.views.decorators.csrf import csrf_exempt
+# TODO:  Probably implement logging on so we can get rid of this
+
 # TODO: Author list temporarily modified to only display authors that
 #  Have works with annotated charactars
 
@@ -41,7 +44,7 @@ def individual_char(request, char_id):
     cntxt = {'char': char}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-
+@csrf_exempt
 def individual_page(request, page_id):
     if request.method == 'GET':
         page = Page.objects.get(id=page_id)
@@ -50,9 +53,9 @@ def individual_page(request, page_id):
         return HttpResponse(tmplt.render(context=cntxt, request=request))
     else:
         if request.method == 'POST':
-#            page_id = request.GET.get('docId', None)
-#            chars = Character.objects.filter(parent_page=page_id)
-#            data = serializers.serialize("json", chars)
+            page_id = request.GET.get('docId', None)
+            chars = Character.objects.filter(parent_page=page_id)
+            data = serializers.serialize("json", chars)
             return JsonResponse("data")
          
          
