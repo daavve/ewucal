@@ -202,7 +202,7 @@ function getPageCharacters(){
       addRelatives();
     }, this);
   }).fail(function(jqXHR, textStatus){
-    doFailThing(jqXHR, textStatus, url):
+    doFailThing(jqXHR, textStatus, url);
   });;
 }
 
@@ -226,7 +226,7 @@ function addRaletives(thisChar){
       charRelativesMap[thisChar.id].append(thisRelative);
     });
   }).fail(function(jqXHR, textStatus){
-    doFailThing(jqXHR, textStatus, url):
+    doFailThing(jqXHR, textStatus, url);
   });;
 }
 
@@ -261,6 +261,6 @@ $(document).ready(function(){
     // get the pages chacacter objects
     getPageCharacters();
   }).fail(function(jqXHR, textStatus){
-    doFailThing(jqXHR, textStatus, url):
+    doFailThing(jqXHR, textStatus, url);
   });
 });
