@@ -55,7 +55,7 @@ def individual_page(request, page_id):
         if request.method == 'POST':
             page_id = request.GET.get('docId', None)
             chars = Character.objects.filter(parent_page=page_id)
-            data = serializers.serialize("json", chars)
+            data = serializers.serialize("json", chars, safe=False)
             return JsonResponse(data)
          
          
