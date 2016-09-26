@@ -53,15 +53,8 @@ def individual_page(request, page_id):
         return HttpResponse(tmplt.render(context=cntxt, request=request))
     else:
         if request.method == 'POST':
-            page_id = request.GET.get('docId', None)
-            chars = Character.objects.filter(parent_page=8930)
-            data = serializers.serialize("json", chars, safe=False)
-            return HttpResponse(json.dump("{'hi': 'there'}", skipkeys=True), content_type='application/json'))
-
-
-
-
-#          chars = Character.objects.filter(parent_page=page_id)
-#         a_chars = []
-#         for char in chars:
-#           a_chars.append(RelatedChars(char))
+            return JsonResponse([1, 2, 3], safe=False)
+#            page_id = request.GET.get('docId', None)
+#            chars = Character.objects.filter(parent_page=8930)
+#            data = serializers.serialize("json", chars, safe=False)
+            
