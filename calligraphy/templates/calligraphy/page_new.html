@@ -1,8 +1,6 @@
 {% extends parent_template|default:"ewucal/base.html" %}
 {% block content %}
   {% load staticfiles %}
-  <script type="text/javascript" src="{{ STATIC_URL }}js/page.js"></script>
-
   <style>
   .page_container {
     margin-bottom: 1em;
@@ -63,4 +61,5 @@
     <div class="next">next</div>
   </div>
   <button>{{ page.image_type_httpRequest }}</button>
+  <script type="text/javascript" src="{{ STATIC_URL }}js/page.js"></script>
   {% endblock %}
