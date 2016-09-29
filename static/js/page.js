@@ -188,7 +188,7 @@ function doFailThing(jqXHR, textStatus, url){
 };
 
 function getPageCharacters(){
-  var url = "";
+  var url = "/get_page_characters";
   $.ajax({
     url: url,
     dataType: "json",
@@ -211,12 +211,12 @@ function getPageCharacters(){
 }
 
 function addRaletives(thisChar){
-  var url = "";
+  var url = "/get_char_relatives";
   $.ajax({
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageId}
+    data: {pageId: pageObject.id}
   }).done(function(relativesJSON){
     relatives = JSON.parse(relatives);
 
@@ -260,7 +260,7 @@ $(document).ready(function(){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {docId: pageId}
+    data: {pageId: pageObject.id}
   }).done(function(pageJSON){
     pageObject = JSON.parse(pageJSON);
     console.log("---------- Got page Object ---------------");
