@@ -264,7 +264,7 @@ $(document).ready(function(){
   }).done(function(pageJSON){
     pageObject = JSON.parse(pageJSON);
     console.log("---------- Got page Object ---------------");
-    console.log(page);
+    console.log(pageObject);
     // TODO: update page image with the source url found in pageObject
     // 9/25/2016
     // - Michael Peterson
