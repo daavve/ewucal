@@ -188,7 +188,7 @@ function doFailThing(jqXHR, textStatus, url){
 };
 
 function getPageCharacters(){
-  var url = "/ajax/get_page_characters";
+  var url = "/ajax/get_page_chars";
   $.ajax({
     url: url,
     dataType: "json",
