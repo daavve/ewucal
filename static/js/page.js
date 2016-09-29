@@ -193,7 +193,7 @@ function getPageCharacters(){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageObject.pk}
+    data: {charId: pageObject.pk}
   }).done(function(charJSON){
     charObjects = JSON.parse(charJSON);
 
