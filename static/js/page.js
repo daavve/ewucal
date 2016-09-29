@@ -262,7 +262,7 @@ $(document).ready(function(){
     method: "POST",
     data: {pageId: pageId}
   }).done(function(pageJSON){
-    pageObject = JSON.parse(pageJSON);
+    pageObject = JSON.parse(pageJSON)[0];
     console.log("---------- Got page Object ---------------");
     console.log(pageObject);
     // TODO: update page image with the source url found in pageObject
