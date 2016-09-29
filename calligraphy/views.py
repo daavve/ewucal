@@ -40,19 +40,11 @@ def individual_char(request, char_id):
     cntxt = {'char': char}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-@csrf_exempt
 def individual_page(request, page_id):
-    if request.method == 'GET':
-        page = Page.objects.get(id=page_id)
-        tmplt = loader.get_template('calligraphy/page_new.html')
-        cntxt = {'page': page}
-        return HttpResponse(tmplt.render(context=cntxt, request=request))
-    else:
-        if request.method == 'POST':
-            page_id = request.POST.get('pageId', None)
-            page = Page.objects.filter(id=page_id)
-            data = serializers.serialize("json", page)
-            return JsonResponse(data, safe=False)
+    page = Page.objects.get(id=page_id)
+    tmplt = loader.get_template('calligraphy/page_new.html')
+    cntxt = {'page': page}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 @csrf_exempt
 def get_page(request):
