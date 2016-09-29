@@ -193,7 +193,7 @@ function getPageCharacters(){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {charId: pageObject.pk}
+    data: {pageId: pageObject.pk}
   }).done(function(charJSON){
     charObjects = JSON.parse(charJSON);
 
@@ -216,7 +216,7 @@ function addRelatives(thisChar){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageObject.pk}
+    data: {charId: thisChar.pk}
   }).done(function(relativesJSON){
     relatives = JSON.parse(relatives);
 
