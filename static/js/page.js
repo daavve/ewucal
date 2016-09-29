@@ -194,7 +194,7 @@ function getPageCharacters(){
     dataType: "json",
     method: "POST",
     data: {pageId: pageId}
-  }).success(function(data){
+  }).done(function(data){
     charObjects = data;
 
     charObjects.forEach(function(thisChar){
@@ -213,7 +213,7 @@ function addRaletives(thisChar){
     dataType: "json",
     method: "POST",
     data: {pageId: pageId}
-  }).success(function(relatives){
+  }).done(function(relatives){
     if(!charRelativesMap[thisChar.id])
       charRelativesMap[thisChar.id] = [];
 
@@ -251,7 +251,7 @@ $(document).ready(function(){
     dataType: "json",
     method: "POST",
     data: {docId: pageId}
-  }).success(function(data){
+  }).done(function(data){
     pageObject = data;
     console.log(data);
     // TODO: update page image with the source url found in pageObject
