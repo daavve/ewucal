@@ -1,6 +1,7 @@
 {% extends parent_template|default:"ewucal/base.html" %}
 {% block content %}
   {% load staticfiles %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/page.js"></script>
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
 
   <div id="pageIdHolder" pageId="{{ page.id }}"></div>
