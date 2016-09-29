@@ -181,7 +181,6 @@ $(document).ready( iWindow )
 var pageObject;
 var charObjects;
 var charRelativesMap = {};
-var pageId;
 
 function doFailThing(jqXHR, textStatus, url){
   console.log("---- failure during request to: " + url + " ---------------");
@@ -194,9 +193,13 @@ function getPageCharacters(){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageId}
-  }).done(function(data){
-    charObjects = data;
+    data: {pageId: pageObject.id}
+  }).done(function(charJSON){
+    charObjects = JSON.parse(charJSON);
+
+    console.log("---------- Got Char Objects ---------------");
+    console.log("thisPage: " + pageObject.id);
+    console.log(charObjects);
 
     charObjects.forEach(function(thisChar){
       buildCharInPage(thisChar);
@@ -214,7 +217,13 @@ function addRaletives(thisChar){
     dataType: "json",
     method: "POST",
     data: {pageId: pageId}
-  }).done(function(relatives){
+  }).done(function(relativesJSON){
+    relatives = JSON.parse(relatives);
+
+    console.log("---------- Got Character Relatives ---------------");
+    console.log("thisChar: " + thisChar.id);
+    console.log(relatives);
+
     if(!charRelativesMap[thisChar.id])
       charRelativesMap[thisChar.id] = [];
 
@@ -252,9 +261,10 @@ $(document).ready(function(){
     dataType: "json",
     method: "POST",
     data: {docId: pageId}
-  }).done(function(data){
-    pageObject = data;
-    console.log(data);
+  }).done(function(pageJSON){
+    pageObject = JSON.parse(pageJSON);
+    console.log("---------- Got page Object ---------------");
+    console.log(page);
     // TODO: update page image with the source url found in pageObject
     // 9/25/2016
     // - Michael Peterson
