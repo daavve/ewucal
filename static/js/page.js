@@ -210,7 +210,7 @@ function getPageCharacters(){
   });;
 }
 
-function addRaletives(thisChar){
+function addRelatives(thisChar){
   var url = "/ajax/get_char_relatives";
   $.ajax({
     url: url,
