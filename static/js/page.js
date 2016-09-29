@@ -203,7 +203,7 @@ function getPageCharacters(){
 
     charObjects.forEach(function(thisChar){
       buildCharInPage(thisChar);
-      addRelatives();
+      addRelatives(thisChar);
     }, this);
   }).fail(function(jqXHR, textStatus){
     doFailThing(jqXHR, textStatus, url);
