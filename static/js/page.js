@@ -193,12 +193,12 @@ function getPageCharacters(){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageObject.id}
+    data: {pageId: pageObject.pk}
   }).done(function(charJSON){
     charObjects = JSON.parse(charJSON);
 
     console.log("---------- Got Char Objects ---------------");
-    console.log("thisPage: " + pageObject.id);
+    console.log("thisPage: " + pageObject.pk);
     console.log(charObjects);
 
     charObjects.forEach(function(thisChar){
@@ -216,7 +216,7 @@ function addRaletives(thisChar){
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageObject.id}
+    data: {pageId: pageObject.pk}
   }).done(function(relativesJSON){
     relatives = JSON.parse(relatives);
 
@@ -224,8 +224,8 @@ function addRaletives(thisChar){
     console.log("thisChar: " + thisChar.id);
     console.log(relatives);
 
-    if(!charRelativesMap[thisChar.id])
-      charRelativesMap[thisChar.id] = [];
+    if(!charRelativesMap[thisChar.pk])
+      charRelativesMap[thisChar.pk] = [];
 
     relatives.forEach(function(thisRelative){
       // TODO: Implement this check if this relative is already in our map before
