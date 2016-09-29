@@ -54,6 +54,19 @@ def individual_page(request, page_id):
             data = serializers.serialize("json", page)
             return JsonResponse(data, safe=False)
 
- #            chars = Character.objects.filter(parent_page=page_id)
-#            data = serializers.serialize("json", chars)
-            
+@csrf_exempt
+def get_page(request):
+    page_id = request.POST.get('pageId', None)
+    page = Page.objects.filter(id=page_id)
+    data = serializers.serialize("json", page)
+    return JsonResponse(data, safe=False)
+    
+@csrf_exempt
+def get_page_chars(request):
+    page_id = request.POST.get('pageId', None)
+    chars = Character.objects.filter(parent_page=page_id)
+    data = serializers.serialize("json", chars)
+    return JsonResponse(data, safe=False)
+
+
+
