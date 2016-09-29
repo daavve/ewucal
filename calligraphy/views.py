@@ -11,10 +11,6 @@ from .models import Author, Work, Page, Character, RelatedChars
 import json
 
 from django.views.decorators.csrf import csrf_exempt
-# TODO:  Probably implement logging on so we can get rid of this
-
-# TODO: Author list temporarily modified to only display authors that
-#  Have works with annotated charactars
 
 def auth_list(request):
     authors = Author.objects.all()
