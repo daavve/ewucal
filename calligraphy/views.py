@@ -40,7 +40,6 @@ def individual_char(request, char_id):
     cntxt = {'char': char}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-@csrf_exempt
 def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)
     tmplt = loader.get_template('calligraphy/page_new.html')
