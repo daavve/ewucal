@@ -181,6 +181,7 @@ $(document).ready( iWindow )
 var pageObject;
 var charObjects;
 var charRelativesMap = {};
+var pageId;
 
 function doFailThing(jqXHR, textStatus, url){
   console.log("---- failure during request to: " + url + " ---------------");
@@ -242,7 +243,7 @@ function buildCharInPage(thisChar){
 
 
 $(document).ready(function(){
-  var pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId"));
+  pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId"));
 
   // get the page object from the server
   var url = "/page/" + pageId;
