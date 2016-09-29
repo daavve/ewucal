@@ -40,6 +40,7 @@ def individual_char(request, char_id):
     cntxt = {'char': char}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
+@csrf_exempt
 def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)
     tmplt = loader.get_template('calligraphy/page_new.html')
@@ -63,6 +64,9 @@ def get_page_chars(request):
 @csrf_exempt
 def get_char_relatives(request):
     char_id = request.POST.get('charId', None)
-    return JsonResponse(char_id, safe=False)
+    char = Character.objects.filter(id=char_id)
+    char_rel = RelatedChars(char)
+    data = serializers.serializers("json", char_rel)
+    return JsonResponse(data, safe=False)
 
 
