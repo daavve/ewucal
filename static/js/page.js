@@ -188,7 +188,7 @@ function doFailThing(jqXHR, textStatus, url){
 };
 
 function getPageCharacters(){
-  var url = "/get_page_characters";
+  var url = "/ajax/get_page_characters";
   $.ajax({
     url: url,
     dataType: "json",
@@ -211,7 +211,7 @@ function getPageCharacters(){
 }
 
 function addRaletives(thisChar){
-  var url = "/get_char_relatives";
+  var url = "/ajax/get_char_relatives";
   $.ajax({
     url: url,
     dataType: "json",
@@ -255,12 +255,12 @@ $(document).ready(function(){
   pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId"));
 
   // get the page object from the server
-  var url = "/page/" + pageId;
+  var url = "/ajax/get_page";
   $.ajax({
     url: url,
     dataType: "json",
     method: "POST",
-    data: {pageId: pageObject.id}
+    data: {pageId: pageId}
   }).done(function(pageJSON){
     pageObject = JSON.parse(pageJSON);
     console.log("---------- Got page Object ---------------");
