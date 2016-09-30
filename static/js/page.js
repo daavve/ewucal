@@ -233,7 +233,7 @@ function addRelatives(thisChar){
       // 9/25/2016
       // - Michael Peterson
 
-      charRelativesMap[thisChar.id].append(thisRelative);
+      charRelativesMap[thisChar.pk].append(thisRelative);
     }, this);
 
     console.log("---------- Relatives map ---------------");
