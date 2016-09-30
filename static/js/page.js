@@ -235,6 +235,8 @@ function addRelatives(thisChar){
 
       charRelativesMap[thisChar.id].append(thisRelative);
     }, this);
+
+    console.log("---------- Relatives map ---------------");
     console.log(charRelativesMap);
   }).fail(function(jqXHR, textStatus){
     doFailThing(jqXHR, textStatus, url);
