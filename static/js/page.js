@@ -221,7 +221,7 @@ function addRelatives(thisChar){
     relatives = JSON.parse(relatives);
 
     console.log("---------- Got Character Relatives ---------------");
-    console.log("thisChar: " + thisChar.id);
+    console.log("thisChar: " + thisChar.pk);
     console.log(relatives);
 
     if(!charRelativesMap[thisChar.pk])
