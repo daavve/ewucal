@@ -207,7 +207,7 @@ function getPageCharacters(){
     }, this);
   }).fail(function(jqXHR, textStatus){
     doFailThing(jqXHR, textStatus, url);
-  });;
+  });
 }
 
 function addRelatives(thisChar){
@@ -218,7 +218,7 @@ function addRelatives(thisChar){
     method: "POST",
     data: {charId: thisChar.pk}
   }).done(function(relativesJSON){
-    relatives = JSON.parse(relatives);
+    relatives = JSON.parse(relativesJSON);
 
     console.log("---------- Got Character Relatives ---------------");
     console.log("thisChar: " + thisChar.pk);
@@ -234,7 +234,8 @@ function addRelatives(thisChar){
       // - Michael Peterson
 
       charRelativesMap[thisChar.id].append(thisRelative);
-    });
+    }, this);
+    console.log(charRelativesMap);
   }).fail(function(jqXHR, textStatus){
     doFailThing(jqXHR, textStatus, url);
   });;
