@@ -63,9 +63,9 @@ def get_page_chars(request):
 @csrf_exempt
 def get_char_relatives(request):
     char_id = request.POST.get('charId', None)
-    char = Character.objects.filter(id=char_id)
+    char = Character.objects.get(id=charId)
     char_rel = RelatedChars(char)
-    data = serializers.serializers("json", char_rel)
+    data = serializers.serialize("json", char_rel.relatedChars)
     return JsonResponse(data, safe=False)
 
 
