@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 from django.db import migrations
 import subprocess
 
-def do_jpg_crop(char, page_img_path, page) -> None:
+def do_jpg_crop(char, page_img_path) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez.jpg"
     width = char.x2 - char.x1
     height = char.y2 - char.y1
@@ -22,20 +22,11 @@ def do_jpg_crop(char, page_img_path, page) -> None:
     cmnd.append(new_char_path)
     cmnd.append(page_img_path)
     print(cmnd)
-    saveIt = True
-    try:
-        subprocess.run(cmnd, check=True)
-    except subprocess.CalledProcessError:
-        saveIt = False
-        pass
-    if saveIt:
-        char.image_high_rez = new_char_path
-        char.save()
-    else:
-        page.image_type_httpRequest = str(page.image_type_httpRequest).strip() + " : BADCHARS"
-        page.save()
-    
-def do_png_tif_crop(char, page_img_path, img_type, page) -> None:
+    subprocess.run(cmnd, check=True)
+    char.image_high_rez = new_char_path
+    char.save()
+
+def do_png_tif_crop(char, page_img_path, img_type) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez." + img_type
     width = char.x2 - char.x1
     height = char.y2 - char.y1
@@ -49,17 +40,19 @@ def do_png_tif_crop(char, page_img_path, img_type, page) -> None:
     subprocess.run(cmnd)
     char.image_high_rez = new_char_path
     char.save()
-    if(page.image_width < char.x2 or page.image_length < char.y2):
-        page.image_type_httpRequest = str(page.image_type_httpRequest).strip() + " : BADCHARS"
-        page.save()
+
 
 def make_new_char_image(page, char) -> None:
     page_img_path = str(page.image)
     page_img_type = page_img_path.split(".")[1]
-    if(page_img_type == "jpg"):
-        do_jpg_crop(char, page_img_path, page)
+    if(page.image_width < char.x2 or page.image_length < char.y2):
+        page.image_type_httpRequest = str(page.image_type_httpRequest).strip() + " : BADCHARS"
+        page.save()
     else:
-        do_png_tif_crop(char, page_img_path, page_img_type, page)
+        if(page_img_type == "jpg"):
+            do_jpg_crop(char, page_img_path)
+    else:
+        do_png_tif_crop(char, page_img_path, page_img_type)
 
 def make_high_rez(apps) -> None:
     Page = apps.get_model("calligraphy", "Page")
