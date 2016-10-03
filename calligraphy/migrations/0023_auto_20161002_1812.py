@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 from django.db import migrations
 import subprocess
 
-def do_jpg_crop(char, page_img_path) -> None:
+def do_jpg_crop(char, page_img_path, page) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez.jpg"
     width = char.x2 - char.x1
     height = char.y2 - char.y1
@@ -22,11 +22,18 @@ def do_jpg_crop(char, page_img_path) -> None:
     cmnd.append(new_char_path)
     cmnd.append(page_img_path)
     print(cmnd)
-    subprocess.run(cmnd)
-    char.image_high_rez = new_char_path
-    char.save()
+    saveIt = True
+    try:
+        subprocess.run(cmnd, check=True)
+    except subprocess.CalledProcessError:
+        saveIt = False
+        page.image_type_httpRequest = str(page.image_type_httpRequest) + " : BADCHARS"
+        page.save()
+    if saveIt:
+        char.image_high_rez = new_char_path
+        char.save()
     
-def do_png_tif_crop(char, page_img_path, img_type) -> None:
+def do_png_tif_crop(char, page_img_path, img_type, page) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez." + img_type
     width = char.x2 - char.x1
     height = char.y2 - char.y1
@@ -40,15 +47,17 @@ def do_png_tif_crop(char, page_img_path, img_type) -> None:
     subprocess.run(cmnd)
     char.image_high_rez = new_char_path
     char.save()
-    
+    if(page.image_width < char.x2 or page.image_length < char.y2):
+        page.image_type_httpRequest = str(page.image_type_httpRequest) + " : BADCHARS"
+        page.save()
 
 def make_new_char_image(page, char) -> None:
     page_img_path = str(page.image)
     page_img_type = page_img_path.split(".")[1]
     if(page_img_type == "jpg"):
-        do_jpg_crop(char, page_img_path)
+        do_jpg_crop(char, page_img_path, page)
     else:
-        do_png_tif_crop(char, page_img_path, page_img_type)
+        do_png_tif_crop(char, page_img_path, page_img_type, page)
 
 def make_high_rez(apps) -> None:
     Page = apps.get_model("calligraphy", "Page")
