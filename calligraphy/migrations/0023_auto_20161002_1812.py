@@ -27,6 +27,7 @@ def do_jpg_crop(char, page_img_path, page) -> None:
         subprocess.run(cmnd, check=True)
     except subprocess.CalledProcessError:
         saveIt = False
+        pass
     if saveIt:
         char.image_high_rez = new_char_path
         char.save()
