@@ -27,11 +27,12 @@ def do_jpg_crop(char, page_img_path, page) -> None:
         subprocess.run(cmnd, check=True)
     except subprocess.CalledProcessError:
         saveIt = False
-        page.image_type_httpRequest = str(page.image_type_httpRequest) + " : BADCHARS"
-        page.save()
     if saveIt:
         char.image_high_rez = new_char_path
         char.save()
+    else:
+        page.image_type_httpRequest = str(page.image_type_httpRequest) + " : BADCHARS"
+        page.save()
     
 def do_png_tif_crop(char, page_img_path, img_type, page) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez." + img_type
