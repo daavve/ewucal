@@ -22,7 +22,7 @@ def do_jpg_crop(char, page_img_path) -> None:
     cmnd.append(new_char_path)
     cmnd.append(page_img_path)
     print(cmnd)
-    subprocess.run(cmnd, check=True)
+    subprocess.run(cmnd)
     char.image_high_rez = new_char_path
     char.save()
 
