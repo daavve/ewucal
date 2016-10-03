@@ -51,8 +51,8 @@ def make_new_char_image(page, char) -> None:
     else:
         if(page_img_type == "jpg"):
             do_jpg_crop(char, page_img_path)
-    else:
-        do_png_tif_crop(char, page_img_path, page_img_type)
+        else:
+            do_png_tif_crop(char, page_img_path, page_img_type)
 
 def make_high_rez(apps) -> None:
     Page = apps.get_model("calligraphy", "Page")
