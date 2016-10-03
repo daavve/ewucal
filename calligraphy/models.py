@@ -53,6 +53,7 @@ class Character(models.Model):
     y2 = models.IntegerField(blank=True)
 
     image = models.ImageField(blank=True, storage=fs)
+    image_high_rez = models.ImageField(blank=True, storage=fs)
 
     def get_absolute_url(self):
         return '/char/' + str(self.id)
