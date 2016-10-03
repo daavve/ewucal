@@ -46,7 +46,7 @@ def make_new_char_image(page, char) -> None:
     page_img_path = str(page.image)
     page_img_type = page_img_path.split(".")[1]
     if(page.image_width < char.x2 or page.image_length < char.y2):
-        page.image_type_httpRequest = str(page.image_type_httpRequest).strip() + " : BADCHARS"
+        page.image_type_httpRequest = str(page.image_type_httpRequest).strip(" ") + " : BADCHARS"
         page.save()
     else:
         if(page_img_type == "jpg"):
