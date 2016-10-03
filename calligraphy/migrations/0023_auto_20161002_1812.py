@@ -15,7 +15,7 @@ def do_jpg_crop(char, page_img_path) -> None:
     height = char.y2 - char.y1
     crop_d = str(width) + "x" + str(height) + "+" + str(char.x1) + "+" + str(char.y1)
     out_file = '-outfile ' + new_char_path
-    cmnd = ['jgegtran']
+    cmnd = ['jpegtran']
     cmnd.append('-crop')
     cmnd.append(crop_d)
     cmnd.append('-outfile')
