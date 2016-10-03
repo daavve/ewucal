@@ -21,7 +21,7 @@ def do_jpg_crop(char, page_img_path) -> None:
     cmnd.append(page_img_path)
     print(cmnd)
     subprocess.run(cmnd)
-    char.image_high_rez = new_char_path)
+    char.image_high_rez = new_char_path
     char.save()
     
 def do_png_tif_crop(char, page_img_path, img_type) -> None:
@@ -35,7 +35,7 @@ def do_png_tif_crop(char, page_img_path, img_type) -> None:
     cmnd.append(new_char_path)
     print(cmnd)
     subprocess.run(cmnd)
-    char.image_high_rez = new_char_path)
+    char.image_high_rez = new_char_path
     char.save()
     
 
