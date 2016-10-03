@@ -13,11 +13,13 @@ def do_jpg_crop(char, page_img_path) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez.jpg"
     width = char.x2 - char.x1
     height = char.y2 - char.y1
-    crop_d = "-crop " + str(width) + "x" + str(height) + "+" + str(char.x1) + "+" + str(char.y1)
+    crop_d = str(width) + "x" + str(height) + "+" + str(char.x1) + "+" + str(char.y1)
     out_file = '-outfile ' + new_char_path
     cmnd = ['jgegtran']
+    cmnd.append('-crop')
     cmnd.append(crop_d)
-    cmnd.append(out_file)
+    cmnd.append('-outfile')
+    cmnd.append(new_char_path)
     cmnd.append(page_img_path)
     print(cmnd)
     subprocess.run(cmnd)
@@ -28,8 +30,9 @@ def do_png_tif_crop(char, page_img_path, img_type) -> None:
     new_char_path = str(char.image).strip("jpg") + "hi-rez." + img_type
     width = char.x2 - char.x1
     height = char.y2 - char.y1
-    crop_d = "-crop " + str(width) + "x" + str(height) + "+" + str(char.x1) + "+" + str(char.y1)
+    crop_d = str(width) + "x" + str(height) + "+" + str(char.x1) + "+" + str(char.y1)
     cmnd = ['convert']
+    cmnd.append('-crop')
     cmnd.append(crop_d)
     cmnd.append(page_img_path)
     cmnd.append(new_char_path)
