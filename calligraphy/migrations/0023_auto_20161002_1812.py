@@ -32,7 +32,7 @@ def do_jpg_crop(char, page_img_path, page) -> None:
         char.image_high_rez = new_char_path
         char.save()
     else:
-        page.image_type_httpRequest = str(page.image_type_httpRequest) + " : BADCHARS"
+        page.image_type_httpRequest = str(page.image_type_httpRequest).strip() + " : BADCHARS"
         page.save()
     
 def do_png_tif_crop(char, page_img_path, img_type, page) -> None:
@@ -50,7 +50,7 @@ def do_png_tif_crop(char, page_img_path, img_type, page) -> None:
     char.image_high_rez = new_char_path
     char.save()
     if(page.image_width < char.x2 or page.image_length < char.y2):
-        page.image_type_httpRequest = str(page.image_type_httpRequest) + " : BADCHARS"
+        page.image_type_httpRequest = str(page.image_type_httpRequest).strip() + " : BADCHARS"
         page.save()
 
 def make_new_char_image(page, char) -> None:
