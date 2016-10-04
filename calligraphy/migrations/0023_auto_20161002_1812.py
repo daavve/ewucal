@@ -73,5 +73,5 @@ class Migration(migrations.Migration):
         ('calligraphy', '0022_character_image_high_rez'),
     ]
 
-    operations = [ 
+    operations = [ migrations.RunPython(transform_data)
     ]
