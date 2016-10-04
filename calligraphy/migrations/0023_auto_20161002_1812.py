@@ -66,7 +66,6 @@ def make_high_rez(apps) -> None:
 
 def transform_data(apps, schemd_editor) -> None:
     make_high_rez(apps)
-    raise Exception("stop here")
 
 class Migration(migrations.Migration):
 
@@ -74,5 +73,5 @@ class Migration(migrations.Migration):
         ('calligraphy', '0022_character_image_high_rez'),
     ]
 
-    operations = [ migrations.RunPython(transform_data)
+    operations = [ 
     ]
