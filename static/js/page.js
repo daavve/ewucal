@@ -1,3 +1,9 @@
+//
+//
+// Runs the dynamic part of the website for image
+//
+////////////////////////////////////////////////////
+
 var pageObject;
 var charObjects;
 var charRelativesMap = {};
