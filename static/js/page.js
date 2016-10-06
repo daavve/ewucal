@@ -207,29 +207,30 @@ function buildCharInPage(thisChar){
 
 }
 
-
-
-$(document).ready(function(){
-  pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId"));
-
-  // get the page object from the server
-  var url = "/ajax/get_page";
-  $.ajax({
-    url: url,
-    dataType: "json",
-    method: "POST",
-    data: {pageId: pageId}
-  }).done(function(pageJSON){
-    pageObject = JSON.parse(pageJSON)[0];
-    console.log("---------- Got page Object ---------------");
-    console.log(pageObject);
+function getNewImage(){ // get the page object from the server
+    $.ajax({
+        url: "/ajax/get_page",
+        dataType: "json",
+        method: "POST",
+        data: {pageId: pageId}
+    }).done(function(pageJSON){
+        pageObject = JSON.parse(pageJSON)[0];
+        console.log("---------- Got page Object ---------------");
+        console.log(pageObject);
     // TODO: update page image with the source url found in pageObject
     // 9/25/2016
     // - Michael Peterson
 
     // get the pages chacacter objects
-    getPageCharacters();
-  }).fail(function(jqXHR, textStatus){
-    doFailThing(jqXHR, textStatus, url);
-  });
+        getPageCharacters();
+    }).fail(function(jqXHR, textStatus){
+        doFailThing(jqXHR, textStatus, url);
+    });
+}
+
+var pageId;
+
+$(document).ready(function(){
+  pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId")); //Get the starting page
+
 });
