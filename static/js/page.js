@@ -4,13 +4,12 @@ var charRelativesMap = {};
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-function iWindow ( $ ) {
+function iWindow () {
     var settings = {
         'longset_side': 500,
         'zoom_max': 20, // 100X initial zoom
     }
-    var src_image_length    //TODO: fill
-    var src_image_width     //TODO: fill
+
     var $image = $('.pane img').extend({
         'start_width': null,
         'min_width': null,
@@ -21,8 +20,16 @@ function iWindow ( $ ) {
         'offset_top': null,
         'offset_left': null,
         'middle_x': null,
-        'middle_y': null
+        'middle_y': null,
+        'page_id': null,
+        'src_length': null,
+        'src_width': null
     })
+    
+    
+    
+    var src_image_length  = '.pane img'.
+    var src_image_width = $image.width
     if (src_image_length > src_image_width) {
         $image.min_width = src_image_width * settings.longset_side / src_image_length
     }
@@ -230,7 +237,10 @@ function getNewImage(){ // get the page object from the server
 
 var pageId;
 
-$(document).ready(function(){
-  pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId")); //Get the starting page
+function startMe( $ ){
+    pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId")); //Get the starting page
+    iWindow();
+}
 
-});
+
+$(document).ready(startMe);
