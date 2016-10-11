@@ -25,6 +25,7 @@ class Work(models.Model):
 class Page(models.Model):
     book_id = models.IntegerField(null=True)
     page_id = models.IntegerField(null=True)
+    coord_transform_type = models.CharField(max_length=64, blank=True)
     image = models.ImageField(blank=True, storage=fs)
     image_width = models.IntegerField(null=True)
     image_length = models.IntegerField(null=True)
