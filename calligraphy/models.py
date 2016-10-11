@@ -28,7 +28,6 @@ class Page(models.Model):
     image = models.ImageField(blank=True, storage=fs)
     image_width = models.IntegerField(null=True)
     image_length = models.IntegerField(null=True)
-    image_type_httpRequest = models.CharField(max_length=64, blank=True)
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
 
