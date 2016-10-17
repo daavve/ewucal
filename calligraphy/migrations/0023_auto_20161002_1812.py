@@ -47,7 +47,7 @@ def make_new_char_image(page, char) -> None:
     page_img_type = page_img_path.split(".")[1]
     if(page.image_width < char.x2 or page.image_length < char.y2):
         print(page.image_type_httpRequest)
-        page.image_type_httpRequest = str(page.image_type_httpRequest).split(" : ")[0] + " : BADCHARS"
+        page.image_type_httpRequest = str(page.image_type_httpRequest).split(" : ")[0] + " : BADCHARS" # WARNING!:  This line probably foobars this row in the database
         page.save()
     else:
         if(page_img_type == "jpg"):
