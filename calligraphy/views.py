@@ -42,7 +42,7 @@ def individual_char(request, char_id):
 
 def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)
-    tmplt = loader.get_template('calligraphy/page_new.html')
+    tmplt = loader.get_template('calligraphy/page.html')
     cntxt = {'page': page}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
