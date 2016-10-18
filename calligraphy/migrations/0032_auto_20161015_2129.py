@@ -27,10 +27,8 @@ def fix_colorspace(apps) -> None:
                     cmnd.append('-outfile')
                     cmnd.append(tmpcharname)
                     cmnd.append(charname)
-                    print(cmnd)
                     subprocess.run(cmnd)
                     cmnd2 = [ 'mv', '-f', tmpcharname, charname]
-                    print(cmnd2)
                     subprocess.run(cmnd2)
 
 def do_stuff(apps, schemd_editor) -> None:
