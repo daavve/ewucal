@@ -4,9 +4,9 @@
 //
 ////////////////////////////////////////////////////
 
-var pageObject;
-var charObjects;
-var charRelativesMap = {};
+var pageObject
+var charObjects
+var charRelativesMap = {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +34,7 @@ function iWindow () {
     
     
     
-    var src_image_length  = '.pane img'.
+    var src_image_length  = '.pane img'
     var src_image_width = $image.width
     if (src_image_length > src_image_width) {
         $image.min_width = src_image_width * settings.longset_side / src_image_length
