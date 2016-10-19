@@ -31,12 +31,13 @@ class Page(models.Model):
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
     i_valid_transform = models.NullBooleanField(null=True)
+    i_transform_type_new = models.NullBooleanField(null=True)
 
     def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
 
     def get_image(self) -> str:
-        return '/media/' + str(self.image).split('/media/')[1]
+        return str(self.image)
 
 
 class Character(models.Model):
@@ -59,7 +60,7 @@ class Character(models.Model):
         return '/char/' + str(self.id)
 
     def get_image(self) -> str:
-        return '/media/' + str(self.image).split('/media/')[1]
+        return str(self.image)
 
     def get_id(self) -> str:
         return '#' + str(self.id)
