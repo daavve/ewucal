@@ -49,8 +49,23 @@ def individual_page(request, page_id):
 @csrf_exempt
 def get_page(request):
     page_id = request.POST.get('pageId', None)
-    page = Page.objects.filter(id=page_id)
-    data = serializers.serialize("json", page)
+    page = Page.objects.get(id=page_id)
+    chars = Character.objects.filter(parent_page=page_id)
+    charList = []
+    for char in chars:
+        charList.append({ "charID" : char.id,
+                         "URL" : Character.get_image(char),
+                         "Mark" : char.mark,
+                         "x1" : char.x1,
+                         "y1" : char.y1,
+                         "x2" : char.x2,
+                         "y2" : char.y2})
+
+    data = { "pageId" : page_id,
+              "URL" : Page.get_image(page),
+              "height" : page.image_length,
+              "width" : page.image_width,
+              "chars" : charList}
     return JsonResponse(data, safe=False)
     
 @csrf_exempt
