@@ -34,8 +34,8 @@ function iWindow () {
     
     
     
-    var src_image_length  = '.pane img'
-    var src_image_width = $image.width
+    var src_image_length  = $image.data("height")
+    var src_image_width = $image.width();
     if (src_image_length > src_image_width) {
         $image.min_width = src_image_width * settings.longset_side / src_image_length
     }
@@ -155,29 +155,6 @@ function doFailThing(jqXHR, textStatus, url){
   console.log("Request failed: " + textStatus);
 };
 
-function getPageCharacters(){
-  var url = "/ajax/get_page_chars";
-  $.ajax({
-    url: url,
-    dataType: "json",
-    method: "POST",
-    data: {pageId: pageObject.pk}
-  }).done(function(charJSON){
-    charObjects = JSON.parse(charJSON);
-
-    console.log("---------- Got Char Objects ---------------");
-    console.log("thisPage: " + pageObject.pk);
-    console.log(charObjects);
-
-    charObjects.forEach(function(thisChar){
-      buildCharInPage(thisChar);
-      addRelatives(thisChar);
-    }, this);
-  }).fail(function(jqXHR, textStatus){
-    doFailThing(jqXHR, textStatus, url);
-  });
-}
-
 function addRelatives(thisChar){
   var url = "/ajax/get_char_relatives";
   $.ajax({
@@ -220,12 +197,12 @@ function buildCharInPage(thisChar){
 
 }
 
-function getNewImage(){ // get the page object from the server
+function getPage(pageId){ // get the page object from the server
     $.ajax({
         url: "/ajax/get_page",
         dataType: "json",
         method: "POST",
-        data: {pageId: pageId}
+        data: {"pageId"" : pageId}
     }).done(function(pageJSON){
         pageObject = JSON.parse(pageJSON)[0];
         console.log("---------- Got page Object ---------------");
@@ -242,9 +219,12 @@ function getNewImage(){ // get the page object from the server
 }
 
 var pageId;
+//var src_image_length
+//var src_image_width
 
 function startMe( $ ){
     pageId = parseInt(currentPageId = $("#pageIdHolder").attr("pageId")); //Get the starting page
+    pageJson = getPage(pageId);
     iWindow();
 }
 
