@@ -6,14 +6,15 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-function iWindow () {
+
+function iWindow (iImg) {
     var settings = {
         'longset_side': 500,
         'zoom_max': 20, // 100X initial zoom
     }
-
-    var $image = $('.pane img').extend({
-        'start_width': null,
+    
+    var $image = $('.draggable').extend({
+        'start_width': parseInt(iImg.width),
         'min_width': null,
         'max_width': null,
         'lw_ratio': null,
@@ -23,56 +24,71 @@ function iWindow () {
         'offset_left': null,
         'middle_x': null,
         'middle_y': null,
-        'page_id': null,
-        'src_length': null,
-        'src_width': null
+        'page_id': parseInt(iImg.pageId),
+        'src_length': parseInt(iImg.height),
+        'src_width': parseInt(iImg.width),
     })
     
-    
-    
-    var src_image_length  = $image.data("height")
-    var src_image_width = $image.width();
-    if (src_image_length > src_image_width) {
-        $image.min_width = src_image_width * settings.longset_side / src_image_length
+    if ($image.src_image_length > $image.src_image_width) {
+        $image.min_width = $image.src_image_width * settings.longset_side / $image.src_image_length
     }
     else {
         $image.min_width = settings.longset_side
     }
-    $image.start_width = src_image_width
+    $image.width = $image.min_width
     $image.max_width = $image.min_width * settings.zoom_max
-    $image.lw_ratio = src_image_length / src_image_width
+    $image.lw_ratio = $image.src_length / $image.src_width
+    $image.height = $image.min_width * $image.lw_ratio
     $image.scale_factor = $image.min_width / $image.start_width
+    
+    $image.attr("src", iImg.URL).delay("fast");
+    $image.css('position', 'absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>').delay("fast");
 
-    $image.width($image.min_width).height($image.min_width * $image.lw_ratio)
-    $image.css({'left': 0, 'top': 0});
-    $image.css('position', 'absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>');
 
     var $viewport = $image.parent().resizable()
     $viewport.extend({
         'middle_x': Math.round($viewport.width() / 2),
         'middle_y': Math.round($viewport.height() / 2),
-        'last_selected': null
+        'last_selected': null,
+        'boxes': null
     })
     $image.offset_left = -$viewport.middle_x / $image.scale_factor
     $image.offset_top = -$viewport.middle_y / $image.scale_factor
     var $container = $viewport.parent();
-    var boxes = new Set()
+    
+    $viewport.boxes = new Set()
+    
+    
 
-    var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>')
+
+    
+    function updateZoom(){
+        if ($zoom_widget.update)
+        {
+            $image.height = Math.round($image.width * $image.lw_ratio)
+            $image.scale_factor = $image.width / $image.start_width
+            $image.css({
+                'width': Math.round($image.width),
+                'height': Math.round($image.width * $image.lw_ratio),
+                'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
+                'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
+            })
+            $zoom_widget.update = false
+        }
+    };
+    var screenupdate = setInterval(updateZoom, 250) 
+
+    var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
         .slider({
-            value: $image.longest_side,
+            value: $image.min_width,
             min: $image.min_width,
             max: $image.max_width,
             slide: function (event, ui) {
-                $image.width(ui.value).height(Math.round(ui.value * $image.lw_ratio))
-                $image.scale_factor = ui.value / $image.start_width
-                $image.css({
-                    'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
-                    'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
-                });
-                update_boxes()
-            }
-        });
+                $zoom_widget.update = true
+                $image.width = ui.value
+            }})
+        
+    
     $container.append($zoom_widget);
 
     $image.draggable({
@@ -81,17 +97,11 @@ function iWindow () {
             $viewport.middle_y = Math.round($viewport.height() / 2)
             $image.offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor
             $image.offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor
-            update_boxes()
         },
         scroll: false,
         addClasses: false
     })
-    function reload() {
-        relatedChars = $("#relatedChars").carrotCell({
-        navi: true,
-        makeNavi: true})
-        relatedCharsAPI = $(relatedChars).data("carrotCell")
-    }
+    
     function updateBoxPosition($box) {
         $box.css({
             'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
@@ -111,12 +121,6 @@ function iWindow () {
             $viewport.last_selected = $(me);
         }
         $viewport.last_selected = $(me);   
-        relatedCharsAPI.reloadWith($(me).attr("related_chars"));  
-        var thisCharacterId = $(me).attr('id');
-        var thisCharacterImage = $(me).attr('image');
-        console.log("clicked: { id: " + thisCharacterId + ", image: " + thisCharacterImage + "}");
-        $("#leftThumbnail").attr("src", thisCharacterImage);
-        reload();
     }
     function build_a_box(x1, y1, x2, y2){
         var $charBox = $('<div class="char_box"></div>').css({
@@ -193,17 +197,14 @@ function buildCharInPage(thisChar){
 
 }
 
-function getPage(pageId){ // get the page object from the server
-    return $.ajax({ url: "/ajax/get_page",
-                    dataType: "json",
-                    method: "POST",
-                    data: {"pageId" : pageId} })
+function getPage(pageId){ // get the page object from the server  DOES NOT HANDLE ERRORS!
+    return $.getJSON("/ajax/get_page", {"pageId" : pageId})
 }
+
 
 function startMe( $ ){
     var pageId = parseInt(currentPageId = $( "#pageIdHolder" ).attr( "pageId" )) //Get the starting page
-    var pageJson = getPage(pageId)
-    iWindow()
+    getPage(pageId).done(iWindow)
 }
 
 

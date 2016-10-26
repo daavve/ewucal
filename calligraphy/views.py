@@ -48,7 +48,7 @@ def individual_page(request, page_id):
 
 @csrf_exempt
 def get_page(request):
-    page_id = request.POST.get('pageId', None)
+    page_id = request.GET.get('pageId', None)
     page = Page.objects.get(id=page_id)
     chars = Character.objects.filter(parent_page=page_id)
     charList = []
