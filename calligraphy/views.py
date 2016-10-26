@@ -53,7 +53,10 @@ def get_page(request):
     chars = Character.objects.filter(parent_page=page_id)
     charList = []
     for char in chars:
-        charList.append({ "charID" : char.id,
+        charList.append({"charId" : char.id,
+                         "pageId" : char.parent_page.id,
+                         "authorId" : char.parent_author.id,
+                         "workId" : char.parent_work.id,
                          "URL" : Character.get_image(char),
                          "Mark" : char.mark,
                          "x1" : char.x1,

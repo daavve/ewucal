@@ -58,10 +58,11 @@ function iWindow (iImg) {
     
     $viewport.boxes = new Set()
     
-    
+    for(i = 0; i < iImg.chars.length; ++i) {
+        build_a_box(iImg.chars[i])
+    }
 
 
-    
     function updateZoom(){
         if ($zoom_widget.update)
         {
@@ -73,8 +74,10 @@ function iWindow (iImg) {
                 'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
             })
+            for (let $box of $viewport.boxes) updateBoxPosition($box);
             $zoom_widget.update = false
         }
+        
     };
     var screenupdate = setInterval(updateZoom, 250) 
 
@@ -87,8 +90,6 @@ function iWindow (iImg) {
                 $zoom_widget.update = true
                 $image.width = ui.value
             }})
-        
-    
     $container.append($zoom_widget);
 
     $image.draggable({
@@ -110,9 +111,6 @@ function iWindow (iImg) {
             'height': Math.round($image.scale_factor * $box.y_len)
         })
     }
-    function update_boxes() {
-        for (let $box of boxes) updateBoxPosition($box);
-    }
     function char_click( event, ui, me){
         $(me).toggleClass('char_box_select');    
         if($viewport.last_selected) {   
@@ -122,7 +120,7 @@ function iWindow (iImg) {
         }
         $viewport.last_selected = $(me);   
     }
-    function build_a_box(x1, y1, x2, y2){
+    function build_a_box(iChar){
         var $charBox = $('<div class="char_box"></div>').css({
             'position': 'absolute'
             }).selectable({
@@ -131,10 +129,16 @@ function iWindow (iImg) {
                     char_click(event, ui, this);
                 }
             }).extend({
-                'x_top': x1,
-                'y_top': y1,
-                'x_len': x2 - x1,
-                'y_len': y2 - y1,
+                "charId" : iChar.charId,
+                "pageId" : iChar.pageId,
+                "authorId" : iChar.authorId,
+                "workId" : iChar.workId,
+                 "URL" : iChar.URL,
+                "mark" : iChar.mark,
+                'x_top': iChar.x1,
+                'y_top': iChar.y1,
+                'x_len': iChar.x2 - iChar.x1,
+                'y_len': iChar.y2 - iChar.y1,
                 'related_chars': null,
                 'selected': false
             }).hover(function(){
@@ -142,8 +146,11 @@ function iWindow (iImg) {
                     $(this).toggleClass('char_box_hover')
                 }
             })
+            
+            
             updateBoxPosition($charBox)
-            return $charBox;
+            $viewport.append($charBox);
+            $viewport.boxes.add($charBox)
         }
     }
 
