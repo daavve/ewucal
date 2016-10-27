@@ -65,7 +65,7 @@ function iWindow (iImg) {
         build_a_box(iImg.chars[i])
     }
     
-    var screenupdate = setInterval(updateZoom, 100)
+    var screenupdate = setInterval(updateZoom, 250) // this value is a bit lagy, but it keeps the thing from glitching out
     
     function updateZoom(){
         if ($zoom_widget.update)
