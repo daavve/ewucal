@@ -21,12 +21,15 @@ function iWindow (iImg) {
         'scale_factor': null,
         'zoom_factor': null,
         'offset_top': null,
+        'position_top': null,
         'offset_left': null,
+        'position_left': null,
         'middle_x': null,
         'middle_y': null,
         'page_id': parseInt(iImg.pageId),
         'src_length': parseInt(iImg.height),
         'src_width': parseInt(iImg.width),
+        'update_boxes': false
     })
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -61,8 +64,9 @@ function iWindow (iImg) {
     for(i = 0; i < iImg.chars.length; ++i) {
         build_a_box(iImg.chars[i])
     }
-
-
+    
+    var screenupdate = setInterval(updateZoom, 100)
+    
     function updateZoom(){
         if ($zoom_widget.update)
         {
@@ -74,12 +78,39 @@ function iWindow (iImg) {
                 'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
             })
-            for (let $box of $viewport.boxes) updateBoxPosition($box);
+            updateBoxes()
             $zoom_widget.update = false
+        }
+        else
+        {
+            if ($image.update_boxes)
+            {
+                $viewport.middle_x = Math.round($viewport.width() / 2)
+                $viewport.middle_y = Math.round($viewport.height() / 2)
+                $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor
+                $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor
+                updateBoxes()
+                $image.update_boxes = false
+            }
+            
         }
         
     };
-    var screenupdate = setInterval(updateZoom, 250) 
+    
+    function updateBoxes(){
+        for (let $box of $viewport.boxes) 
+            updateBoxPosition($box)
+    }
+    
+    function updateBoxPosition($box) {
+        $box.css({
+            'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
+            'top': Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
+            'width': Math.round($image.scale_factor * $box.x_len),
+            'height': Math.round($image.scale_factor * $box.y_len)
+        })
+        console.log('updating boxes');
+    }
 
     var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
         .slider({
@@ -92,25 +123,17 @@ function iWindow (iImg) {
             }})
     $container.append($zoom_widget);
 
+
     $image.draggable({
         drag: function (event, ui) {
-            $viewport.middle_x = Math.round($viewport.width() / 2)
-            $viewport.middle_y = Math.round($viewport.height() / 2)
-            $image.offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor
-            $image.offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor
+            $image.position_top  = ui.position.top
+            $image.position_left = ui.position.left
+            $image.update_boxes = true
         },
         scroll: false,
         addClasses: false
     })
     
-    function updateBoxPosition($box) {
-        $box.css({
-            'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
-            'top': Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
-            'width': Math.round($image.scale_factor * $box.x_len),
-            'height': Math.round($image.scale_factor * $box.y_len)
-        })
-    }
     function char_click( event, ui, me){
         $(me).toggleClass('char_box_select');    
         if($viewport.last_selected) {   
