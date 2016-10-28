@@ -44,8 +44,8 @@ function iWindow (iImg) {
     $image.height = $image.min_width * $image.lw_ratio
     $image.scale_factor = $image.min_width / $image.start_width
     
-    $image.attr("src", iImg.URL).delay("fast");
-    $image.css('position', 'absolute').wrap('<div class="page_viewport"></div>').delay("fast");
+    $image.attr("src", iImg.URL)
+    $image.css('position', 'absolute').wrap('<div class="page_viewport"></div>')
 
 
     var $viewport = $image.parent().resizable()
@@ -66,7 +66,6 @@ function iWindow (iImg) {
     }
     
     var screenupdate = setInterval(updateZoom, 250) // this value is a bit lagy, but it keeps the thing from glitching out
-    
     function updateZoom(){
         if ($zoom_widget.update)
         {
@@ -109,7 +108,6 @@ function iWindow (iImg) {
             'width': Math.round($image.scale_factor * $box.x_len),
             'height': Math.round($image.scale_factor * $box.y_len)
         })
-        console.log('updating boxes');
     }
 
     var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
@@ -134,22 +132,32 @@ function iWindow (iImg) {
         addClasses: false
     })
     
-    function char_click( event, ui, me){
+
+    
+    function toggle_box_colors(me){
         $(me).toggleClass('char_box_select');    
         if($viewport.last_selected) {   
             $viewport.last_selected.removeClass('ui-selected');    
             $viewport.last_selected.toggleClass('char_box_select');  
             $viewport.last_selected = $(me);
         }
-        $viewport.last_selected = $(me);   
-    }
+        $viewport.last_selected = $(me); 
+    };
+    
+    var $big_char = $('<img src="">')
     function build_a_box(iChar){
         var $charBox = $('<div class="char_box"></div>').css({
             'position': 'absolute'
             }).selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    char_click(event, ui, this);
+                    toggle_box_colors(event, ui, this);
+                    var $box = $(this)
+                    $big_char.attr('src', $(this).data('URL'));
+                    $.jsPanel({
+                        contentSize:    {width: $box.data('width'), height: $box.data('height')},
+                        content: $big_char
+                    });
                 }
             }).extend({
                 "charId" : iChar.charId,
@@ -168,7 +176,12 @@ function iWindow (iImg) {
                 if(!$(this).hasClass('ui-selected')) {
                     $(this).toggleClass('char_box_hover')
                 }
-            })
+            }).data(
+                'URL', iChar.URL
+            ).data(
+                'height', iChar.y2 - iChar.y1
+            ).data(
+                'width', iChar.x2 - iChar.x1)
             
             
             updateBoxPosition($charBox)

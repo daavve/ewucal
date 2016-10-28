@@ -37,7 +37,7 @@ class Page(models.Model):
         return '/page/' + str(self.id)
 
     def get_image(self) -> str:
-        return '/static' + str(self.image)
+        return str(self.image.url)
 
 
 class Character(models.Model):
@@ -61,6 +61,9 @@ class Character(models.Model):
 
     def get_image(self) -> str:
         return str( self.image_high_rez.url)
+        
+    def get_thumb(self) -> str:
+        return str( self.image.url)
 
     def get_id(self) -> str:
         return '#' + str(self.id)
