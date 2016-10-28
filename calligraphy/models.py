@@ -60,7 +60,7 @@ class Character(models.Model):
         return '/char/' + str(self.id)
 
     def get_image(self) -> str:
-        return str(self.image_high_rez)
+        return str( self.image_high_rez.url)
 
     def get_id(self) -> str:
         return '#' + str(self.id)
