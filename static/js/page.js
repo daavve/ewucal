@@ -45,7 +45,7 @@ function iWindow (iImg) {
     $image.scale_factor = $image.min_width / $image.start_width
     
     $image.attr("src", iImg.URL).delay("fast");
-    $image.css('position', 'absolute').wrap('<div class="page_container"><div class="page_viewport"></div></div>').delay("fast");
+    $image.css('position', 'absolute').wrap('<div class="page_viewport"></div>').delay("fast");
 
 
     var $viewport = $image.parent().resizable()
