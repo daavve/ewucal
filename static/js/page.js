@@ -55,6 +55,7 @@ function iWindow (iImg) {
         'last_selected': null,
         'boxes': null,
         'has_big_box': false,
+        'big_box': null
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
