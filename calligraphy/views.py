@@ -58,7 +58,7 @@ def get_page(request):
                          "authorId" : char.parent_author.id,
                          "workId" : char.parent_work.id,
                          "URL" : Character.get_image(char),
-                         "Mark" : char.mark,
+                         "mark" : char.mark,
                          "x1" : char.x1,
                          "y1" : char.y1,
                          "x2" : char.x2,

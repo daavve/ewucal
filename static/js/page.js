@@ -55,7 +55,6 @@ function iWindow (iImg) {
         'last_selected': null,
         'boxes': null,
         'has_big_box': false,
-        'big_box': null
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
@@ -134,14 +133,14 @@ function iWindow (iImg) {
     
 
     
-    function toggle_box_colors(me){
-        $(me).toggleClass('char_box_select');
+    function toggle_box_colors($box){
+        $box.toggleClass('char_box_select');
         if($viewport.last_selected) {   
             $viewport.last_selected.removeClass('ui-selected');
             $viewport.last_selected.toggleClass('char_box_select');
-            $viewport.last_selected = $(me);
+            $viewport.last_selected = $box;
         }
-        $viewport.last_selected = $(me); 
+        $viewport.last_selected = $box; 
     }
     
     var $big_char = $('<img src="">');
@@ -151,8 +150,8 @@ function iWindow (iImg) {
             }).selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    toggle_box_colors(event, ui, this);
                     let $box = $(this);
+                    toggle_box_colors($box);
                     $big_char.attr('src', $box.data('URL'));
                     if($viewport.has_big_box)
                     {
@@ -163,6 +162,12 @@ function iWindow (iImg) {
                         $viewport.has_big_box = true;
                         $viewport.big_box = $.jsPanel({
                         'contentSize':    {width: $box.data('width'), height: $box.data('height')},
+                        'resizable': false,
+                        'headerTitle': $box.data('mark'),
+                        'onclosed': function(){
+                                                $viewport.has_big_box = false;
+                                              },
+                        'headerControls': {'controls': 'closeonly'},
                         'content': $big_char
                     });
                     }
@@ -190,7 +195,8 @@ function iWindow (iImg) {
                 if(!$(this).hasClass('ui-selected')) {
                     $(this).toggleClass('char_box_hover');
                 }
-            }).data('URL', iChar.URL
+            }).data('mark', iChar.mark
+            ).data('URL', iChar.URL
             ).data('charId', iChar.charId
             ).data('height', iChar.y2 - iChar.y1
             ).data('width', iChar.x2 - iChar.x1);
