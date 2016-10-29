@@ -60,13 +60,17 @@ class Character(models.Model):
         return '/char/' + str(self.id)
 
     def get_image(self) -> str:
-        return str( self.image_high_rez.url)
+        if self.image_high_rez:
+            return str( self.image_high_rez.url)
         
     def get_thumb(self) -> str:
         return str( self.image.url)
 
     def get_id(self) -> str:
         return '#' + str(self.id)
+        
+    def get_rel_chars(self):
+        return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
 
 class RelatedChars(object): # This class exists to hold all chars and related ones
     def __init__(self, inChar: Character):

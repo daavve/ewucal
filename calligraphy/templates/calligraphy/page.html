@@ -1,18 +1,17 @@
 {% extends parent_template|default:"ewucal/base.html" %}
 {% block content %}
-  {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
-  <script type="text/javascript" src="{{ STATIC_URL }}js/page.js"></script>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/page.js"></script>
 
-  <div id="pageIdHolder" pageId="{{ page.id }}"></div>
-  
+<div id="pageIdHolder" pageId="{{ page.id }}"></div>
 
 <div class="container">
-
     <div id="page_viewport">
         <img src="" class="draggable">
     </div>
-
 </div>
 
-  {% endblock %}
+
+
+{% endblock %}

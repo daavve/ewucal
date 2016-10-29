@@ -58,7 +58,6 @@ def get_page(request):
                          "authorId" : char.parent_author.id,
                          "workId" : char.parent_work.id,
                          "URL" : Character.get_image(char),
-                         "URL-thumb": Character.get_thumb(char),
                          "Mark" : char.mark,
                          "x1" : char.x1,
                          "y1" : char.y1,
@@ -73,18 +72,16 @@ def get_page(request):
     return JsonResponse(data, safe=False)
     
 @csrf_exempt
-def get_page_chars(request):
-    page_id = request.POST.get('pageId', None)
-    chars = Character.objects.filter(parent_page=page_id)
-    data = serializers.serialize("json", chars)
-    return JsonResponse(data, safe=False)
-
-@csrf_exempt
 def get_char_relatives(request):
-    char_id = request.POST.get('charId', None)
-    char = Character.objects.get(id=char_id)
-    char_rel = RelatedChars(char)
-    data = serializers.serialize("json", char_rel.relatedChars)
-    return JsonResponse(data, safe=False)
+    char_id = request.GET.get('charId', None)
+    curChar = Character.objects.get(id=char_id)
+    chars_rel = Character.get_rel_chars(curChar)
+    charList = []
+    for char in chars_rel:
+        charList.append({"thumb": Character.get_thumb(char),
+                         "src": Character.get_image(char),
+                         "type": "image",
+                         "caption": char.id})
+    return JsonResponse(charList, safe=False)
 
 
