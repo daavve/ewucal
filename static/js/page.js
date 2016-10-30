@@ -174,26 +174,82 @@ function iWindow (iImg) {
 //                            content: $big_char
 //                        });
                         $viewport.big_box_2 = $.jsPanel({
-                            contentSize:    {width: $box.data('width'), height: $box.data('height')},
+                            contentSize:    {width: '500px', height: '400px'},
                             contentAjax:    {
                                 url:        '/ajax/get_char_relatives',
                                 method:     'GET',
                                 dataType:   'JSON',
                                 data:       {charId: $box.data('charId')},
                                 done:       function( data, textStatus, jqXHR, panel ){
-                                                var html = '<ul>';
-                                                $.each(data, function(i, item) {
-                                                    html += '<li><img src="' + item.src + '" alt="' + item.id + '"></li>';
-                                                });
-                                                html += '</ul>';
-                                                this.content.append(html);
+                                            var chars = []
+                                               $.each(data, function(i, item) {
+                                                        chars.push({
+                                                            thumb: item.thumb,
+                                                            src: item.src,
+                                                            type: 'image',
+                                                            caption: String(item.id)
+                                                        });
+                                                    });
+                                                    var html = '<h1>Sample Gallery Page</h1>\
+                                                            <div id="gallery"></div>\
+                                                            <div id="SCGTemplate">\
+                                                            <h2>A Gallery</h2>\
+                                                            <div class="mediaContainer">\
+                                                            <a href="#" class="goToPrevious">&lt;</a>\
+                                                            <div class="media">\
+                                                            <div class="video">\
+                                                            <video controls="true">\
+                                                            <source type="video/mp4" src="">\
+                                                            </video>\
+                                                            </div>\
+                                                            </div>\
+                                                            <a href="#" class="goToNext">&gt;</a>\
+                                                            </div>\
+                                                            <p class="caption"></p>\
+                                                            <ul class="carousel">\
+                                                            <li class="carouselItem">\
+                                                            </li>\
+                                                            </ul>\
+                                                            </div>';
+                                                var html1 = $(html);
+                                                this.content.append(html1);
+                                                $('#gallery').SimpleCarouselGallery(chars, {});
+
+        $('.jcarousel-control-prev')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '-=1'
+            });
+
+        $('.jcarousel-control-next')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '+=1'
+            });
+
+        $('.jcarousel-pagination')
+            .on('jcarouselpagination:active', 'a', function() {
+                $(this).addClass('active');
+            })
+            .on('jcarouselpagination:inactive', 'a', function() {
+                $(this).removeClass('active');
+            })
+            .jcarouselPagination();
                                 }
                             }
                         });
                     }
                     
-
-                    console.log($box.data('charId'));
                     var relchars = getRelChars($box.data('charId'));
                     var opts = {};
                     
