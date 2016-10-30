@@ -9,27 +9,27 @@
 
 function iWindow (iImg) {
     var settings = {
-        'longset_side': 500,
-        'zoom_max': 20, // 100X initial zoom
+        longset_side: 500,
+        zoom_max: 20, // 100X initial zoom
     };
     
     var $image = $('.draggable').extend({
-        'start_width': parseInt(iImg.width),
-        'min_width': null,
-        'max_width': null,
-        'lw_ratio': null,
-        'scale_factor': null,
-        'zoom_factor': null,
-        'offset_top': null,
-        'position_top': null,
-        'offset_left': null,
-        'position_left': null,
-        'middle_x': null,
-        'middle_y': null,
-        'page_id': parseInt(iImg.pageId),
-        'src_length': parseInt(iImg.height),
-        'src_width': parseInt(iImg.width),
-        'update_boxes': false
+        start_width: parseInt(iImg.width),
+        min_width: null,
+        max_width: null,
+        lw_ratio: null,
+        scale_factor: null,
+        zoom_factor: null,
+        offset_top: null,
+        position_top: null,
+        offset_left: null,
+        position_left: null,
+        middle_x: null,
+        middle_y: null,
+        page_id: parseInt(iImg.pageId),
+        src_length: parseInt(iImg.height),
+        src_width: parseInt(iImg.width),
+        update_boxes: false
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -50,12 +50,13 @@ function iWindow (iImg) {
 
     var $viewport = $image.parent().resizable();
     $viewport.extend({
-        'middle_x': Math.round($viewport.width() / 2),
-        'middle_y': Math.round($viewport.height() / 2),
-        'last_selected': null,
-        'boxes': null,
-        'has_big_box': false,
-        'big_box': null
+        middle_x: Math.round($viewport.width() / 2),
+        middle_y: Math.round($viewport.height() / 2),
+        last_selected: null,
+        boxes: null,
+        has_big_box: false,
+        big_box_1: null,
+        big_box_2: null
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
@@ -74,10 +75,10 @@ function iWindow (iImg) {
             $image.height = Math.round($image.width * $image.lw_ratio);
             $image.scale_factor = $image.width / $image.start_width;
             $image.css({
-                'width': Math.round($image.width),
-                'height': Math.round($image.width * $image.lw_ratio),
-                'left': Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
-                'top': Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
+                width: Math.round($image.width),
+                height: Math.round($image.width * $image.lw_ratio),
+                left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
+                top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
             });
             updateBoxes();
             $zoom_widget.update = false;
@@ -103,10 +104,10 @@ function iWindow (iImg) {
     
     function updateBoxPosition($box) {
         $box.css({
-            'left': Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
-            'top': Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
-            'width': Math.round($image.scale_factor * $box.x_len),
-            'height': Math.round($image.scale_factor * $box.y_len)
+            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
+            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
+            width: Math.round($image.scale_factor * $box.x_len),
+            height: Math.round($image.scale_factor * $box.y_len)
         });
     }
 
@@ -147,7 +148,7 @@ function iWindow (iImg) {
     var $big_char = $('<img src="">');
     function build_a_box(iChar){
         var $charBox = $('<div class="char_box"></div>').css({
-            'position': 'absolute'
+            position: 'absolute'
             }).selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
@@ -156,21 +157,39 @@ function iWindow (iImg) {
                     $big_char.attr('src', $box.data('URL'));
                     if($viewport.has_big_box)
                     {
-                        $viewport.big_box.resize($box.data('width'), $box.data('height'));
+                        $viewport.big_box_1.resize($box.data('width'), $box.data('height'));
                     }
                     else
                     {
                         $viewport.has_big_box = true;
-                        $viewport.big_box = $.jsPanel({
-                        'contentSize':    {width: $box.data('width'), height: $box.data('height')},
-                        'resizable': false,
-                        'headerTitle': $box.data('mark'),
-                        'onclosed': function(){
-                                                $viewport.has_big_box = false;
-                                              },
-                        'headerControls': {'controls': 'closeonly'},
-                        'content': $big_char
-                    });
+//                        $viewport.big_box_1 = $.jsPanel({
+//                            contentSize:    {width: $box.data('width'), height: $box.data('height')},
+//                            resizable: false,
+//                            headerTitle: $box.data('mark'),
+//                            onclosed: function(){
+//                                $viewport.has_big_box = false;
+//                                $viewport.big_box_2.close();
+//                            },
+//                            headerControls: {'controls': 'closeonly'},
+//                            content: $big_char
+//                        });
+                        $viewport.big_box_2 = $.jsPanel({
+                            contentSize:    {width: $box.data('width'), height: $box.data('height')},
+                            contentAjax:    {
+                                url:        '/ajax/get_char_relatives',
+                                method:     'GET',
+                                dataType:   'JSON',
+                                data:       {charId: $box.data('charId')},
+                                done:       function( data, textStatus, jqXHR, panel ){
+                                                var html = '<ul>';
+                                                $.each(data, function(i, item) {
+                                                    html += '<li><img src="' + item.src + '" alt="' + item.id + '"></li>';
+                                                });
+                                                html += '</ul>';
+                                                this.content.append(html);
+                                }
+                            }
+                        });
                     }
                     
 
@@ -180,18 +199,18 @@ function iWindow (iImg) {
                     
                 }
             }).extend({
-                'charId' : iChar.charId,
-                'pageId' : iChar.pageId,
-                'authorId' : iChar.authorId,
-                'workId' : iChar.workId,
-                'URL' : iChar.URL,
-                'mark' : iChar.mark,
-                'x_top': iChar.x1,
-                'y_top': iChar.y1,
-                'x_len': iChar.x2 - iChar.x1,
-                'y_len': iChar.y2 - iChar.y1,
-                'related_chars': null,
-                'selected': false
+                charId : iChar.charId,
+                pageId : iChar.pageId,
+                authorId : iChar.authorId,
+                workId : iChar.workId,
+                URL : iChar.URL,
+                mark : iChar.mark,
+                x_top: iChar.x1,
+                y_top: iChar.y1,
+                x_len: iChar.x2 - iChar.x1,
+                y_len: iChar.y2 - iChar.y1,
+                related_chars: null,
+                selected: false
             }).hover(function(){
                 if(!$(this).hasClass('ui-selected')) {
                     $(this).toggleClass('char_box_hover');

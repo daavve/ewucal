@@ -78,10 +78,10 @@ def get_char_relatives(request):
     chars_rel = Character.get_rel_chars(curChar)
     charList = []
     for char in chars_rel:
-        charList.append({"thumb": Character.get_thumb(char),
-                         "src": Character.get_image(char),
-                         "type": "image",
-                         "caption": char.id})
+        charList.append({
+            'src': Character.get_image(char),
+            'id': char.id,
+        })
     return JsonResponse(charList, safe=False)
 
 
