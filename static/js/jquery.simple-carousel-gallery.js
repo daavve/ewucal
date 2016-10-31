@@ -21,7 +21,7 @@
       mediaFadeOutSpeed: 200,
       carouselAnimationSpeed: 400,
       keyboardNavigation: true,
-      autoPlay: true
+      autoPlay: false
    };
 
    // The actual plugin constructor

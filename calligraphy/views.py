@@ -53,22 +53,23 @@ def get_page(request):
     chars = Character.objects.filter(parent_page=page_id)
     charList = []
     for char in chars:
-        charList.append({"charId" : char.id,
-                         "pageId" : char.parent_page.id,
-                         "authorId" : char.parent_author.id,
-                         "workId" : char.parent_work.id,
-                         "URL" : Character.get_image(char),
-                         "mark" : char.mark,
-                         "x1" : char.x1,
-                         "y1" : char.y1,
-                         "x2" : char.x2,
-                         "y2" : char.y2})
+        charList.append({'charId' : char.id,
+                         'pageId' : char.parent_page.id,
+                         'authorId' : char.parent_author.id,
+                         'authorName': char.author_name,
+                         'workId' : char.parent_work.id,
+                         'URL' : Character.get_image(char),
+                         'mark' : char.mark,
+                         'x1' : char.x1,
+                         'y1' : char.y1,
+                         'x2' : char.x2,
+                         'y2' : char.y2})
 
-    data = { "pageId" : page_id,
-              "URL" : Page.get_image(page),
-              "height" : page.image_length,
-              "width" : page.image_width,
-              "chars" : charList}
+    data = { 'pageId' : page_id,
+              'URL' : Page.get_image(page),
+              'height' : page.image_length,
+              'width' : page.image_width,
+              'chars' : charList}
     return JsonResponse(data, safe=False)
     
 @csrf_exempt

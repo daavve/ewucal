@@ -157,53 +157,59 @@ function iWindow (iImg) {
                     $big_char.attr('src', $box.data('URL'));
                     if($viewport.has_big_box)
                     {
-                        $viewport.big_box_1.resize($box.data('width'), $box.data('height'));
+                        $viewport.big_box_1.resizeContent($box.data('width'), '300px');
                     }
                     else
                     {
                         $viewport.has_big_box = true;
-//                        $viewport.big_box_1 = $.jsPanel({
-//                            contentSize:    {width: $box.data('width'), height: $box.data('height')},
-//                            resizable: false,
-//                            headerTitle: $box.data('mark'),
-//                            onclosed: function(){
-//                                $viewport.has_big_box = false;
-//                                $viewport.big_box_2.close();
-//                            },
-//                            headerControls: {'controls': 'closeonly'},
-//                            content: $big_char
-//                        });
+                        $viewport.big_box_1 = $.jsPanel({
+                            contentSize:    {width: $box.data('width'), height: $box.data('height')},
+                            resizable: false,
+                            position: {
+                                my:      "left-top",
+                                at:      "left-top",
+                                offsetY: 200,
+                                offsetX: 10
+                            },
+                            headerTitle: $box.data('mark') + ' by ' + $box.data('authName'),
+                            onclosed: function(){
+                                $viewport.has_big_box = false;
+                                $viewport.big_box_2.close();
+                            },
+                            headerControls: {'controls': 'closeonly'},
+                            content: $big_char
+                        });
                         $viewport.big_box_2 = $.jsPanel({
-                            contentSize:    {width: '500px', height: '400px'},
+                            headerTitle:    'Other ' + $box.data('mark') + ' by ' + $box.data('authName'),
+                            contentSize:    {width: '500px', height: '500px'},
                             contentAjax:    {
                                 url:        '/ajax/get_char_relatives',
                                 method:     'GET',
                                 dataType:   'JSON',
                                 data:       {charId: $box.data('charId')},
+                                position: {
+                                    my:      "right-bottom",
+                                    at:      "right-bottom",
+                                    offsetY: -10,
+                                    offsetX: -10
+                                },
+                                onclosed:   function(){
+                                    $viewport.has_big_box = false;
+                                    $viewport.big_box_1.close();
+                                },
                                 done:       function( data, textStatus, jqXHR, panel ){
-                                            var chars = []
+                                            var chars = [];
                                                $.each(data, function(i, item) {
                                                         chars.push({
                                                             thumb: item.thumb,
                                                             src: item.src,
                                                             type: 'image',
-                                                            caption: String(item.id)
+                                                            caption: item.id
                                                         });
                                                     });
-                                                    var html = '<h1>Sample Gallery Page</h1>\
-                                                            <div id="gallery"></div>\
+                                                    var html = '<div id="gallery"></div>\
                                                             <div id="SCGTemplate">\
-                                                            <h2>A Gallery</h2>\
-                                                            <div class="mediaContainer">\
-                                                            <a href="#" class="goToPrevious">&lt;</a>\
                                                             <div class="media">\
-                                                            <div class="video">\
-                                                            <video controls="true">\
-                                                            <source type="video/mp4" src="">\
-                                                            </video>\
-                                                            </div>\
-                                                            </div>\
-                                                            <a href="#" class="goToNext">&gt;</a>\
                                                             </div>\
                                                             <p class="caption"></p>\
                                                             <ul class="carousel">\
@@ -271,7 +277,8 @@ function iWindow (iImg) {
                 if(!$(this).hasClass('ui-selected')) {
                     $(this).toggleClass('char_box_hover');
                 }
-            }).data('mark', iChar.mark
+            }).data('authName', iChar.authorName
+            ).data('mark', iChar.mark
             ).data('URL', iChar.URL
             ).data('charId', iChar.charId
             ).data('height', iChar.y2 - iChar.y1
