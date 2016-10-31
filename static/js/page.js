@@ -157,7 +157,10 @@ function iWindow (iImg) {
                     $big_char.attr('src', $box.data('URL'));
                     if($viewport.has_big_box)
                     {
-                        $viewport.big_box_1.resizeContent($box.data('width'), '300px');
+                        $viewport.big_box_1.resize({
+                                                        width: $box.data('width'),
+                                                        height: $box.data('height'),
+                                                        resize: 'content'});
                     }
                     else
                     {
