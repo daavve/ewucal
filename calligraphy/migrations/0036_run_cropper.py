@@ -59,7 +59,7 @@ def make_hi_rez(char, page) -> None:
 
 
 
-
+# Skip the thumbnailing step sinzce we accomplished it earlier
 def make_thumbnails(apps) -> None:
     Character = apps.get_model('calligraphy', 'Character')
     chars = Character.objects.all()
@@ -67,15 +67,6 @@ def make_thumbnails(apps) -> None:
         fileptr = char.image_high_rez
         if not bool(fileptr):
             make_hi_rez(char, char.parent_page)
-        fileptr.close()
-        im = Image.open(str(char.image_high_rez))
-        im.thumbnail((30, 30))
-        img_thumb = str(char.image).strip('jpgpntif') + 'thumb.jpg'
-        img_path_thumb = Path(img_thumb)
-        im.save(img_path_thumb, 'JPEG')
-        im.close()
-        char.image_thumb = img_thumb
-        char.save()
 
 def do_stuff(apps, schemd_editor) -> None:
     make_thumbnails(apps)

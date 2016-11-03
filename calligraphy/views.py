@@ -83,6 +83,8 @@ def get_char_relatives(request):
             'src': str(Character.get_image(char)),
             'id': char.id,
             'thumb': str(Character.get_thumb(char)),
+            'width': char.image_thumb_y,
+            'height': char.image_thumb_x
         })
     return JsonResponse(charList, safe=False)
 

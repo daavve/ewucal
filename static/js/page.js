@@ -188,7 +188,22 @@ function iWindow (iImg) {
                                 url:        '/ajax/get_char_relatives',
                                 method:     'GET',
                                 dataType:   'JSON',
-                                data:       {charId: $box.data('charId')}
+                                data:       {charId: $box.data('charId')},
+                                done: function( data, textStatus, jqXHR, panel ){
+                                    var $container = $('<div class="container"></div>');
+                                    $.each(data, function(i, item) {
+                                        $container.append('<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>');
+                                    });
+                                    this.content.append($container);
+                                    rowGrid($container, {
+                                        itemSelector: '.item',
+                                        minMargin: 10,
+                                        maxMargin: 25,
+                                        firstItemClass: 'first-item',
+                                        lastRowClass: 'last-row',
+                                        resize: true,
+                                        minWidth: 500
+                                    });
                                 },
                             position: {
                                 my:      "right-bottom",
@@ -200,34 +215,10 @@ function iWindow (iImg) {
                                 $viewport.has_big_box = false;
                                 $viewport.big_box_1.close();
                             },
-                            done: function( data, textStatus, jqXHR, panel ){
-                                var chars = [];
-                                $.each(data, function(i, item) {
-                                    chars.push({
-                                        thumb: item.thumb,
-                                        src: item.src,
-                                        type: 'image',
-                                        caption: item.id
-                                    });
-                                });
-                                var html = `<div id="gallery"></div>
-                                    <div id="SCGTemplate">
-                                    <div class="media">
-                                    </div>
-                                    <p class="caption"></p>
-                                    <ul class="carousel">
-                                    <li class="carouselItem">
-                                    </li>
-                                    </ul>
-                                    /div>
-                                    `;
-                                var html1 = $(html);
-                                this.content.append(html1);
-                                $('#gallery').SimpleCarouselGallery(chars, {});
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
+            }
             }).extend({
                 charId : iChar.charId,
                 pageId : iChar.pageId,
