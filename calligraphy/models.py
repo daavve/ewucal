@@ -38,6 +38,12 @@ class Page(models.Model):
 
     def get_image(self) -> str:
         return str(self.image.url)
+        
+class PageMultiplier(models.Model):
+    parent_page = models.ForeignKey(Page)
+    match_score = models.IntegerField()
+    x_mult = models.FloatField()
+    y_mult = models.FloatField()
 
 
 class Character(models.Model):
@@ -55,6 +61,7 @@ class Character(models.Model):
 
     image = models.ImageField(blank=True, storage=fs)
     image_high_rez = models.ImageField(blank=True, storage=fs)
+    image_thumb = models.ImageField(blank=True, storage=fs)
 
     def get_absolute_url(self):
         return '/char/' + str(self.id)

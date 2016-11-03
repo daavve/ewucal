@@ -4,8 +4,6 @@
 //
 ////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
 
 function iWindow (iImg) {
     var settings = {
@@ -56,7 +54,8 @@ function iWindow (iImg) {
         boxes: null,
         has_big_box: false,
         big_box_1: null,
-        big_box_2: null
+        big_box_2: null,
+        big_box_3: null
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
@@ -189,79 +188,45 @@ function iWindow (iImg) {
                                 url:        '/ajax/get_char_relatives',
                                 method:     'GET',
                                 dataType:   'JSON',
-                                data:       {charId: $box.data('charId')},
-                                position: {
-                                    my:      "right-bottom",
-                                    at:      "right-bottom",
-                                    offsetY: -10,
-                                    offsetX: -10
+                                data:       {charId: $box.data('charId')}
                                 },
-                                onclosed:   function(){
-                                    $viewport.has_big_box = false;
-                                    $viewport.big_box_1.close();
-                                },
-                                done:       function( data, textStatus, jqXHR, panel ){
-                                            var chars = [];
-                                               $.each(data, function(i, item) {
-                                                        chars.push({
-                                                            thumb: item.thumb,
-                                                            src: item.src,
-                                                            type: 'image',
-                                                            caption: item.id
-                                                        });
-                                                    });
-                                                    var html = '<div id="gallery"></div>\
-                                                            <div id="SCGTemplate">\
-                                                            <div class="media">\
-                                                            </div>\
-                                                            <p class="caption"></p>\
-                                                            <ul class="carousel">\
-                                                            <li class="carouselItem">\
-                                                            </li>\
-                                                            </ul>\
-                                                            </div>';
-                                                var html1 = $(html);
-                                                this.content.append(html1);
-                                                $('#gallery').SimpleCarouselGallery(chars, {});
-
-        $('.jcarousel-control-prev')
-            .on('jcarouselcontrol:active', function() {
-                $(this).removeClass('inactive');
-            })
-            .on('jcarouselcontrol:inactive', function() {
-                $(this).addClass('inactive');
-            })
-            .jcarouselControl({
-                target: '-=1'
-            });
-
-        $('.jcarousel-control-next')
-            .on('jcarouselcontrol:active', function() {
-                $(this).removeClass('inactive');
-            })
-            .on('jcarouselcontrol:inactive', function() {
-                $(this).addClass('inactive');
-            })
-            .jcarouselControl({
-                target: '+=1'
-            });
-
-        $('.jcarousel-pagination')
-            .on('jcarouselpagination:active', 'a', function() {
-                $(this).addClass('active');
-            })
-            .on('jcarouselpagination:inactive', 'a', function() {
-                $(this).removeClass('active');
-            })
-            .jcarouselPagination();
-                                }
+                            position: {
+                                my:      "right-bottom",
+                                at:      "right-bottom",
+                                offsetY: -10,
+                                offsetX: -10
+                            },
+                            onclosed:   function(){
+                                $viewport.has_big_box = false;
+                                $viewport.big_box_1.close();
+                            },
+                            done: function( data, textStatus, jqXHR, panel ){
+                                var chars = [];
+                                $.each(data, function(i, item) {
+                                    chars.push({
+                                        thumb: item.thumb,
+                                        src: item.src,
+                                        type: 'image',
+                                        caption: item.id
+                                    });
+                                });
+                                var html = `<div id="gallery"></div>
+                                    <div id="SCGTemplate">
+                                    <div class="media">
+                                    </div>
+                                    <p class="caption"></p>
+                                    <ul class="carousel">
+                                    <li class="carouselItem">
+                                    </li>
+                                    </ul>
+                                    /div>
+                                    `;
+                                var html1 = $(html);
+                                this.content.append(html1);
+                                $('#gallery').SimpleCarouselGallery(chars, {});
                             }
                         });
                     }
-                    
-                    var relchars = getRelChars($box.data('charId'));
-                    var opts = {};
-                    
                 }
             }).extend({
                 charId : iChar.charId,
