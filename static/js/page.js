@@ -184,13 +184,19 @@ function iWindow (iImg) {
                         $viewport.big_box_2 = $.jsPanel({
                             headerTitle:    'Other ' + $box.data('mark') + ' by ' + $box.data('authName'),
                             contentSize:    {width: '500px', height: '500px'},
+                            resizable:      {stop: function( event, ui ) {
+                                                let conheight = ui.size.height - 41     //TODO, find the menubar height programatically
+                                                $( "#chargrid" ).css({height : conheight});
+                                                this.contentResize();
+                                            }
+                                        },
                             contentAjax:    {
                                 url:        '/ajax/get_char_relatives',
                                 method:     'GET',
                                 dataType:   'JSON',
                                 data:       {charId: $box.data('charId')},
                                 done: function( data, textStatus, jqXHR, panel ){
-                                    var $container = $('<div class="container"></div>');
+                                    var $container = $('<div class="container2" id="chargrid"></div>');
                                     $.each(data, function(i, item) {
                                         $container.append('<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>');
                                     });
@@ -217,6 +223,7 @@ function iWindow (iImg) {
                             },
                         }
                     });
+//                    $viewport.big_box.resizable({create: function( event, ui ) {$viewport.big_box.content.css({'height': ui.size[1] + 'px'});}})
                 }
             }
             }).extend({
