@@ -159,7 +159,7 @@ function iWindow (iImg) {
                                                         width: $box.x_len,
                                                         height: $box.y_len,
                                                         resize: 'content'}
-                        ).headerTitle($box.mark + ' by ' + $box.authorName);
+                        ).headerTitle('This ' + $box.mark);
                     }
                     else
                     {
@@ -187,12 +187,34 @@ function iWindow (iImg) {
                             onclosed: function(){
                                 $viewport.has_big_box = false;
                                 $viewport.big_box_2.close();
+                                $viewport.big_box_3.close();
                             },
                             headerControls: {'controls': 'closeonly'},
                             content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
                         });
+                        $viewport.big_box_3 = $.jsPanel({
+                            headerTitle:    'id#',
+                            content: $('<img src=""id="big_img_2">'),
+                            position: {
+                                my:      "center-top",
+                                at:      "center-top",
+                                offsetY: 10,
+                                offsetX: 10
+                            }
+                        }).resizable( {stop: function( event, ui ) {
+                                let $charImg = $( '#big_img_2' );
+                                let $box = $charImg.data('parent');
+                                let winHeight = ui.size.height - 41;    //For the Menubar
+                                if ($box.lw_ratio > (winHeight / ui.size.width)){
+                                    $charImg.height(winHeight).width(winHeight * ( 1 / $box.lw_ratio));
+                                }
+                                else {
+                                    $charImg.width(ui.size.width).height(ui.size.width * $box.lw_ratio);
+                                }
+                            }});
+                        
                         $viewport.big_box_2 = $.jsPanel({
-                            headerTitle:    'Other ' + $box.data('mark') + ' by ' + $box.authorName,
+                            headerTitle:    'Other ' + $box.mark + ' by ' + $box.authorName,
                             contentSize:    {width: '500px', height: '500px'},
                             resizable:      {stop: function( event, ui ) {
                                                 let conheight = ui.size.height - 41;     //TODO:  Magic number is titlebar height
@@ -207,7 +229,27 @@ function iWindow (iImg) {
                                 done: function( data, textStatus, jqXHR, panel ){
                                     var $container = $('<div class="container2" id="chargrid"></div>');
                                     $.each(data, function(i, item) {
-                                        $container.append('<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>');
+                                        var $charInGrid = $( '<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
+                                        ).extend({
+                                            charId: item.id,
+                                            URL: item.URL,
+                                            width: item.uWidth,
+                                            height: item.uHeight,
+                                            lw_ratio: item.uHeight / item.uWidth
+                                        }).selectable({
+                                            stop: function( event, ui ) {
+                                                let $myChar = $(this).data('self');
+                                                let $bigChar = $( '#big_img_2' ).height($myChar.height).width($myChar.width).attr('src', $myChar.URL)
+                                                $bigChar.data('parent', $myChar);
+                                                $viewport.big_box_3.resize({
+                                                        width: $myChar.width,
+                                                        height: $myChar.height,
+                                                        resize: 'content'}
+                                                    ).headerTitle('id# ' + $myChar.charId);
+                                            }
+                                        });
+                                        $charInGrid.data('self', $charInGrid);
+                                        $container.append($charInGrid);
                                     });
                                     this.content.append($container);
                                 }
@@ -215,9 +257,16 @@ function iWindow (iImg) {
                             onclosed:   function(){
                                 $viewport.has_big_box = false;
                                 $viewport.big_box_1.close();
+                                $viewport.bog_box_3.close();
 
-                        }
-                    }).contentResize();
+                            },
+                             position: {
+                                my:      "right-top",
+                                at:      "right-top",
+                                offsetY: 200,
+                                offsetX: 10
+                            }
+                    });
                 }
             }
             }).extend({

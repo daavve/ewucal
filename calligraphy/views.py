@@ -80,7 +80,9 @@ def get_char_relatives(request):
     charList = []
     for char in chars_rel:
         charList.append({
-            'src': str(Character.get_image(char)),
+            'URL': str(Character.get_image(char)),
+            'uWidth': char.x2 - char.x1,
+            'uHeight': char.y2 - char.y1,
             'id': char.id,
             'thumb': str(Character.get_thumb(char)),
             'width': char.image_thumb_y,
