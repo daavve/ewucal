@@ -165,8 +165,17 @@ function iWindow (iImg) {
                         $viewport.has_big_box = true;
                         $viewport.big_box_1 = $.jsPanel({
                             contentSize:    {width: $box.x_len, height: $box.y_len},
-                            resizable: {stop: function( event, ui ) {}}, //TODO: Resize inside char with window
-                                            
+                            resizable: {stop: function( event, ui ) {
+                                let $charImg = $( '#big_img_1' );
+                                let $charBox = $charImg.data('parentBox');
+                                let winHeight = ui.size.height - 41;    //For the Menubar
+                                if ($charBox.lw_ratio > (winHeight / ui.size.width)){
+                                    $charImg.height(winHeight).width(winHeight * $charBox.lw_ratio);
+                                }
+                                else {
+                                    $charImg.width(ui.size.width).height(ui.size.width * $charBox.lw_ratio);
+                                }
+                            }}, 
                             position: {
                                 my:      "left-top",
                                 at:      "left-top",
@@ -179,7 +188,7 @@ function iWindow (iImg) {
                                 $viewport.big_box_2.close();
                             },
                             headerControls: {'controls': 'closeonly'},
-                            content: $('<img src="' + $box.URL + '"id="big_img_1">')
+                            content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
                         });
                         $viewport.big_box_2 = $.jsPanel({
                             headerTitle:    'Other ' + $box.data('mark') + ' by ' + $box.authorName,
@@ -187,7 +196,6 @@ function iWindow (iImg) {
                             resizable:      {stop: function( event, ui ) {
                                                 let conheight = ui.size.height - 41;     //TODO:  Magic number is titlebar height
                                                 $( "#chargrid" ).css({height : conheight});
-                                                this.contentResize();
                                             }
                                         },
                             contentAjax:    {
@@ -201,15 +209,15 @@ function iWindow (iImg) {
                                         $container.append('<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>');
                                     });
                                     this.content.append($container);
-                                    rowGrid($container, {
-                                        itemSelector: '.item',
-                                        minMargin: 10,
-                                        maxMargin: 25,
-                                        firstItemClass: 'first-item',
-                                        lastRowClass: 'last-row',
-                                        resize: true,
-                                        minWidth: 500
-                                    });
+//                                    $container.rowGrid( {
+//                                        itemSelector: '.item',
+//                                        minMargin: 10,
+//                                        maxMargin: 25,
+//                                        firstItemClass: 'first-item',
+//                                        lastRowClass: 'last-row',
+//                                        resize: true,
+//                                        minWidth: 500
+//                                    });
 
                                 }
                             },
@@ -233,19 +241,14 @@ function iWindow (iImg) {
                 y_top: iChar.y1,
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
+                lw_ratio: (iChar.y2 - iChar.y1) / (iChar.x2 - iChar.x1),
                 related_chars: null,
                 selected: false
             }).hover(function(){
                 if(!$(this).hasClass('ui-selected')) {
                     $(this).toggleClass('char_box_hover');
                 }
-            }).data('authName', iChar.authorName
-            ).data('mark', iChar.mark
-            ).data('URL', iChar.URL
-            ).data('charId', iChar.charId
-            ).data('height', iChar.y2 - iChar.y1
-            ).data('width', iChar.x2 - iChar.x1
-            );
+            });
 
             $charBox.data('self', $charBox);
             updateBoxPosition($charBox);
