@@ -154,11 +154,12 @@ function iWindow (iImg) {
                     toggle_box_colors($box);
                     if($viewport.has_big_box)
                     {
+                        $( '#big_img_1' ).attr('src', $box.URL);
                         $viewport.big_box_1.resize({
                                                         width: $box.x_len,
                                                         height: $box.y_len,
                                                         resize: 'content'}
-                        ).headerTitle($box.mark + ' by ' + $box.authorNamr);
+                        ).headerTitle($box.mark + ' by ' + $box.authorName);
                     }
                     else
                     {
@@ -170,7 +171,7 @@ function iWindow (iImg) {
                                 let $charBox = $charImg.data('parentBox');
                                 let winHeight = ui.size.height - 41;    //For the Menubar
                                 if ($charBox.lw_ratio > (winHeight / ui.size.width)){
-                                    $charImg.height(winHeight).width(winHeight * $charBox.lw_ratio);
+                                    $charImg.height(winHeight).width(winHeight * ( 1 / $charBox.lw_ratio));
                                 }
                                 else {
                                     $charImg.width(ui.size.width).height(ui.size.width * $charBox.lw_ratio);
@@ -209,16 +210,6 @@ function iWindow (iImg) {
                                         $container.append('<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>');
                                     });
                                     this.content.append($container);
-//                                    $container.rowGrid( {
-//                                        itemSelector: '.item',
-//                                        minMargin: 10,
-//                                        maxMargin: 25,
-//                                        firstItemClass: 'first-item',
-//                                        lastRowClass: 'last-row',
-//                                        resize: true,
-//                                        minWidth: 500
-//                                    });
-
                                 }
                             },
                             onclosed:   function(){
