@@ -160,6 +160,34 @@ function iWindow (iImg) {
                                                         height: $box.y_len,
                                                         resize: 'content'}
                         ).headerTitle('This ' + $box.mark);
+                        $.getJSON('/ajax/get_char_relatives', {charId: $box.charId}
+                        ).done(function( data, textStatus, jqXHR, panel ){
+                                    var $container = $( '#chargrid' ).empty();
+                                    $.each(data, function(i, item) {
+                                        var $charInGrid = $( '<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
+                                        ).extend({
+                                            charId: item.id,
+                                            URL: item.URL,
+                                            width: item.uWidth,
+                                            height: item.uHeight,
+                                            lw_ratio: item.uHeight / item.uWidth
+                                        }).selectable({
+                                            stop: function( event, ui ) {
+                                                let $myChar = $(this).data('self');
+                                                let $bigChar = $( '#big_img_2' ).height($myChar.height).width($myChar.width).attr('src', $myChar.URL);
+                                                $bigChar.data('parent', $myChar);
+                                                $viewport.big_box_3.resize({
+                                                        width: $myChar.width,
+                                                        height: $myChar.height,
+                                                        resize: 'content'}
+                                                    ).headerTitle('id# ' + $myChar.charId);
+                                            }
+                                        });
+                                        $charInGrid.data('self', $charInGrid);
+                                        $container.append($charInGrid);
+                                    });
+                        $viewport.big_box_1.contentReload();
+                    });
                     }
                     else
                     {
@@ -200,6 +228,13 @@ function iWindow (iImg) {
                                 at:      "center-top",
                                 offsetY: 10,
                                 offsetX: 10
+                            },
+                            headerControls: {'controls': 'closeonly'},
+                            onclosed:   function(){
+                                $viewport.has_big_box = false;
+                                $viewport.big_box_1.close();
+                                $viewport.bog_box_2.close();
+
                             }
                         }).resizable( {stop: function( event, ui ) {
                                 let $charImg = $( '#big_img_2' );
@@ -239,7 +274,7 @@ function iWindow (iImg) {
                                         }).selectable({
                                             stop: function( event, ui ) {
                                                 let $myChar = $(this).data('self');
-                                                let $bigChar = $( '#big_img_2' ).height($myChar.height).width($myChar.width).attr('src', $myChar.URL)
+                                                let $bigChar = $( '#big_img_2' ).height($myChar.height).width($myChar.width).attr('src', $myChar.URL);
                                                 $bigChar.data('parent', $myChar);
                                                 $viewport.big_box_3.resize({
                                                         width: $myChar.width,
@@ -265,7 +300,8 @@ function iWindow (iImg) {
                                 at:      "right-top",
                                 offsetY: 200,
                                 offsetX: 10
-                            }
+                            },
+                            headerControls: {'controls': 'closeonly'}
                     });
                 }
             }
