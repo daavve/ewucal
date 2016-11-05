@@ -144,48 +144,48 @@ function iWindow (iImg) {
         $viewport.last_selected = $box; 
     }
     
-    var $big_char = $('<img src="">');
     function build_a_box(iChar){
         var $charBox = $('<div class="char_box"></div>').css({
             position: 'absolute'
             }).selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    let $box = $(this);
+                    let $box = $(this).data('self');
                     toggle_box_colors($box);
-                    $big_char.attr('src', $box.data('URL'));
                     if($viewport.has_big_box)
                     {
                         $viewport.big_box_1.resize({
-                                                        width: $box.data('width'),
-                                                        height: $box.data('height'),
-                                                        resize: 'content'});
+                                                        width: $box.x_len,
+                                                        height: $box.y_len,
+                                                        resize: 'content'}
+                        ).headerTitle($box.mark + ' by ' + $box.authorNamr);
                     }
                     else
                     {
                         $viewport.has_big_box = true;
                         $viewport.big_box_1 = $.jsPanel({
-                            contentSize:    {width: $box.data('width'), height: $box.data('height')},
-                            resizable: false,
+                            contentSize:    {width: $box.x_len, height: $box.y_len},
+                            resizable: {stop: function( event, ui ) {}}, //TODO: Resize inside char with window
+                                            
                             position: {
                                 my:      "left-top",
                                 at:      "left-top",
                                 offsetY: 200,
                                 offsetX: 10
                             },
-                            headerTitle: $box.data('mark') + ' by ' + $box.data('authName'),
+                            headerTitle: $box.mark + ' by ' + $box.authorName,
                             onclosed: function(){
                                 $viewport.has_big_box = false;
                                 $viewport.big_box_2.close();
                             },
                             headerControls: {'controls': 'closeonly'},
-                            content: $big_char
+                            content: $('<img src="' + $box.URL + '"id="big_img_1">')
                         });
                         $viewport.big_box_2 = $.jsPanel({
-                            headerTitle:    'Other ' + $box.data('mark') + ' by ' + $box.data('authName'),
+                            headerTitle:    'Other ' + $box.data('mark') + ' by ' + $box.authorName,
                             contentSize:    {width: '500px', height: '500px'},
                             resizable:      {stop: function( event, ui ) {
-                                                let conheight = ui.size.height - 41     //TODO, find the menubar height programatically
+                                                let conheight = ui.size.height - 41;     //TODO:  Magic number is titlebar height
                                                 $( "#chargrid" ).css({height : conheight});
                                                 this.contentResize();
                                             }
@@ -194,7 +194,7 @@ function iWindow (iImg) {
                                 url:        '/ajax/get_char_relatives',
                                 method:     'GET',
                                 dataType:   'JSON',
-                                data:       {charId: $box.data('charId')},
+                                data:       {charId: $box.charId},
                                 done: function( data, textStatus, jqXHR, panel ){
                                     var $container = $('<div class="container2" id="chargrid"></div>');
                                     $.each(data, function(i, item) {
@@ -210,26 +210,22 @@ function iWindow (iImg) {
                                         resize: true,
                                         minWidth: 500
                                     });
-                                },
-                            position: {
-                                my:      "right-bottom",
-                                at:      "right-bottom",
-                                offsetY: -10,
-                                offsetX: -10
+
+                                }
                             },
                             onclosed:   function(){
                                 $viewport.has_big_box = false;
                                 $viewport.big_box_1.close();
-                            },
+
                         }
-                    });
-//                    $viewport.big_box.resizable({create: function( event, ui ) {$viewport.big_box.content.css({'height': ui.size[1] + 'px'});}})
+                    }).contentResize();
                 }
             }
             }).extend({
                 charId : iChar.charId,
                 pageId : iChar.pageId,
                 authorId : iChar.authorId,
+                authorName: iChar.authorName,
                 workId : iChar.workId,
                 URL : iChar.URL,
                 mark : iChar.mark,
@@ -248,8 +244,10 @@ function iWindow (iImg) {
             ).data('URL', iChar.URL
             ).data('charId', iChar.charId
             ).data('height', iChar.y2 - iChar.y1
-            ).data('width', iChar.x2 - iChar.x1);
+            ).data('width', iChar.x2 - iChar.x1
+            );
 
+            $charBox.data('self', $charBox);
             updateBoxPosition($charBox);
             $viewport.append($charBox);
             $viewport.boxes.add($charBox);
