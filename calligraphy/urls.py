@@ -18,7 +18,8 @@ urlpatterns = [
     url(r'^auth/(?P<auth_id>[0-9]+)$',  views.works_by_author),
     url(r'^work/(?P<work_id>[0-9]+)$',  views.pages_in_work),
     url(r'^page/(?P<page_id>[0-9]+)$',  views.individual_page),
-    url(r'^ajax/get_page',             views.get_page),
-    url(r'^ajax/get_char_relatives',   views.get_char_relatives),
+    url(r'^ajax/get_page',              views.get_page),
+    url(r'^ajax/get_char_relatives',    views.get_char_relatives),
+    url(r'^ajax/get_root_tree',        views.get_root_tree),
     url(r'^$', views.webroot)
 ]
