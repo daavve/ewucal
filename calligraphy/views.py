@@ -12,6 +12,18 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
+def webroot(request):
+    tmplt = loader.get_template('calligraphy/webroot.html')
+    return HttpResponse(tmplt.render(request=request))
+
+
+def auth_list(request):
+    authors = Author.objects.all()
+    tmplt = loader.get_template('calligraphy/authors.html')
+    cntxt = {'authors': authors}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
+
+
 def auth_list(request):
     authors = Author.objects.all()
     tmplt = loader.get_template('calligraphy/authors.html')
@@ -32,13 +44,6 @@ def pages_in_work(request, work_id):
     cntxt = {'pages': pages}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-
-# NOTE: Not currently used
-def individual_char(request, char_id):
-    char = Character.objects.get(id=char_id)
-    tmplt = loader.get_template('calligraphy/char.html')
-    cntxt = {'char': char}
-    return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)

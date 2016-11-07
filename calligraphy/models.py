@@ -7,7 +7,6 @@ fs = FileSystemStorage()
 class Author(models.Model):
     name = models.CharField(max_length=64)
     dynasty = models.CharField(max_length=64, blank=True)
-
     def get_absolute_url(self):
         return '/auth/' + str(self.id)
 
