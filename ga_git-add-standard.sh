@@ -28,5 +28,5 @@ git add calligraphy/templates/calligraphy/*.html
 git add static/css/*.css
 git add static/js/*.js
 
-git commit -m $1
+git commit -m $message
 git push -v
