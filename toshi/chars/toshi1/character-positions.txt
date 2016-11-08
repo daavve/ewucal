@@ -1,0 +1,87 @@
+[dave@bigArch toshi]$ make do
+rm -f ./chars/extracted_chars/*
+./main.out
+File Name? (.bmp) -> 1n.bmp
+DCT Cut Level? -> 127   # Did this one because we have about 11 characters per vertical row. #
+./chars/1n.bmp
+width: 870   height: 1400
+Reduce Higher Frequency Done.
+IDCT done.
+locateTopAndBottom - X-axis scan done. (vertical lines drawn)
+locateTopAndBottom - Y-axis scan done. (horizontal lines drawn)
+a image "locate_top_bottom.bmp" saved.
+1. Extract Char @ x:255 y65
+to_top:65 | to_bottom:123 | to_left:59 | to_right:61
+2. Extract Char @ x:631 y95
+to_top:95 | to_bottom:115 | to_left:61 | to_right:69
+3. Extract Char @ x:783 y120
+to_top:120 | to_bottom:158 | to_left:83 | to_right:86
+4. Extract Char @ x:378 y125
+to_top:125 | to_bottom:94 | to_left:66 | to_right:80
+5. Extract Char @ x:519 y194
+to_top:143 | to_bottom:116 | to_left:84 | to_right:65
+6. Extract Char @ x:131 y251
+to_top:115 | to_bottom:127 | to_left:74 | to_right:84
+7. Extract Char @ x:266 y280
+to_top:92 | to_bottom:67 | to_left:50 | to_right:50
+8. Extract Char @ x:377 y302
+to_top:81 | to_bottom:161 | to_left:59 | to_right:69
+9. Extract Char @ x:642 y323
+to_top:117 | to_bottom:194 | to_left:65 | to_right:83
+10. Extract Char @ x:773 y403
+to_top:122 | to_bottom:97 | to_left:52 | to_right:60
+11. Extract Char @ x:511 y411
+to_top:98 | to_bottom:117 | to_left:86 | to_right:72
+12. Extract Char @ x:261 y461
+to_top:113 | to_bottom:118 | to_left:76 | to_right:72
+13. Extract Char @ x:114 y496
+to_top:126 | to_bottom:164 | to_left:114 | to_right:73
+14. Extract Char @ x:379 y574
+to_top:106 | to_bottom:63 | to_left:60 | to_right:55
+15. Extract Char @ x:643 y607
+to_top:88 | to_bottom:38 | to_left:60 | to_right:69
+16. Extract Char @ x:644 y608
+to_top:89 | to_bottom:36 | to_left:61 | to_right:68
+17. Extract Char @ x:776 y643
+to_top:142 | to_bottom:104 | to_left:63 | to_right:64
+18. Extract Char @ x:510 y669
+to_top:139 | to_bottom:155 | to_left:77 | to_right:75
+19. Extract Char @ x:255 y722
+to_top:142 | to_bottom:125 | to_left:68 | to_right:64
+20. Extract Char @ x:378 y741
+to_top:102 | to_bottom:99 | to_left:58 | to_right:60
+21. Extract Char @ x:119 y865
+to_top:218 | to_bottom:160 | to_left:119 | to_right:42
+22. Extract Char @ x:778 y868
+to_top:119 | to_bottom:100 | to_left:70 | to_right:91
+23. Extract Char @ x:638 y887
+to_top:231 | to_bottom:148 | to_left:72 | to_right:70
+24. Extract Char @ x:498 y908
+to_top:84 | to_bottom:94 | to_left:71 | to_right:68
+25. Extract Char @ x:375 y910
+to_top:68 | to_bottom:97 | to_left:56 | to_right:50
+26. Extract Char @ x:259 y951
+to_top:103 | to_bottom:84 | to_left:62 | to_right:61
+27. Extract Char @ x:793 y1067
+to_top:103 | to_bottom:268 | to_left:95 | to_right:76
+28. Extract Char @ x:115 y1135
+to_top:113 | to_bottom:264 | to_left:115 | to_right:69
+29. Extract Char @ x:114 y1136
+to_top:115 | to_bottom:263 | to_left:114 | to_right:70
+30. Extract Char @ x:492 y1140
+to_top:135 | to_bottom:167 | to_left:65 | to_right:76
+31. Extract Char @ x:255 y1145
+to_top:108 | to_bottom:132 | to_left:70 | to_right:67
+32. Extract Char @ x:632 y1152
+to_top:117 | to_bottom:175 | to_left:63 | to_right:86
+33. Extract Char @ x:375 y1188
+to_top:179 | to_bottom:211 | to_left:55 | to_right:51
+34. Extract Char @ x:205 y1351
+to_top:94 | to_bottom:48 | to_left:30 | to_right:18
+35. Extract Char @ x:206 y1352
+to_top:87 | to_bottom:47 | to_left:31 | to_right:17
+36. Extract Char @ x:208 y1355
+to_top:88 | to_bottom:44 | to_left:33 | to_right:14
+37. Extract Char @ x:213 y1360
+to_top:90 | to_bottom:39 | to_left:40 | to_right:7
+37 characters were extracted.
