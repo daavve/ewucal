@@ -1,7 +1,0 @@
-{% extends parent_template|default:"ewucal/base.html" %}
-
-{% block content %}
-<h2>{{  char.mark }}</h2>
-    {% load staticfiles %}
-  <img src="{% static char.get_image %}" />
-{% endblock %}
