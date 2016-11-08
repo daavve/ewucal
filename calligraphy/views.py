@@ -16,6 +16,9 @@ def webroot(request):
     tmplt = loader.get_template('calligraphy/webroot.html')
     return HttpResponse(tmplt.render(request=request))
 
+def validate(request):
+    tmplt = loader.get_template('calligraphy/validate.html')
+    return HttpResponse(tmplt.render(request=request))
 
 def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)

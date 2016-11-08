@@ -1,0 +1,12 @@
+{% extends parent_template|default:"ewucal/base.html" %}
+
+{% block content %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/validate.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/validate.js"></script>
+
+<div class="zTreeDemoBackground left">
+	<ul id="treeDemo" class="ztree"></ul>
+</div>
+
+{% endblock %}

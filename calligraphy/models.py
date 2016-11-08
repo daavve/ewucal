@@ -31,6 +31,7 @@ class Page(models.Model):
     transcript = models.TextField(blank=True)
     i_valid_transform = models.NullBooleanField(null=True)
     i_transform_type_new = models.NullBooleanField(null=True)
+    i_transform_validated = models.NullBooleanField(null=True)
 
     def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
