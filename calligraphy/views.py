@@ -16,7 +16,7 @@ def webroot(request):
     tmplt = loader.get_template('calligraphy/webroot.html')
     return HttpResponse(tmplt.render(request=request))
 
-def validate(request):
+def validate_html(request):
     tmplt = loader.get_template('calligraphy/validate.html')
     return HttpResponse(tmplt.render(request=request))
 
@@ -101,4 +101,17 @@ def get_root_tree(request):
                     'name':     str(page.id),
                     'isParent': 'false'
                     })
+    return JsonResponse(response, safe=False)
+
+@csrf_exempt
+def validate_ajax(request):
+    author = request.POST.get('id', None)
+    response = []
+    pages = Page.objects.filter(parent_work=wrkid)
+    for page in pages:
+        response.append({
+            'id':       str(page.id).zfill(5),
+            'name':     str(page.id),
+            'isParent': 'false'
+        })
     return JsonResponse(response, safe=False)
