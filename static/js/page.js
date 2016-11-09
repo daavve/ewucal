@@ -213,9 +213,11 @@ function iWindow (iImg) {
                             },
                             headerTitle: $box.mark + ' by ' + $box.authorName,
                             onclosed: function(){
-                                $viewport.has_big_box = false;
-                                $viewport.big_box_2.close();
-                                $viewport.big_box_3.close();
+                                if ($viewport.has_big_box) {
+                                    $viewport.has_big_box = false;
+                                    $viewport.big_box_2.close();
+                                    $viewport.big_box_3.close();
+                                }
                             },
                             headerControls: {'controls': 'closeonly'},
                             content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
@@ -231,9 +233,11 @@ function iWindow (iImg) {
                             },
                             headerControls: {'controls': 'closeonly'},
                             onclosed:   function(){
-                                $viewport.has_big_box = false;
-                                $viewport.big_box_1.close();
-                                $viewport.bog_box_2.close();
+                                if ($viewport.has_big_box) {
+                                    $viewport.has_big_box = false;
+                                    $viewport.big_box_1.close();
+                                    $viewport.bog_box_2.close();
+                                }
 
                             }
                         }).resizable( {stop: function( event, ui ) {
@@ -290,9 +294,11 @@ function iWindow (iImg) {
                                 }
                             },
                             onclosed:   function(){
-                                $viewport.has_big_box = false;
-                                $viewport.big_box_1.close();
-                                $viewport.bog_box_3.close();
+                                if ($viewport.has_big_box) {    // Stop infinate recursion
+                                    $viewport.has_big_box = false;
+                                    $viewport.big_box_1.close();
+                                    $viewport.big_box_3.close();
+                                }
 
                             },
                              position: {

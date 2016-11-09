@@ -13,7 +13,6 @@ var setting = {
 function launchWindow(treeId, treeNode){
     if (!treeNode.isParent) {
         let str = treeNode.id.substring(8);
-        console.log(str);
         $.jsPanel({
             contentIframe: {
                 src: 'page/' + str
