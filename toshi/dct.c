@@ -25,7 +25,6 @@ void reduceHigherFreq(CvMat *cm, int div){
 			putchar('\n');
 		}
 	}
-	printf("Reduce Higher Frequency Done.\n");
 }
 
 void reduceHigherFreqInSquare(CvMat *cm, int div){
@@ -64,5 +63,4 @@ void makeIdctImage(CvMat *dct, CvMat *idct, IplImage *invImage){
 			invImage->imageData[invImage->widthStep * y + x] = (unsigned char)cvmGet(idct,y,x);
 		}
 	}
-	printf("IDCT done.\n");
 }

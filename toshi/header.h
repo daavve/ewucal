@@ -5,21 +5,6 @@ const char* sub_dir = "./chars/";
 int g_dct_level;
 char g_fin_name[128];
 
-void getGlobalParameters(){
-	strcpy(g_fin_name, default_fin_name);
-	g_dct_level = 64;
-	
-	if(INPUT_MODE == 1){
-		printf("File Name? (.bmp) -> ");
-		scanf("%s", g_fin_name);
-		printf("DCT Cut Level? -> ");
-		scanf("%d", &g_dct_level);
-	}
-	else{
-		//do nothing
-	}
-}
-
 void initializeIntTwoDArray(int height, int width, int twoD[][width]){
 	int x, y;
 	for(y = 0; y < height; y++){
