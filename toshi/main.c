@@ -12,6 +12,9 @@
 #include "dct.c"
 #include "locate_char.c"
 
+
+// argv[1] = filename inside chars
+// argv[2] = segment size
 int main(int argc, char ** argv)
 {
 	strcpy(g_fin_name, argv[1]);
