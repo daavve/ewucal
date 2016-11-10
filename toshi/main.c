@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+
 #include "header.h"
 
 #include "dct.c"
@@ -13,7 +14,9 @@
 
 int main(int argc, char ** argv)
 {
-	getGlobalParameters();
+	strcpy(g_fin_name, argv[1]);
+    g_dct_level = atoi(argv[2]);
+    
 	
 	char filename[256];
 	IplImage * image;
