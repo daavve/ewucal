@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'^ajax/get_char_relatives',    views.get_char_relatives),
     url(r'^ajax/get_root_tree',         views.get_root_tree),
     url(r'^ajax/validate',              views.validate_ajax),
+    url(r'^ajax/get_toshi',             views.get_toshi),
     url(r'^$',                          views.webroot)
 ]

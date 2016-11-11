@@ -10,7 +10,8 @@ function iWindow (iImg) {
         longset_side: 500,
         zoom_max: 20, // 100X initial zoom
     };
-    
+
+   
     var $image = $('.draggable').extend({
         start_width: parseInt(iImg.width),
         min_width: null,
@@ -95,6 +96,14 @@ function iWindow (iImg) {
             }
         }
     }
+    
+    var $button = $( 'button' ).button().click( function (event) {
+            getToshi($image.page_id, 300).done(function (data) {
+                for(i = 0; i < data.length; ++i) {
+                    build_a_box(data[i]);
+                }
+            });
+    }); 
     
     function updateBoxes(){
         for (let $box of $viewport.boxes)
@@ -344,6 +353,10 @@ function iWindow (iImg) {
 
 function getPage(pageId){ // get the page object from the server
     return $.getJSON('/ajax/get_page', {'pageId' : pageId});
+}
+
+function getToshi(pageId, cutNumber) {
+    return $.getJSON('/ajax/get_toshi', {'id' : pageId, 'num' : cutNumber});
 }
 
 function getRelChars(charId){
