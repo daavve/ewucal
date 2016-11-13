@@ -4,7 +4,7 @@
 
 void scaleCharSize(int *to_top, int *to_bottom, int *to_left, int *to_right
                 ,int val_x, int val_y
-                ,int map_height, int map_width, int top_bottom_map[][map_width]){
+                ,int map_height, int map_width, int** top_bottom_map){
     int x, y;
     char first_time;
     (*to_top) = 0, (*to_bottom) = 0, (*to_left) = 0, (*to_right) = 0;
@@ -39,7 +39,7 @@ void scaleCharSize(int *to_top, int *to_bottom, int *to_left, int *to_right
     }
 }
 
-void extractCharFromTopBottomMap(int val_x, int val_y, int index, int map_height, int map_width, int top_bottom_map[][map_width]){
+void extractCharFromTopBottomMap(int val_x, int val_y, int index, int map_height, int map_width, int** top_bottom_map ){
     printf("%d. Extract Char @ x:%d y:%d ** ", index, val_x, val_y);
     
     int to_top, to_bottom, to_left, to_right;
@@ -50,7 +50,6 @@ void extractCharFromTopBottomMap(int val_x, int val_y, int index, int map_height
 }
 
 void locateTopAndBottom(IplImage *image){
-    int x, y;
     int val;
     int prev_val;
     int next_val;
@@ -58,23 +57,26 @@ void locateTopAndBottom(IplImage *image){
     //printf("height:%d  width:%d\n", image->height, image->width);
     IplImage *copied = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1);
     //printf("locateTopAndBottom starts here.\n");
-    int top_bottom_map[image->height][image->width];  //This gets big enough to blow the stack!!!!!locateTopAndBottom
     //printf("locateTopAndBottom starts here.\n");
     
-    int top_bottom_map = (int **) calloc (
+    // Creates top_bottom_map[image->height][image->width] in heap
+    int** top_bottom_map = (int**) calloc (image->height, sizeof(int *));
+    for(int i = 0; i < image->height; ++i)
+    {
+        top_bottom_map[i] = (int*) calloc (image->width, sizeof(int));
+    }
     
     
     copyIplImage(image, copied);
     
-    initializeIntTwoDArray(image->height, image->width, top_bottom_map);
     
     //printf("locateTopAndBottom starts here.\n");
     
     //X-axis scan (draw vertical lines)
-    for(y = 0; y < image->height; y++){
+    for(int y = 0; y < image->height; y++){
         equal_count = 0;
         prev_val = (int)(unsigned char)(image->imageData[image->widthStep * y + 0]);
-        for(x = 1; x < image->width-1; x++){
+        for(int x = 1; x < image->width-1; x++){
             //printf("y: %d | x: %d\n", y, x);
             val = (int)(unsigned char)(image->imageData[image->widthStep * y + x]);
             next_val = (int)(unsigned char)(image->imageData[image->widthStep * y + (x+1)]);
@@ -98,10 +100,10 @@ void locateTopAndBottom(IplImage *image){
     }
     
     //Y-axis scan (draw Horizontal lines)
-    for(x = 0; x < image->width; x++){
+    for(int x = 0; x < image->width; x++){
         equal_count = 0;
         prev_val = (int)(unsigned char)(image->imageData[image->widthStep * 0 + x]);
-        for(y = 1; y < image->height-1; y++){
+        for(int y = 1; y < image->height-1; y++){
             val = (int)(unsigned char)(image->imageData[image->widthStep * y + x]);
             next_val = (int)(unsigned char)(image->imageData[image->widthStep * (y+1) + x]);
             if(prev_val < val && val > next_val){ //case top
@@ -145,8 +147,8 @@ void locateTopAndBottom(IplImage *image){
     }
     
     int index = 0;
-    for(y = 0; y < image->height; y++){
-        for(x = 0; x < image->width; x++){
+    for(int y = 0; y < image->height; y++){
+        for(int x = 0; x < image->width; x++){
             if(top_bottom_map[y][x] == 3){
                 index++;
                 extractCharFromTopBottomMap(x, y, index, image->height, image->width, top_bottom_map);

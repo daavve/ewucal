@@ -9,7 +9,6 @@ void makeIdctImage(CvMat *dct, CvMat *idct, IplImage *invImage, int g_dct_level)
 
 // ex-header.c // <- These functions used to live inside header.h
 void copyIplImage(const IplImage *original, IplImage *copied);
-void initializeIntTwoDArray(int height, int width, int [height][width]);
 
 // locate_char.c //
 void locateTopAndBottom(IplImage *image);

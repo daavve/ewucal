@@ -1,15 +1,6 @@
 #include "header.h"
 #include <stdio.h>
 
-void initializeIntTwoDArray(int height, int width, int twoD[height][width]){
-	int x, y;
-	for(y = 0; y < height; y++){
-		for(x = 0; x < width; x++){
-			twoD[y][x] = 0;
-		}
-	}
-}
-
 void printCvMat(CvMat *cvmat, int dp, int mode){
 	int i, j;
 	for(i= 0; i < cvmat->rows; i++){

@@ -1,5 +1,5 @@
 CFLAGS		= -march=native -mtune=native -mfpmath=sse -ggdb3 -Wall -Wextra -O0
-LFLAGS		= -lopencv_highgui -lopencv_core -O0
+LFLAGS		= -lopencv_highgui -lopencv_core  -O0
 
 all:		main.o ex-header.o locate_char.o dct.o
 			gcc -o toshi-segment main.o ex-header.o locate_char.o dct.o $(CFLAGS) $(LFLAGS)
