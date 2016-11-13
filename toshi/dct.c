@@ -1,3 +1,5 @@
+#include "header.h"
+#include <stdio.h>
 
 void reduceHigherFreq(CvMat *cm, int div){
 	int x, y;
@@ -27,15 +29,9 @@ void reduceHigherFreq(CvMat *cm, int div){
 	}
 }
 
+
 void reduceHigherFreqInSquare(CvMat *cm, int div){
-	int n = cm->rows;
-	int dir = 0; //0:down&left, 1:up&right
 	int x=0, y=0;
-	int i, j;
-	int a[n][n];
-	int flag = 0;
-	int total_up_right_count = 0;
-	int up_right_count = 0;
 	
 	for(y = 0; y < cm->rows; y++){
 		for(x = 0; x < cm->cols; x++){
@@ -49,7 +45,7 @@ void reduceHigherFreqInSquare(CvMat *cm, int div){
 	
 }
 
-void makeIdctImage(CvMat *dct, CvMat *idct, IplImage *invImage){
+void makeIdctImage(CvMat *dct, CvMat *idct, IplImage *invImage, int g_dct_level){
 	int x, y;
 	
 	reduceHigherFreq(dct, g_dct_level);
@@ -64,3 +60,4 @@ void makeIdctImage(CvMat *dct, CvMat *idct, IplImage *invImage){
 		}
 	}
 }
+

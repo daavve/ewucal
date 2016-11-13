@@ -1,3 +1,6 @@
+#include "header.h"
+#include <stdio.h>
+
 void scaleCharSize(int *to_top, int *to_bottom, int *to_left, int *to_right
                 ,int val_x, int val_y
                 ,int map_height, int map_width, int top_bottom_map[][map_width]){
@@ -38,13 +41,6 @@ void scaleCharSize(int *to_top, int *to_bottom, int *to_left, int *to_right
 void extractCharFromTopBottomMap(int val_x, int val_y, int index, int map_height, int map_width, int top_bottom_map[][map_width]){
     printf("%d. Extract Char @ x:%d y:%d ** ", index, val_x, val_y);
     
-    int x, y;
-    char filename[256];
-    IplImage *image, *image_out;
-    char *fout_name = "char";
-    char *fout_extention = ".bmp";
-    char buff[256];
-    char itoa_buff[16];
     int to_top, to_bottom, to_left, to_right;
     
     scaleCharSize(&to_top, &to_bottom, &to_left, &to_right, val_x, val_y, map_height, map_width, top_bottom_map);
@@ -61,8 +57,12 @@ void locateTopAndBottom(IplImage *image){
     //printf("height:%d  width:%d\n", image->height, image->width);
     IplImage *copied = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1);
     //printf("locateTopAndBottom starts here.\n");
-    int top_bottom_map[image->height][image->width];
+    int top_bottom_map[image->height][image->width];  //This gets big enough to blow the stack!!!!!
     //printf("locateTopAndBottom starts here.\n");
+    
+    int top_bottom_map = (int **) malloc (
+    
+    
     copyIplImage(image, copied);
     
     initializeIntTwoDArray(image->height, image->width, top_bottom_map);

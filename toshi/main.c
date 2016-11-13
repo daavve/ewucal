@@ -1,27 +1,17 @@
-#include <cxcore.h>
-#include <cv.h>
-#include <highgui.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
-
 #include "header.h"
-#include "dct.c"
-#include "locate_char.c"
+#include <opencv2/highgui/highgui_c.h>
 
 // argv[1] = filename inside chars
 // argv[2] = segment size
 int main(int argc, char ** argv)
 {
-    g_dct_level = atoi(argv[2]);
+    int g_dct_level = atoi(argv[2]);
     char filename[256];
     strcpy(filename, argv[1]);
     IplImage * image;
     IplImage * invImage;
-    CvMat *dct,*idct, *dct_temp, *idct_temp, *cm;
-    int x, y, i, j, k, l;
-    char buff[256];
+    CvMat *dct,*idct;
+    int x, y;
     
     
     //gray scaleで画像読み込み
@@ -62,7 +52,7 @@ int main(int argc, char ** argv)
     cvDCT( dct, dct, CV_DXT_FORWARD);
     //printCvMat(dct, 0, 2);
     
-    makeIdctImage(dct, idct, invImage);
+    makeIdctImage(dct, idct, invImage, g_dct_level);
     //printCvMat(dct, 0, 2);
     
     locateTopAndBottom(invImage);
