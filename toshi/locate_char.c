@@ -1,5 +1,6 @@
 #include "header.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void scaleCharSize(int *to_top, int *to_bottom, int *to_left, int *to_right
                 ,int val_x, int val_y
@@ -57,10 +58,10 @@ void locateTopAndBottom(IplImage *image){
     //printf("height:%d  width:%d\n", image->height, image->width);
     IplImage *copied = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1);
     //printf("locateTopAndBottom starts here.\n");
-    int top_bottom_map[image->height][image->width];  //This gets big enough to blow the stack!!!!!
+    int top_bottom_map[image->height][image->width];  //This gets big enough to blow the stack!!!!!locateTopAndBottom
     //printf("locateTopAndBottom starts here.\n");
     
-    int top_bottom_map = (int **) malloc (
+    int top_bottom_map = (int **) calloc (
     
     
     copyIplImage(image, copied);
