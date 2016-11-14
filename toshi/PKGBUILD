@@ -1,15 +1,15 @@
 # Maintainer: David McInnis <davidm@eagles.ewu.edu>
 
 pkgname=toshi-segment
-pkgver=2.0.17
-pkgrel=3
+pkgver=3.0
+pkgrel=1
 pkgdesc="Program from Toshis master's thesis"
 arch=('x86_64' 'i686')
 url='http://davehub.net'
 license=('LGPL3')
 makedepends=('opencv2' 'gcc' 'make')
 source=("toshi.tar.gz")
-sha256sums=('9c399d79d89c1e930e9848ac4aeb97a8a6ddafaff29fc489f5546fc42a71eb6d')
+sha256sums=('797f055495789effc4c12281ac486b0de5dc63b8fe5a02dcd22b71a6615024f3')
 
 build() {
   cd "${srcdir}"
