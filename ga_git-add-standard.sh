@@ -9,7 +9,7 @@ j=true
 message="'"
 
 for i in "$@"; do
-    if [[ j -eq 'true'  ]]; then
+    if [[ $j -eq 'true'  ]]; then
         message="$message$i"
         j=false
     else
