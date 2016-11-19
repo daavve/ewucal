@@ -13,6 +13,8 @@ import subprocess as sub
 
 from django.views.decorators.csrf import csrf_exempt
 
+from django.core.mail import send_mail
+
 def webroot(request):
     tmplt = loader.get_template('calligraphy/webroot.html')
     return HttpResponse(tmplt.render(request=request))
