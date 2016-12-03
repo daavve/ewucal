@@ -17,7 +17,8 @@ from django.core.mail import send_mail
 
 def webroot(request):
     tmplt = loader.get_template('calligraphy/webroot.html')
-    return HttpResponse(tmplt.render(request=request))
+    cntxt = {'user': request.user}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 def validate_html(request):
     tmplt = loader.get_template('calligraphy/validate.html')
