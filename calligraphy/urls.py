@@ -16,7 +16,7 @@ from . import views
 
 urlpatterns = [
     url(r'^page/(?P<page_id>[0-9]+)$',  views.individual_page),
-    url(r'^validate',                   views.validate_html),
+    url(r'^validate',                   views.validate_root),
     url(r'^ajax/get_page',              views.get_page),
     url(r'^ajax/get_char_relatives',    views.get_char_relatives),
     url(r'^ajax/get_root_tree',         views.get_root_tree),

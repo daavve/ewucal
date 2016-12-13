@@ -20,8 +20,8 @@ def webroot(request):
     cntxt = {'user': request.user}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
-def validate_html(request):
-    tmplt = loader.get_template('calligraphy/validate.html')
+def validate_root(request):
+    tmplt = loader.get_template('calligraphy/validate_root.html')
     return HttpResponse(tmplt.render(request=request))
 
 def individual_page(request, page_id):
