@@ -23,6 +23,10 @@ def webroot(request):
 def validate_root(request):
     tmplt = loader.get_template('calligraphy/validate_root.html')
     return HttpResponse(tmplt.render(request=request))
+    
+def validate_find_offsets(request):
+    tmplt = loader.get_template('calligraphy/validate_find_offsets.html')
+    return HttpResponse(tmplt.render(request=request))
 
 def individual_page(request, page_id):
     page = Page.objects.get(id=page_id)
