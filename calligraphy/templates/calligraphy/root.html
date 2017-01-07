@@ -1,6 +1,6 @@
-{% extends parent_template|default:"ewucal/base.html" %}
+{% extends "ewucal/base.html" %}
 
-{% block content %}
+{% block menu1 %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/webroot.css">
 <script type="text/javascript" src="{{ STATIC_URL }}js/webroot.js"></script>
@@ -10,17 +10,10 @@
             <ul class="nav navbar-nav">
                     {% if user.is_authenticated %}
                         <a> {{ user.username }} </a>
-                        <li> <a href="accounts/logout"> logout </a> </li>
-                        <li> <a href="validate"> Switch to Validation   </a>    </li>
+                        <li> <a href="/accounts/logout"> logout </a> </li>
                     {% else %}
-                        <a href="accounts/login"> login </a>
+                        <a href="/accounts/login"> login </a>
                     {% endif %}
             </ul>
     </div>
-
-
-<div class="zTreeDemoBackground left">
-	<ul id="treeDemo" class="ztree"></ul>
-</div>
-
 {% endblock %}

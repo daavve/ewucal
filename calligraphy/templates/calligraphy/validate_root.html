@@ -1,22 +1,19 @@
-{% extends parent_template|default:"ewucal/base.html" %}
+{% extends "calligraphy/root.html" %}
 
-{% block content %}
+{% block menu2 %}
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/validate.css">
 <script type="text/javascript" src="{{ STATIC_URL }}js/validate.js"></script>
 
-    <div class="container">
-            <ul class="nav navbar-nav">
-                    {% if user.is_authenticated %}
-                        <a> {{ user.username }} </a>
-                        <li> <a href="/accounts/logout"> logout </a> </li>
-                        <li> <a href="/"> Switch to browsing   </a>    </li>
-                        <li> <a href="/validate/find-offsets">  Find offsets </a></li>
-                        <li> <a href="/validate/count-chars"> Cound Characters </a></li>
-                    {% else %}
-                        <a href="accounts/login"> login </a>
-                    {% endif %}
-            </ul>
+    <div class="container2">
+            <ol>
+                <li> <a href="/"> Switch to browsing   </a>    </li>
+                {% if user.is_authenticated %}
+                    <li> <a href="/validate/find-offsets">  Find offsets </a></li>
+                    <li> <a href="/validate/count-chars"> Count Characters </a></li>
+                {% else %}
+                    <li <a></a> You must be logged in to use this page!  </li>
+                {% endif %}
+            </ol>
     </div>
 
 {% endblock %}
