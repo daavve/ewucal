@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
 def webroot(request):
-    tmplt = loader.get_template('calligraphy/webroot.html')
+    tmplt = loader.get_template('calligraphy/view_root.html')
     cntxt = {'user': request.user}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
