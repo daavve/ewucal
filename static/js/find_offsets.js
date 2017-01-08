@@ -53,10 +53,7 @@ function iWindow (iImg) {
         middle_y: Math.round($viewport.height() / 2),
         last_selected: null,
         boxes: null,
-        has_big_box: false,
-        big_box_1: null,
-        big_box_2: null,
-        big_box_3: null
+
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
@@ -129,6 +126,16 @@ function iWindow (iImg) {
                 $image.width = ui.value;
             }});
     $container.append($zoom_widget);
+    
+    var $scale_widget = $('<div class="multiplier-slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
+        .slider({
+            value: parseInt(iImg.weights[parseInt(iImg.weightNum)].score),
+            min: parseInt(iImg.weights[parseInt(iImg.weightNum)].score),
+            max: parseInt(iImg.weights[0].score),
+            slide: function (event, ui) {
+                console.log(ui.value);
+            }});
+    $container.append($scale_widget);
 
 
     $image.draggable({
@@ -161,165 +168,7 @@ function iWindow (iImg) {
                 stop: function(event, ui){
                     let $box = $(this).data('self');
                     toggle_box_colors($box);
-                    if($viewport.has_big_box)
-                    {
-                        $( '#big_img_1' ).attr('src', $box.URL);
-                        $viewport.big_box_1.resize({
-                                                        width: $box.x_len,
-                                                        height: $box.y_len,
-                                                        resize: 'content'}
-                        ).headerTitle('This ' + $box.mark);
-                        $.getJSON('/ajax/get_char_relatives', {charId: $box.charId}
-                        ).done(function( data, textStatus, jqXHR, panel ){
-                                    var $container = $( '#chargrid' ).empty();
-                                    $.each(data, function(i, item) {
-                                        var $charInGrid = $( '<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
-                                        ).extend({
-                                            charId: item.id,
-                                            URL: item.URL,
-                                            width: item.uWidth,
-                                            height: item.uHeight,
-                                            lw_ratio: item.uHeight / item.uWidth
-                                        }).selectable({
-                                            stop: function( event, ui ) {
-                                                let $myChar = $(this).data('self');
-                                                let $bigChar = $( '#big_img_2' ).height($myChar.height).width($myChar.width).attr('src', $myChar.URL);
-                                                $bigChar.data('parent', $myChar);
-                                                $viewport.big_box_3.resize({
-                                                        width: $myChar.width,
-                                                        height: $myChar.height,
-                                                        resize: 'content'}
-                                                    ).headerTitle('id# ' + $myChar.charId);
-                                            }
-                                        });
-                                        $charInGrid.data('self', $charInGrid);
-                                        $container.append($charInGrid);
-                                    });
-                        $viewport.big_box_1.contentReload();
-                    });
-                    }
-                    else
-                    {
-                        $viewport.has_big_box = true;
-                        $viewport.big_box_1 = $.jsPanel({
-                            contentSize:    {width: $box.x_len, height: $box.y_len},
-                            resizable: {stop: function( event, ui ) {
-                                let $charImg = $( '#big_img_1' );
-                                let $charBox = $charImg.data('parentBox');
-                                let winHeight = ui.size.height - 41;    //For the Menubar
-                                if ($charBox.lw_ratio > (winHeight / ui.size.width)){
-                                    $charImg.height(winHeight).width(winHeight * ( 1 / $charBox.lw_ratio));
-                                }
-                                else {
-                                    $charImg.width(ui.size.width).height(ui.size.width * $charBox.lw_ratio);
-                                }
-                            }}, 
-                            position: {
-                                my:      "left-top",
-                                at:      "left-top",
-                                offsetY: 200,
-                                offsetX: 10
-                            },
-                            headerTitle: $box.mark + ' by ' + $box.authorName,
-                            onclosed: function(){
-                                if ($viewport.has_big_box) {
-                                    $viewport.has_big_box = false;
-                                    $viewport.big_box_2.close();
-                                    $viewport.big_box_3.close();
-                                }
-                            },
-                            headerControls: {'controls': 'closeonly'},
-                            content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
-                        });
-                        $viewport.big_box_3 = $.jsPanel({
-                            headerTitle:    'id#',
-                            content: $('<img src=""id="big_img_2">'),
-                            position: {
-                                my:      "center-top",
-                                at:      "center-top",
-                                offsetY: 10,
-                                offsetX: 10
-                            },
-                            headerControls: {'controls': 'closeonly'},
-                            onclosed:   function(){
-                                if ($viewport.has_big_box) {
-                                    $viewport.has_big_box = false;
-                                    $viewport.big_box_1.close();
-                                    $viewport.bog_box_2.close();
-                                }
-
-                            }
-                        }).resizable( {stop: function( event, ui ) {
-                                let $charImg = $( '#big_img_2' );
-                                let $box = $charImg.data('parent');
-                                let winHeight = ui.size.height - 41;    //For the Menubar
-                                if ($box.lw_ratio > (winHeight / ui.size.width)){
-                                    $charImg.height(winHeight).width(winHeight * ( 1 / $box.lw_ratio));
-                                }
-                                else {
-                                    $charImg.width(ui.size.width).height(ui.size.width * $box.lw_ratio);
-                                }
-                            }});
-                        
-                        $viewport.big_box_2 = $.jsPanel({
-                            headerTitle:    'Other ' + $box.mark + ' by ' + $box.authorName,
-                            contentSize:    {width: '500px', height: '500px'},
-                            resizable:      {stop: function( event, ui ) {
-                                                let conheight = ui.size.height - 41;     //TODO:  Magic number is titlebar height
-                                                $( "#chargrid" ).css({height : conheight});
-                                            }
-                                        },
-                            contentAjax:    {
-                                url:        '/ajax/get_char_relatives',
-                                method:     'GET',
-                                dataType:   'JSON',
-                                data:       {charId: $box.charId},
-                                done: function( data, textStatus, jqXHR, panel ){
-                                    var $container = $('<div class="container2" id="chargrid"></div>');
-                                    $.each(data, function(i, item) {
-                                        var $charInGrid = $( '<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
-                                        ).extend({
-                                            charId: item.id,
-                                            URL: item.URL,
-                                            width: item.uWidth,
-                                            height: item.uHeight,
-                                            lw_ratio: item.uHeight / item.uWidth
-                                        }).selectable({
-                                            stop: function( event, ui ) {
-                                                let $myChar = $(this).data('self');
-                                                let $bigChar = $( '#big_img_2' ).height($myChar.height).width($myChar.width).attr('src', $myChar.URL);
-                                                $bigChar.data('parent', $myChar);
-                                                $viewport.big_box_3.resize({
-                                                        width: $myChar.width,
-                                                        height: $myChar.height,
-                                                        resize: 'content'}
-                                                    ).headerTitle('id# ' + $myChar.charId);
-                                            }
-                                        });
-                                        $charInGrid.data('self', $charInGrid);
-                                        $container.append($charInGrid);
-                                    });
-                                    this.content.append($container);
-                                }
-                            },
-                            onclosed:   function(){
-                                if ($viewport.has_big_box) {    // Stop infinate recursion
-                                    $viewport.has_big_box = false;
-                                    $viewport.big_box_1.close();
-                                    $viewport.big_box_3.close();
-                                }
-
-                            },
-                             position: {
-                                my:      "right-top",
-                                at:      "right-top",
-                                offsetY: 200,
-                                offsetX: 10
-                            },
-                            headerControls: {'controls': 'closeonly'}
-                    });
                 }
-            }
             }).extend({
                 charId : iChar.charId,
                 pageId : iChar.pageId,
@@ -351,21 +200,8 @@ function iWindow (iImg) {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
-function getPage(pageId){ // get the page object from the server
-    return $.getJSON('/ajax/get_page', {'pageId' : pageId});
-}
-
-function getToshi(pageId, cutNumber) {
-    return $.getJSON('/ajax/get_toshi', {'id' : pageId, 'num' : cutNumber});
-}
-
-function getRelChars(charId){
-    return $.getJSON('/ajax/get_char_relatives', {'charId': charId});
-}
-
 function startMe( $ ){
-    var pages = $.getJSON('/ajax/get_todo');
-    getPage(pageId).done(iWindow);
+    var  $pages = $.getJSON('/ajax/get_todo').done(iWindow);
 }
 
 
