@@ -83,12 +83,13 @@ def get_todo(request):
                         'x_mult': mults.x_mult,
                         'y_mult': mults.y_mult})
 
-    data = {  'id':   page.id,
+    data = {  'pageIdd':   page.id,
               'URL' : Page.get_image(page),
               'height' : page.image_length,
               'width' : page.image_width,
               'chars' : charList,
-              'weights': weights}
+              'weights': weights,
+              'weightNum': len(weights) -1}
     return JsonResponse(data, safe=False)
 
 @csrf_exempt
