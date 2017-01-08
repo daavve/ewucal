@@ -29,9 +29,7 @@ class Page(models.Model):
     image_length = models.IntegerField(null=True)
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
-    i_valid_transform = models.NullBooleanField(null=True)
-    i_transform_type_new = models.NullBooleanField(null=True)
-    i_transform_validated = models.NullBooleanField(null=True)
+    transform_type = models.CharField(max_length=8, null=True)
 
     def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
@@ -44,6 +42,12 @@ class PageMultiplier(models.Model):
     match_score = models.IntegerField()
     x_mult = models.FloatField()
     y_mult = models.FloatField()
+
+
+# Temporary work que classes go here
+class ToFindMultiplier(models.Model):
+    page_id = models.ForeignKey(Page)
+
 
 
 class Character(models.Model):

@@ -7,9 +7,10 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars
+from .models import Author, Work, Page, Character, RelatedChars, ToFindMultiplier, PageMultiplier
 import json
 import subprocess as sub
+import random
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -59,7 +60,37 @@ def get_page(request):
               'width' : page.image_width,
               'chars' : charList}
     return JsonResponse(data, safe=False)
-    
+
+# Here we give them everything at once.  We give them the page id, as well as all the data
+def get_todo(request):
+    allPages = ToFindMultiplier.objects.all()
+    page_id = random.choice(allPages).page_id.id
+    page = Page.objects.get(id=page_id)
+    chars = Character.objects.filter(parent_page=page)
+    pageMults = PageMultiplier.objects.filter(parent_page_id=page_id)
+    charList = []
+    for char in chars:
+        coords = str(char.image).split('(')[1].split(')')[0].split(',')
+        charList.append({'charId' : char.id,
+                         'x1' : coords[0],
+                         'y1' : coords[1],
+                         'x2' : coords[2],
+                         'y2' : coords[3]})
+    weights = []
+    pageMultSrt = sorted(pageMults, key=lambda pageMults: pageMults.match_score, reverse=True)
+    for mults in pageMultSrt:
+        weights.append({'score': mults.match_score,
+                        'x_mult': mults.x_mult,
+                        'y_mult': mults.y_mult})
+
+    data = {  'id':   page.id,
+              'URL' : Page.get_image(page),
+              'height' : page.image_length,
+              'width' : page.image_width,
+              'chars' : charList,
+              'weights': weights}
+    return JsonResponse(data, safe=False)
+
 @csrf_exempt
 def get_char_relatives(request):
     char_id = request.GET.get('charId', None)
