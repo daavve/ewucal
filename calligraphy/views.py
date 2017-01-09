@@ -69,9 +69,12 @@ def get_todo(request):
     chars = Character.objects.filter(parent_page=page)
     pageMults = PageMultiplier.objects.filter(parent_page_id=page_id)
     charList = []
+    charss = []
     for char in chars:
+        charss.append({'char': char.id})
         coords = str(char.image).split('(')[1].split(')')[0].split(',')
         charList.append({'charId' : char.id,
+                         'URL' : Character.get_thumb(char),
                          'x1' : coords[0],
                          'y1' : coords[1],
                          'x2' : coords[2],
@@ -89,7 +92,8 @@ def get_todo(request):
               'width' : page.image_width,
               'chars' : charList,
               'weights': weights,
-              'weightNum': len(weights) -1}
+              'weightNum': len(weights) -1,
+              'charss': charss}
     return JsonResponse(data, safe=False)
 
 @csrf_exempt

@@ -28,7 +28,8 @@ function iWindow (iImg) {
         page_id: parseInt(iImg.pageId),
         src_length: parseInt(iImg.height),
         src_width: parseInt(iImg.width),
-        update_boxes: false
+        update_boxes: false,
+        trans_index: 0
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -53,6 +54,7 @@ function iWindow (iImg) {
         middle_y: Math.round($viewport.height() / 2),
         last_selected: null,
         boxes: null,
+        has_big_box : false
 
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
@@ -65,7 +67,7 @@ function iWindow (iImg) {
         build_a_box(iImg.chars[i]);
     }
     
-    var screenupdate = setInterval(updateZoom, 250); // this value is a bit lagy, but it keeps the thing from glitching out
+    var screenupdate = setInterval(updateZoom, 50); // this value is a bit lagy, but it keeps the thing from glitching out
     function updateZoom(){
         if ($zoom_widget.update)
         {
@@ -94,28 +96,7 @@ function iWindow (iImg) {
         }
     }
     
-    var $button = $( 'button' ).button().click( function (event) {
-            getToshi($image.page_id, 300).done(function (data) {
-                for(i = 0; i < data.length; ++i) {
-                    build_a_box(data[i]);
-                }
-            });
-    }); 
     
-    function updateBoxes(){
-        for (let $box of $viewport.boxes)
-            updateBoxPosition($box);
-    }
-    
-    function updateBoxPosition($box) {
-        $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
-            width: Math.round($image.scale_factor * $box.x_len),
-            height: Math.round($image.scale_factor * $box.y_len)
-        });
-    }
-
     var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
         .slider({
             value: $image.min_width,
@@ -127,15 +108,31 @@ function iWindow (iImg) {
             }});
     $container.append($zoom_widget);
     
-    var $scale_widget = $('<div class="multiplier-slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
+    var $scale_widget = $('<div class="multiplier-slider"><div class="ui-slider-handle"></div></div>')
         .slider({
-            value: parseInt(iImg.weights[parseInt(iImg.weightNum)].score),
-            min: parseInt(iImg.weights[parseInt(iImg.weightNum)].score),
-            max: parseInt(iImg.weights[0].score),
+            value: 0,
+            min: 0,
+            max: parseInt(iImg.weightNum) - 1,
             slide: function (event, ui) {
-                console.log(ui.value);
+                $zoom_widget.update = true;
+                $image.trans_index = ui.value;
             }});
     $container.append($scale_widget);
+
+    function updateBoxes(){
+        for (let $box of $viewport.boxes)
+            updateBoxPosition($box);
+    }
+    
+    function updateBoxPosition($box) {
+        let scaleIndex = parseInt($image.trans_index);
+        $box.css({
+            left: Math.round($image.scale_factor * ($box.x_top * iImg.weights[scaleIndex].x_mult + $image.offset_left) + $viewport.middle_x),
+            top: Math.round($image.scale_factor * ($box.y_top * iImg.weights[scaleIndex].y_mult + $image.offset_top) + $viewport.middle_y),
+            width: Math.round($image.scale_factor * $box.x_len * iImg.weights[scaleIndex].x_mult),
+            height: Math.round($image.scale_factor * $box.y_len * iImg.weights[scaleIndex].y_mult)
+        });
+    }
 
 
     $image.draggable({
@@ -152,6 +149,7 @@ function iWindow (iImg) {
     
     function toggle_box_colors($box){
         $box.toggleClass('char_box_select');
+        console.log($box.charId);
         if($viewport.last_selected) {   
             $viewport.last_selected.removeClass('ui-selected');
             $viewport.last_selected.toggleClass('char_box_select');
@@ -168,8 +166,40 @@ function iWindow (iImg) {
                 stop: function(event, ui){
                     let $box = $(this).data('self');
                     toggle_box_colors($box);
+                    if($viewport.has_big_box)
+                    {
+                        $( '#big_img_1' ).attr('src', $box.URL);
+
+                        $viewport.big_box_1.contentReload();
+                                                        
+                    }
+                    else
+                    {
+                        $viewport.has_big_box = true;
+                        $viewport.big_box_1 = $.jsPanel({
+                            contentSize:    {width: $box.x_len, height: $box.y_len},
+                            resizable: {stop: function( event, ui ) {
+                                let $charImg = $( '#big_img_1' );
+                                let $charBox = $charImg.data('parentBox');
+                                let winHeight = ui.size.height - 41;    //For the Menubar
+                                if ($charBox.lw_ratio > (winHeight / ui.size.width)){
+                                    $charImg.height(winHeight).width(winHeight * ( 1 / $charBox.lw_ratio));
+                                }
+                                else {
+                                    $charImg.width(ui.size.width).height(ui.size.width * $charBox.lw_ratio);
+                                }
+                            }}, 
+                            position: {
+                                my:      "left-top",
+                                at:      "left-top",
+                                offsetY: 200,
+                                offsetX: 10
+                            },
+                            content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
+                    }
+                    );
                 }
-            }).extend({
+            }}).extend({
                 charId : iChar.charId,
                 pageId : iChar.pageId,
                 authorId : iChar.authorId,
@@ -181,8 +211,6 @@ function iWindow (iImg) {
                 y_top: iChar.y1,
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
-                lw_ratio: (iChar.y2 - iChar.y1) / (iChar.x2 - iChar.x1),
-                related_chars: null,
                 selected: false
             }).hover(function(){
                 if(!$(this).hasClass('ui-selected')) {
