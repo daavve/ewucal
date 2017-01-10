@@ -79,20 +79,23 @@ def get_todo(request):
                          'y1' : coords[1],
                          'x2' : coords[2],
                          'y2' : coords[3]})
-    weights = []
-    pageMultSrt = sorted(pageMults, key=lambda pageMults: pageMults.match_score, reverse=True)
-    for mults in pageMultSrt:
-        weights.append({'score': mults.match_score,
-                        'x_mult': mults.x_mult,
-                        'y_mult': mults.y_mult})
+    mult_min = 999999999999999999999
+    mult_max = 0
+    for mults in pageMults:
+        this_max = max(mults.x_mult, mults.y_mult)
+        this_min = min(mults.x_mult, mults.y_mult)
+        if mult_max < this_max:
+            mult_max = this_max
+        if mult_min > this_min:
+            mult_min = this_min
 
     data = {  'pageIdd':   page.id,
               'URL' : Page.get_image(page),
               'height' : page.image_length,
               'width' : page.image_width,
               'chars' : charList,
-              'weights': weights,
-              'weightNum': len(weights) -1,
+              'mult_min': mult_min,
+              'mult_max': mult_max,
               'charss': charss}
     return JsonResponse(data, safe=False)
 

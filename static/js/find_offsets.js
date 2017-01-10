@@ -29,7 +29,9 @@ function iWindow (iImg) {
         src_length: parseInt(iImg.height),
         src_width: parseInt(iImg.width),
         update_boxes: false,
-        trans_index: 0
+        box_scale_val: 1,
+        box_scale_x_offset: 0,
+        box_scale_y_offset: 0
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -112,10 +114,10 @@ function iWindow (iImg) {
         .slider({
             value: 0,
             min: 0,
-            max: parseInt(iImg.weightNum) - 1,
+            max: 1000,
             slide: function (event, ui) {
                 $zoom_widget.update = true;
-                $image.trans_index = ui.value;
+                $image.box_scale_val = ui.value;
             }});
     $container.append($scale_widget);
 
@@ -125,12 +127,14 @@ function iWindow (iImg) {
     }
     
     function updateBoxPosition($box) {
-        let scaleIndex = parseInt($image.trans_index);
+        let scaleIndex = $image.box_scale_val * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
+        let xmult = scaleIndex + parseFloat($image.box_scale_x_offset);
+        let ymult = scaleIndex + parseFloat($image.box_scale_y_offset);
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top * iImg.weights[scaleIndex].x_mult + $image.offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top * iImg.weights[scaleIndex].y_mult + $image.offset_top) + $viewport.middle_y),
-            width: Math.round($image.scale_factor * $box.x_len * iImg.weights[scaleIndex].x_mult),
-            height: Math.round($image.scale_factor * $box.y_len * iImg.weights[scaleIndex].y_mult)
+            left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.offset_left) + $viewport.middle_x),
+            top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.offset_top) + $viewport.middle_y),
+            width: Math.round($image.scale_factor * $box.x_len * xmult),
+            height: Math.round($image.scale_factor * $box.y_len * ymult)
         });
     }
 
