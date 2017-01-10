@@ -99,7 +99,7 @@ function iWindow (iImg) {
     }
     
     
-    var $zoom_widget = $('<div class="jrac_zoom_slider"><div class="ui-slider-handle"></div></div>').extend({'update': true})
+    var $zoom_widget = $('<div class="ui-slider-handle"></div>').extend({'update': true})
         .slider({
             value: $image.min_width,
             min: $image.min_width,
@@ -110,7 +110,7 @@ function iWindow (iImg) {
             }});
     $container.append($zoom_widget);
     
-    var $scale_widget = $('<div class="multiplier-slider"><div class="ui-slider-handle"></div></div>')
+    var $scale_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
             value: 0,
             min: 0,
@@ -120,6 +120,28 @@ function iWindow (iImg) {
                 $image.box_scale_val = ui.value;
             }});
     $container.append($scale_widget);
+    
+    var $x_offset_widget = $('<div class="ui-slider-handle"></div>')
+        .slider({
+            value: 0,
+            min: -500,
+            max: 500,
+            slide: function (event, ui) {
+                $zoom_widget.update = true;
+                $image.box_scale_x_offset = ui.value;
+            }});
+    $container.append($x_offset_widget);
+    
+    var $y_offset_widget = $('<div class="ui-slider-handle"></div>')
+        .slider({
+            value: 0,
+            min: -500,
+            max: 500,
+            slide: function (event, ui) {
+                $zoom_widget.update = true;
+                $image.box_scale_y_offset = ui.value;
+            }});
+    $container.append($y_offset_widget);
 
     function updateBoxes(){
         for (let $box of $viewport.boxes)
@@ -128,8 +150,8 @@ function iWindow (iImg) {
     
     function updateBoxPosition($box) {
         let scaleIndex = $image.box_scale_val * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
-        let xmult = scaleIndex + parseFloat($image.box_scale_x_offset);
-        let ymult = scaleIndex + parseFloat($image.box_scale_y_offset);
+        let xmult = scaleIndex + parseFloat($image.box_scale_x_offset / 1000);
+        let ymult = scaleIndex + parseFloat($image.box_scale_y_offset / 1000);
         $box.css({
             left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.offset_left) + $viewport.middle_x),
             top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.offset_top) + $viewport.middle_y),
