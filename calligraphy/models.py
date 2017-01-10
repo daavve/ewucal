@@ -62,6 +62,7 @@ class Character(models.Model):
     y1 = models.IntegerField(blank=True)
     x2 = models.IntegerField(blank=True)
     y2 = models.IntegerField(blank=True)
+    collection = models.IntegerField(default=0)
 
     image = models.ImageField(blank=True, storage=fs)
     image_high_rez = models.ImageField(blank=True, storage=fs)
