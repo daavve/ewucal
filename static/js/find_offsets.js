@@ -195,31 +195,25 @@ function iWindow (iImg) {
                     if($viewport.has_big_box)
                     {
                         $( '#big_img_1' ).attr('src', $box.URL);
-
-                        $viewport.big_box_1.contentReload();
-                                                        
+                        $viewport.big_box_1.resize({
+                                                    width: $box.x_len + 25,
+                                                    height: $box.y_len + 25,
+                                                    resize: 'content'}
+                        ).headerTitle($box.mark)
+                        .viewport.big_box_1.contentReload();
                     }
                     else
                     {
                         $viewport.has_big_box = true;
                         $viewport.big_box_1 = $.jsPanel({
-                            contentSize:    {width: $box.x_len, height: $box.y_len},
-                            resizable: {stop: function( event, ui ) {
-                                let $charImg = $( '#big_img_1' );
-                                let $charBox = $charImg.data('parentBox');
-                                let winHeight = ui.size.height - 41;    //For the Menubar
-                                if ($charBox.lw_ratio > (winHeight / ui.size.width)){
-                                    $charImg.height(winHeight).width(winHeight * ( 1 / $charBox.lw_ratio));
-                                }
-                                else {
-                                    $charImg.width(ui.size.width).height(ui.size.width * $charBox.lw_ratio);
-                                }
-                            }}, 
+                            headerTitle: $box.mark,
+                            headerControls: {'controls': 'closeonly'},
+                            contentSize:    {width: $box.x_len + 25, height: $box.y_len + 25},
                             position: {
                                 my:      "left-top",
                                 at:      "left-top",
-                                offsetY: 200,
-                                offsetX: 10
+                                offsetY: 100,
+                                offsetX: 800
                             },
                             content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
                     }
@@ -227,17 +221,14 @@ function iWindow (iImg) {
                 }
             }}).extend({
                 charId : iChar.charId,
-                pageId : iChar.pageId,
-                authorId : iChar.authorId,
-                authorName: iChar.authorName,
-                workId : iChar.workId,
                 URL : iChar.URL,
                 mark : iChar.mark,
                 x_top: iChar.x1,
                 y_top: iChar.y1,
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
-                selected: false
+                selected: false,
+                collection: iChar.collection,
             }).hover(function(){
                 if(!$(this).hasClass('ui-selected')) {
                     $(this).toggleClass('char_box_hover');

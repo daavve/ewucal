@@ -74,6 +74,8 @@ def get_todo(request):
         charss.append({'char': char.id})
         coords = str(char.image).split('(')[1].split(')')[0].split(',')
         charList.append({'charId' : char.id,
+                         'collection': char.collection,
+                         'mark': char.mark,
                          'URL' : Character.get_thumb(char),
                          'x1' : coords[0],
                          'y1' : coords[1],
