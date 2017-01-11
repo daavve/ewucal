@@ -54,7 +54,6 @@ function iWindow (iImg) {
     $viewport.extend({
         middle_x: Math.round($viewport.width() / 2),
         middle_y: Math.round($viewport.height() / 2),
-        last_selected: null,
         boxes: null,
         has_big_box : false
 
@@ -173,15 +172,17 @@ function iWindow (iImg) {
     
 
     
-    function toggle_box_colors($box){
-        $box.toggleClass('char_box_select');
-        console.log($box.charId);
-        if($viewport.last_selected) {   
-            $viewport.last_selected.removeClass('ui-selected');
-            $viewport.last_selected.toggleClass('char_box_select');
-            $viewport.last_selected = $box;
+    function toggle_box_selection($box){
+        if($box.selected)
+        {
+            $box.toggleClass('char_box');
+            $box.selected = false;
         }
-        $viewport.last_selected = $box; 
+        else
+        {
+            $box.toggleClass('char_box_select');
+            $box.selected = true;
+        }
     }
     
     function build_a_box(iChar){
@@ -191,7 +192,7 @@ function iWindow (iImg) {
                 autoRefresh: false,
                 stop: function(event, ui){
                     let $box = $(this).data('self');
-                    toggle_box_colors($box);
+                    toggle_box_selection($box);
                     if($viewport.has_big_box)
                     {
                         $( '#big_img_1' ).attr('src', $box.URL);
@@ -228,10 +229,16 @@ function iWindow (iImg) {
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
                 selected: false,
-                collection: iChar.collection,
+                collection: iChar.collection
             }).hover(function(){
-                if(!$(this).hasClass('ui-selected')) {
-                    $(this).toggleClass('char_box_hover');
+                let $box = $(this);
+                if($box.selected)
+                {
+                    $box.toggleClass('char_box_hover2');
+                }
+                else
+                {
+                    $box.toggleClass('char_box_hover');
                 }
             });
 

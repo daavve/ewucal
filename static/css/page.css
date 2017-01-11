@@ -17,11 +17,15 @@ border: dashed 5px #999;
   margin-top: .5em;
 }
 .char_box {
-border: 2px solid #40ff18;
+    border: 2px solid #40ff18;
 }
 
 .char_box_hover {
-border: 2px solid #63a0ff;
+    border: 2px solid #63a0ff;
+}
+
+.char_box_hover2 {
+    border: 2px solid #FD2DD3;
 }
 
 .char_box_select {
