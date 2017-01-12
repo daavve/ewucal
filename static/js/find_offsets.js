@@ -55,6 +55,7 @@ function iWindow (iImg) {
         middle_x: Math.round($viewport.width() / 2),
         middle_y: Math.round($viewport.height() / 2),
         boxes: null,
+        big_box_1: null,
         has_big_box : false
 
     });
@@ -175,12 +176,14 @@ function iWindow (iImg) {
     function toggle_box_selection($box){
         if($box.selected)
         {
-            $box.toggleClass('char_box');
+            $box.toggleClass('char_box_select', false);
+            $box.toggleClass('char_box', true);
             $box.selected = false;
         }
         else
         {
-            $box.toggleClass('char_box_select');
+            $box.toggleClass('char_box'. false);
+            $box.toggleClass('char_box_select', true);
             $box.selected = true;
         }
     }
@@ -200,8 +203,8 @@ function iWindow (iImg) {
                                                     width: $box.x_len + 25,
                                                     height: $box.y_len + 25,
                                                     resize: 'content'}
-                        ).headerTitle($box.mark)
-                        .viewport.big_box_1.contentReload();
+                        ).headerTitle($box.mark);
+                        $viewport.big_box_1.contentReload();
                     }
                     else
                     {
@@ -230,15 +233,29 @@ function iWindow (iImg) {
                 y_len: iChar.y2 - iChar.y1,
                 selected: false,
                 collection: iChar.collection
-            }).hover(function(){
-                let $box = $(this);
+            }).mouseenter(function(){
+                let $box = $(this).data('self');
                 if($box.selected)
                 {
-                    $box.toggleClass('char_box_hover2');
+                    $box.toggleClass('char_box_select', false);
+                    $box.toggleClass('char_box_hover2', true);
                 }
                 else
                 {
-                    $box.toggleClass('char_box_hover');
+                    $box.toggleClass('char_box', false);
+                    $box.toggleClass('char_box_hover', true);
+                }
+            }).mouseleave(function(){
+                let $box = $(this).data('self');
+                if($box.selected)
+                {
+                    $box.toggleClass('char_box_hover2', false);
+                    $box.toggleClass('char_box_select', true);
+                }
+                else
+                {
+                    $box.toggleClass('char_box_hover', false);
+                    $box.toggleClass('char_box', true);
                 }
             });
 
