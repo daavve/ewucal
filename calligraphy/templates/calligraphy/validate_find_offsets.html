@@ -4,7 +4,36 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
 <script type="text/javascript" src="{{ STATIC_URL }}js/find_offsets.js"></script>
 
-Finding Offsets
+<div class="controls">
+  <div class="active_wrap">
+    <h3>1.) Visible Set</h3>
+    <div class="active_bar">
+      <label for="active_0"></label>0</label>
+      <input type="radio" name="active" id="active_0" checked>
+      <label for="active_1">1</label>
+      <input type="radio" name="active" id="active_1">
+      <label for="active_2">2</label>
+      <input  type="radio" name="active" id="active_2">
+      <label for="active_bad">Bad</label>
+      <input type="radio" name="active" id="active_bad">
+    </div>
+  </div>
+  <div class="transfer_wrap">
+    <h3>2.) Transfer Set</h3>
+    <div class="transfer_bar">
+      <label for="transfer_0">0</label>
+      <input type="radio" name="transfer" id="transfer_0">
+      <label for="transfer_1">1</label>
+      <input type="radio" name="transfer" id="transfer_1">
+      <label for="transfer_2">2</label>
+      <input type="radio" name="transfer" id="transfer_2">
+      <label for="transfer_bad">Bad</label>
+      <input type="radio" name="transfer" id="transfer_bad">
+    </div>
+  </div>
+</div>
+
+<button>Move Selected</button>
 
 <div class="container">
     <div id="page_viewport">
