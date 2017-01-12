@@ -11,6 +11,13 @@ height:480px;
 border: dashed 5px #999;
 }
 
+.controls {
+      background: #ccc;
+      padding: 1em;
+      display: inline-block;
+    }
+
+
 .page_viewport img
 
 .page_zoom_slider_label {
