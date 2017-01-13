@@ -30,7 +30,10 @@ function iWindow (iImg) {
         src_width: parseInt(iImg.width),
         update_boxes: true,
         update_box_visibility: true,
-        box_scale_val: 1,
+        box_scale_val_set: [0, 0, 0, 0],
+        box_scale_x_offset_set: [0, 0, 0, 0],
+        box_scale_y_offset_set: [0, 0, 0, 0],
+        box_scale_val: 0,
         box_scale_x_offset: 0,
         box_scale_y_offset: 0,
         active_set: 0
@@ -133,6 +136,10 @@ function iWindow (iImg) {
             }});
     $container.append($zoom_widget);
     
+    
+    
+    
+    
     var $scale_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
             value: 0,
@@ -200,17 +207,33 @@ function iWindow (iImg) {
     $( "[name='transfer']").on( "change", move_active_set );
     
     function switch_active_set( e ){
+        $image.box_scale_val_set[$image.active_set] = $image.box_scale_val;
+        $image.box_scale_x_offset_set[$image.active_set] = $image.box_scale_x_offset;
+        $image.box_scale_y_offset_set[$image.active_set] = $image.box_scale_y_offset;
         $image.active_set = parseInt(e.currentTarget.attributes.data.nodeValue);
+        $image.box_scale_val = $image.box_scale_val_set[$image.active_set];
+        $image.box_scale_x_offset = $image.box_scale_x_offset_set[$image.active_set];
+        $image.box_scale_y_offset = $image.box_scale_y_offset_set[$image.active_set];
+        $scale_widget.slider( "value", $image.box_scale_val);
+        $x_offset_widget.slider( "value", $image.box_scale_x_offset);
+        $y_offset_widget.slider( "value", $image.box_scale_y_offset);
+        
         $image.update_box_visibility = true;
+        $image.update_boxes = true;
     }
     
     function move_active_set( e ){
+        let setNum = parseInt(e.currentTarget.attributes.data.nodeValue);
+        $image.box_scale_val_set[setNum] = $image.box_scale_val;
+        $image.box_scale_x_offset_set[setNum] = $image.box_scale_x_offset;
+        $image.box_scale_y_offset_set[setNum] = $image.box_scale_y_offset;
+        
         for (let $box of $viewport.boxes)
         {
             if ($box.selected)
             {
                 toggle_box_selection($box);
-                $box.collection = parseInt(e.currentTarget.attributes.data.nodeValue);
+                $box.collection = setNum;
             }
             $image.update_box_visibility = true;
         }
