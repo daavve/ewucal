@@ -33,7 +33,7 @@ function iWindow (iImg) {
         box_scale_val: 1,
         box_scale_x_offset: 0,
         box_scale_y_offset: 0,
-        activeSet: 0
+        active_set: 0
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -102,7 +102,19 @@ function iWindow (iImg) {
             {
                 if ($image.update_box_visibility)
                 {
-                    console.log("updating visibility");
+
+                    for (let $box of $viewport.boxes)
+                    {
+                        if ($box.collection == $image.active_set)
+                        {
+                            
+                            $box.show();
+                        }
+                        else
+                        {
+                            $box.hide();
+                        }
+                    }
                     $image.update_box_visibility = false;
                 }
             }
@@ -188,12 +200,20 @@ function iWindow (iImg) {
     $( "[name='transfer']").on( "change", move_active_set );
     
     function switch_active_set( e ){
-        $image.activeSet = parseInt(e.currentTarget.attributes.data);
+        $image.active_set = parseInt(e.currentTarget.attributes.data.nodeValue);
         $image.update_box_visibility = true;
     }
     
     function move_active_set( e ){
-        console.log(e);
+        for (let $box of $viewport.boxes)
+        {
+            if ($box.selected)
+            {
+                toggle_box_selection($box);
+                $box.collection = parseInt(e.currentTarget.attributes.data.nodeValue);
+            }
+            $image.update_box_visibility = true;
+        }
     }
     
     function toggle_box_selection($box){
