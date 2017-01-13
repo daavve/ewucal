@@ -29,9 +29,11 @@ function iWindow (iImg) {
         src_length: parseInt(iImg.height),
         src_width: parseInt(iImg.width),
         update_boxes: false,
+        update_box_visibility: true,
         box_scale_val: 1,
         box_scale_x_offset: 0,
-        box_scale_y_offset: 0
+        box_scale_y_offset: 0,
+        activeSet: 0
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -92,8 +94,17 @@ function iWindow (iImg) {
                 $viewport.middle_y = Math.round($viewport.height() / 2);
                 $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
                 $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
-                updateBoxes();
+                for (let $box of $viewport.boxes)
+                    updateBoxPosition($box);
                 $image.update_boxes = false;
+            }
+            else
+            {
+                if ($image.update_box_visibility)
+                {
+                    console.log("updating visibility");
+                    $image.update_box_visibility = false;
+                }
             }
         }
     }
@@ -171,7 +182,19 @@ function iWindow (iImg) {
         addClasses: false
     });
     
-
+    $( "input" ).checkboxradio();
+    $( ".active_bar, .transfer_bar" ).controlgroup();
+    $( "[name='active']").on( "change", switch_active_set );
+    $( "[name='transfer']").on( "change", move_active_set );
+    
+    function switch_active_set( e ){
+        $image.activeSet = parseInt(e.currentTarget.attributes.data);
+        $image.update_box_visibility = true;
+    }
+    
+    function move_active_set( e ){
+        console.log(e);
+    }
     
     function toggle_box_selection($box){
         if($box.selected)
