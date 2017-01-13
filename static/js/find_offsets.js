@@ -28,7 +28,7 @@ function iWindow (iImg) {
         page_id: parseInt(iImg.pageId),
         src_length: parseInt(iImg.height),
         src_width: parseInt(iImg.width),
-        update_boxes: false,
+        update_boxes: true,
         update_box_visibility: true,
         box_scale_val: 1,
         box_scale_x_offset: 0,
@@ -83,8 +83,8 @@ function iWindow (iImg) {
                 left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
             });
-            updateBoxes();
             $zoom_widget.update = false;
+            $image.update_boxes = true;
         }
         else
         {
@@ -127,7 +127,7 @@ function iWindow (iImg) {
             min: 0,
             max: 1000,
             slide: function (event, ui) {
-                $zoom_widget.update = true;
+                $image.update_boxes = true;
                 $image.box_scale_val = ui.value;
             }});
     $container.append($scale_widget);
@@ -138,7 +138,7 @@ function iWindow (iImg) {
             min: -500,
             max: 500,
             slide: function (event, ui) {
-                $zoom_widget.update = true;
+                $image.update_boxes = true;
                 $image.box_scale_x_offset = ui.value;
             }});
     $container.append($x_offset_widget);
@@ -149,7 +149,7 @@ function iWindow (iImg) {
             min: -500,
             max: 500,
             slide: function (event, ui) {
-                $zoom_widget.update = true;
+                $image.update_boxes = true;
                 $image.box_scale_y_offset = ui.value;
             }});
     $container.append($y_offset_widget);
@@ -283,7 +283,6 @@ function iWindow (iImg) {
             });
 
             $charBox.data('self', $charBox);
-            updateBoxPosition($charBox);
             $viewport.append($charBox);
             $viewport.boxes.add($charBox);
     }
