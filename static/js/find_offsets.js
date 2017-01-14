@@ -29,7 +29,6 @@ function iWindow (iImg) {
         src_length: parseInt(iImg.height),
         src_width: parseInt(iImg.width),
         update_boxes: true,
-        update_box_visibility: true,
         box_scale_val_set: [0, 0, 0, 0],
         box_scale_x_offset_set: [0, 0, 0, 0],
         box_scale_y_offset_set: [0, 0, 0, 0],
@@ -76,8 +75,12 @@ function iWindow (iImg) {
     
     var screenupdate = setInterval(updateZoom, 50); // this value is a bit lagy, but it keeps the thing from glitching out
     function updateZoom(){
-        if ($zoom_widget.update)
+        if ($image.update_boxes)
         {
+            $viewport.middle_x = Math.round($viewport.width() / 2);
+            $viewport.middle_y = Math.round($viewport.height() / 2);
+            $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+            $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
             $image.height = Math.round($image.width * $image.lw_ratio);
             $image.scale_factor = $image.width / $image.start_width;
             $image.css({
@@ -86,60 +89,34 @@ function iWindow (iImg) {
                 left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
             });
-            $zoom_widget.update = false;
-            $image.update_boxes = true;
-        }
-        else
-        {
-            if ($image.update_boxes)
+            for (let $box of $viewport.boxes)
             {
-                $viewport.middle_x = Math.round($viewport.width() / 2);
-                $viewport.middle_y = Math.round($viewport.height() / 2);
-                $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
-                $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
-                for (let $box of $viewport.boxes)
-                    updateBoxPosition($box);
-                $image.update_boxes = false;
-            }
-            else
-            {
-                if ($image.update_box_visibility)
+                updateBoxPosition($box);
+                if ($box.collection == $image.active_set)
                 {
-
-                    for (let $box of $viewport.boxes)
-                    {
-                        if ($box.collection == $image.active_set)
-                        {
-                            
-                            $box.show();
-                        }
-                        else
-                        {
-                            $box.hide();
-                        }
-                    }
-                    $image.update_box_visibility = false;
+                    $box.show();
+                }
+                else
+                {
+                    $box.hide();
                 }
             }
         }
     }
     
     
-    var $zoom_widget = $('<div class="ui-slider-handle"></div>').extend({'update': true})
+    var $zoom_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
             value: $image.min_width,
             min: $image.min_width,
             max: $image.max_width,
             slide: function (event, ui) {
-                $zoom_widget.update = true;
+                $image.update_boxes = true;
                 $image.width = ui.value;
             }});
     $container.append($zoom_widget);
     
-    
-    
-    
-    
+
     var $scale_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
             value: 0,
@@ -218,7 +195,6 @@ function iWindow (iImg) {
         $x_offset_widget.slider( "value", $image.box_scale_x_offset);
         $y_offset_widget.slider( "value", $image.box_scale_y_offset);
         
-        $image.update_box_visibility = true;
         $image.update_boxes = true;
     }
     
@@ -235,7 +211,7 @@ function iWindow (iImg) {
                 toggle_box_selection($box);
                 $box.collection = setNum;
             }
-            $image.update_box_visibility = true;
+            $image.update_boxes = true;
         }
     }
     
