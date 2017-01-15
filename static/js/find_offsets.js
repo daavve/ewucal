@@ -127,21 +127,17 @@ function iWindow (iImg) {
     }
     
     
-    var $zoom_widget = $('<div class="ui-slider-handle"></div>').extend({'update': true})
+    var $zoom_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
             value: $image.min_width,
             min: $image.min_width,
             max: $image.max_width,
             slide: function (event, ui) {
-                $zoom_widget.update = true;
+                $image.update_boxes = true;
                 $image.width = ui.value;
             }});
     $container.append($zoom_widget);
-    
-    
-    
-    
-    
+
     var $scale_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
             value: 0,
@@ -180,9 +176,6 @@ function iWindow (iImg) {
             updateBoxPosition($box);
     }
     
-
-
-
     $image.draggable({
         drag: function (event, ui) {
             $image.position_top  = ui.position.top;
