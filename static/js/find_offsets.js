@@ -189,9 +189,10 @@ function iWindow (iImg) {
     });
     
     $( "input" ).checkboxradio();
-    $( ".active_bar, .transfer_bar" ).controlgroup();
+    $( ".active_bar" ).controlgroup();
     $( "[name='active']").on( "change", switch_active_set );
-    $( "[name='transfer']").on( "change", move_active_set );
+    
+    $( 'button' ).button().click(move_active_set);
     
     function switch_active_set( e ){
         $image.box_scale_val_set[$image.active_set] = $image.box_scale_val;
@@ -204,24 +205,25 @@ function iWindow (iImg) {
         $scale_widget.slider( "value", $image.box_scale_val);
         $x_offset_widget.slider( "value", $image.box_scale_x_offset);
         $y_offset_widget.slider( "value", $image.box_scale_y_offset);
-        $image.update_boxes = true;
+        $image.update_box_visibility = true;
     }
     
-    function move_active_set( e ){
-        let setNum = parseInt(e.currentTarget.attributes.data.nodeValue);
-        $image.box_scale_val_set[setNum] = $image.box_scale_val;
-        $image.box_scale_x_offset_set[setNum] = $image.box_scale_x_offset;
-        $image.box_scale_y_offset_set[setNum] = $image.box_scale_y_offset;
+    function move_active_set(){
+        let buttonID = parseInt($(this)[0].attributes.data.nodeValue);
+        $image.box_scale_val_set[buttonID] = $image.box_scale_val;
+        $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset;
+        $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset;
         
         for (let $box of $viewport.boxes)
         {
             if ($box.selected)
             {
                 toggle_box_selection($box);
-                $box.collection = setNum;
+                $box.collection = buttonID;
             }
-            $image.update_box_visibility = true;
         }
+        $image.update_box_visibility = true;
+        console.log(e);
     }
     
     function toggle_box_selection($box){
