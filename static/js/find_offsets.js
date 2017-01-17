@@ -195,21 +195,31 @@ function iWindow (iImg) {
     $( 'button' ).button().click(move_active_set);
     
     function switch_active_set( e ){
+        for (let $box of $viewport.boxes)
+        {
+            if ($box.selected)
+            {
+                toggle_box_selection($box);
+            }
+        }
         $image.box_scale_val_set[$image.active_set] = $image.box_scale_val;
         $image.box_scale_x_offset_set[$image.active_set] = $image.box_scale_x_offset;
         $image.box_scale_y_offset_set[$image.active_set] = $image.box_scale_y_offset;
-        $image.active_set = parseInt(e.currentTarget.attributes.data.nodeValue);
+        $image.active_set = parseInt(e.currentTarget.attributes.data.value);
         $image.box_scale_val = $image.box_scale_val_set[$image.active_set];
         $image.box_scale_x_offset = $image.box_scale_x_offset_set[$image.active_set];
         $image.box_scale_y_offset = $image.box_scale_y_offset_set[$image.active_set];
         $scale_widget.slider( "value", $image.box_scale_val);
         $x_offset_widget.slider( "value", $image.box_scale_x_offset);
         $y_offset_widget.slider( "value", $image.box_scale_y_offset);
+        $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+        $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+        $image.update_boxes = true;
         $image.update_box_visibility = true;
     }
     
     function move_active_set(){
-        let buttonID = parseInt($(this)[0].attributes.data.nodeValue);
+        let buttonID = parseInt($(this)[0].attributes.data.value);
         $image.box_scale_val_set[buttonID] = $image.box_scale_val;
         $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset;
         $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset;
@@ -223,7 +233,6 @@ function iWindow (iImg) {
             }
         }
         $image.update_box_visibility = true;
-        console.log(e);
     }
     
     function toggle_box_selection($box){
