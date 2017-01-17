@@ -97,7 +97,7 @@ def get_todo(request):
               'width' : page.image_width,
               'chars' : charList,
               'mult_min': mult_min,
-              'mult_max': mult_max,
+              'mult_max': mult_max * 3,
               'charss': charss}
     return JsonResponse(data, safe=False)
 
