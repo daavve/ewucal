@@ -212,8 +212,6 @@ function iWindow (iImg) {
         $scale_widget.slider( "value", $image.box_scale_val);
         $x_offset_widget.slider( "value", $image.box_scale_x_offset);
         $y_offset_widget.slider( "value", $image.box_scale_y_offset);
-        $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
-        $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
         $image.update_boxes = true;
         $image.update_box_visibility = true;
     }
