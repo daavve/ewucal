@@ -36,12 +36,6 @@ class Page(models.Model):
 
     def get_image(self) -> str:
         return str(self.image.url)
-        
-class PageMultiplier(models.Model):
-    parent_page = models.ForeignKey(Page)
-    match_score = models.IntegerField()
-    x_mult = models.FloatField()
-    y_mult = models.FloatField()
 
 
 # Temporary work que classes go here

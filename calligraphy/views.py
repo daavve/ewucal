@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, ToFindMultiplier, PageMultiplier
+from .models import Author, Work, Page, Character, RelatedChars, ToFindMultiplier
 import json
 import subprocess as sub
 import random
