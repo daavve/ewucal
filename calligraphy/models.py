@@ -41,6 +41,7 @@ class Page(models.Model):
 # Temporary work que classes go here
 class ToFindMultiplier(models.Model):
     page_id = models.ForeignKey(Page)
+    times_reviewed = models.IntegerField()
 
 
 
