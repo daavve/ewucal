@@ -194,18 +194,41 @@ function iWindow (iImg) {
     
     function submit_form(){
 
+
         let xmults = [0, 0, 0, 0];
         let ymults = [0, 0, 0, 0];
+        let boxes = [null, null, null, null];
+        let hasStuff = [false, false, false, false];
         
         for (let i = 0; i < 4; ++i)
         {
             let scaleIndex = $image.box_scale_val_set[i] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
             xmults[i] = scaleIndex + parseFloat($image.box_scale_x_offset_set[i] / 1000);
             ymults[i] = scaleIndex + parseFloat($image.box_scale_y_offset_set[i] / 1000);
+            boxes[i] = [];
+        }
+        for (let $box of $viewport.boxes)
+        {
+            boxes[$box.collection].push($box.charId);
+            hasStuff[$box.collection] = true;
         }
         
-        console.log(xmults);
-        console.log(ymults);
+        
+        let scale_set = [];
+        for (let i = 0; i < 3; ++i)
+        {
+            if (hasStuff[i])
+            {
+                scale_set.push({"Chars_valid": true, "Chars": boxes[i], "xmult": xmults[i], "ymult": ymults[i]});
+            }
+        }
+        if (hasStuff[3])
+        {
+            scale_set.push({"Chars_valid": false, "Chars": boxes[3], "xmult": xmults[3], "ymult": ymults[3]});
+        }
+        let message = {"Char_sets": scale_set};
+        console.log(message);
+
         
     }
     
