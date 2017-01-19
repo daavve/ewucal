@@ -89,7 +89,8 @@ class UserSuppliedPageMultiplier(models.Model):
 
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
-    set_offset = models.FloatField()
+    set_offset_x = models.FloatField()
+    set_offset_y = models.FloatField()
     set_chars = models.ManyToManyField(Character)
 
 
