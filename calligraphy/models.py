@@ -92,6 +92,7 @@ class CharSet(models.Model):
     set_offset_x = models.FloatField()
     set_offset_y = models.FloatField()
     set_chars = models.ManyToManyField(Character)
+    set_has_problems = models.BooleanField()
 
 
 class RelatedChars(object): # This class exists to hold all chars and related ones
