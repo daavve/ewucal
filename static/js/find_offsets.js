@@ -33,9 +33,6 @@ function iWindow (iImg) {
         box_scale_val_set: [0, 0, 0, 0],
         box_scale_x_offset_set: [0, 0, 0, 0],
         box_scale_y_offset_set: [0, 0, 0, 0],
-        box_scale_val: 0,
-        box_scale_x_offset: 0,
-        box_scale_y_offset: 0,
         active_set: 0
     });
     
@@ -115,9 +112,9 @@ function iWindow (iImg) {
         }
     
     function updateBoxPosition($box) {
-        let scaleIndex = $image.box_scale_val * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
-        let xmult = scaleIndex + parseFloat($image.box_scale_x_offset / 1000);
-        let ymult = scaleIndex + parseFloat($image.box_scale_y_offset / 1000);
+        let scaleIndex = $image.box_scale_val_set[$image.active_set] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
+        let xmult = scaleIndex + parseFloat($image.box_scale_x_offset_set[$image.active_set] / 1000);
+        let ymult = scaleIndex + parseFloat($image.box_scale_y_offset_set[$image.active_set] / 1000);
         $box.css({
             left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.offset_left) + $viewport.middle_x),
             top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.offset_top) + $viewport.middle_y),
@@ -145,7 +142,7 @@ function iWindow (iImg) {
             max: 1000,
             slide: function (event, ui) {
                 $image.update_boxes = true;
-                $image.box_scale_val = ui.value;
+                $image.box_scale_val_set[$image.active_set] = ui.value;
             }});
     $container.append($scale_widget);
     
@@ -156,7 +153,7 @@ function iWindow (iImg) {
             max: 500,
             slide: function (event, ui) {
                 $image.update_boxes = true;
-                $image.box_scale_x_offset = ui.value;
+                $image.box_scale_x_offset_set[$image.active_set] = ui.value;
             }});
     $container.append($x_offset_widget);
     
@@ -167,7 +164,7 @@ function iWindow (iImg) {
             max: 500,
             slide: function (event, ui) {
                 $image.update_boxes = true;
-                $image.box_scale_y_offset = ui.value;
+                $image.box_scale_y_offset_set[$image.active_set] = ui.value;
             }});
     $container.append($y_offset_widget);
 
@@ -192,7 +189,25 @@ function iWindow (iImg) {
     $( ".active_bar" ).controlgroup();
     $( "[name='active']").on( "change", switch_active_set );
     
-    $( 'button' ).button().click(move_active_set);
+    $( '.transfer_button' ).button().click(move_active_set);
+    $( '.submit_button' ).button().click(submit_form);
+    
+    function submit_form(){
+
+        let xmults = [0, 0, 0, 0];
+        let ymults = [0, 0, 0, 0];
+        
+        for (let i = 0; i < 4; ++i)
+        {
+            let scaleIndex = $image.box_scale_val_set[i] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
+            xmults[i] = scaleIndex + parseFloat($image.box_scale_x_offset_set[i] / 1000);
+            ymults[i] = scaleIndex + parseFloat($image.box_scale_y_offset_set[i] / 1000);
+        }
+        
+        console.log(xmults);
+        console.log(ymults);
+        
+    }
     
     function switch_active_set( e ){
         for (let $box of $viewport.boxes)
@@ -202,25 +217,20 @@ function iWindow (iImg) {
                 toggle_box_selection($box);
             }
         }
-        $image.box_scale_val_set[$image.active_set] = $image.box_scale_val;
-        $image.box_scale_x_offset_set[$image.active_set] = $image.box_scale_x_offset;
-        $image.box_scale_y_offset_set[$image.active_set] = $image.box_scale_y_offset;
-        $image.active_set = parseInt(e.currentTarget.attributes.data.value);
-        $image.box_scale_val = $image.box_scale_val_set[$image.active_set];
-        $image.box_scale_x_offset = $image.box_scale_x_offset_set[$image.active_set];
-        $image.box_scale_y_offset = $image.box_scale_y_offset_set[$image.active_set];
-        $scale_widget.slider( "value", $image.box_scale_val);
-        $x_offset_widget.slider( "value", $image.box_scale_x_offset);
-        $y_offset_widget.slider( "value", $image.box_scale_y_offset);
+        let next_set = parseInt(e.currentTarget.attributes.data.value);
+        $image.active_set = next_set;
+        $scale_widget.slider( "value", $image.box_scale_val_set[next_set]);
+        $x_offset_widget.slider( "value", $image.box_scale_x_offset_set[next_set]);
+        $y_offset_widget.slider( "value", $image.box_scale_y_offset_set[next_set]);
         $image.update_boxes = true;
         $image.update_box_visibility = true;
     }
     
     function move_active_set(){
         let buttonID = parseInt($(this)[0].attributes.data.value);
-        $image.box_scale_val_set[buttonID] = $image.box_scale_val;
-        $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset;
-        $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset;
+        $image.box_scale_val_set[buttonID] = $image.box_scale_val_set[$image.active_set];
+        $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset_set[$image.active_set];
+        $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset_set[$image.active_set];
         
         for (let $box of $viewport.boxes)
         {
