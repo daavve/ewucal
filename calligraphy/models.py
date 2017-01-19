@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
 fs = FileSystemStorage()
@@ -44,7 +45,6 @@ class ToFindMultiplier(models.Model):
     times_reviewed = models.IntegerField()
 
 
-
 class Character(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
@@ -80,6 +80,18 @@ class Character(models.Model):
         
     def get_rel_chars(self):
         return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
+
+# Data related to computed offsets goes here.
+# Duplication due to need for redundancy between users
+class UserSuppliedPageMultiplier(models.Model):
+    user_id = models.ForeignKey(User)
+    page_id = models.ForeignKey(Page)
+
+class CharSet(models.Model):
+    userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
+    set_offset = models.FloatField()
+    set_chars = models.ManyToManyField(Character)
+
 
 class RelatedChars(object): # This class exists to hold all chars and related ones
     def __init__(self, inChar: Character):
