@@ -33,7 +33,8 @@ function iWindow (iImg) {
         box_scale_val_set: [0, 0, 0, 0],
         box_scale_x_offset_set: [0, 0, 0, 0],
         box_scale_y_offset_set: [0, 0, 0, 0],
-        active_set: 0
+        active_set: 0,
+        rotation: 0
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -191,6 +192,14 @@ function iWindow (iImg) {
     
     $( '.transfer_button' ).button().click(move_active_set);
     $( '.submit_button' ).button().click(submit_form);
+    
+    $( '.rotate_button' ).button().click(function() {
+        if(($image.rotation += 90) == 360)
+        {
+            $image.rotation = 0;
+        }
+        $image.rotate($image.rotation);
+    });
     
     function submit_form(){
 
