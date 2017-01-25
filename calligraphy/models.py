@@ -92,7 +92,7 @@ class CharSet(models.Model):
     image_rotation = models.IntegerField()
     set_offset_x = models.FloatField()
     set_offset_y = models.FloatField()
-    set_chars = models.ManyToManyField(Character)
+    set_chars = []
     set_has_problems = models.BooleanField()
 
 
