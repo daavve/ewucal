@@ -89,6 +89,7 @@ class UserSuppliedPageMultiplier(models.Model):
 
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
+    image_rotation = models.IntegerField()
     set_offset_x = models.FloatField()
     set_offset_y = models.FloatField()
     set_chars = models.ManyToManyField(Character)
