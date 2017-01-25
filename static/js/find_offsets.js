@@ -13,15 +13,16 @@ function iWindow (iImg) {
 
    
     var $image = $('.draggable').extend({
-        start_width: parseInt(iImg.width),
         min_width: null,
         max_width: null,
         lw_ratio: null,
         scale_factor: null,
         zoom_factor: null,
         offset_top: null,
+        box_offset_top: null,
         position_top: null,
         offset_left: null,
+        box_offset_left: null,
         position_left: null,
         middle_x: null,
         middle_y: null,
@@ -47,10 +48,11 @@ function iWindow (iImg) {
     $image.max_width = $image.min_width * settings.zoom_max;
     $image.lw_ratio = $image.src_length / $image.src_width;
     $image.height = $image.min_width * $image.lw_ratio;
-    $image.scale_factor = $image.min_width / $image.start_width;
+    $image.scale_factor = $image.min_width / $image.src_width;
     
     $image.attr('src', iImg.URL);
-    $image.css('position', 'absolute').wrap('<div class="page_viewport"></div>');
+    $image.css({'position': 'absolute',
+                'transform-origin': 'left bottom'}).wrap('<div class="page_viewport"></div>');
 
 
     var $viewport = $image.parent().resizable();
@@ -63,7 +65,9 @@ function iWindow (iImg) {
 
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
+    $image.box_offset_left = $image.offset_left;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
+    $image.box_offset_top = $image.offset_top;
     var $container = $viewport.parent();
     
     $viewport.boxes = new Set();
@@ -72,12 +76,12 @@ function iWindow (iImg) {
         build_a_box(iImg.chars[i]);
     }
     
-    var screenupdate = setInterval(updateZoom, 50); // this value is a bit lagy, but it keeps the thing from glitching out
+    var screenupdate = setInterval(updateZoom, 50);
     function updateZoom(){
         if ($image.update_boxes)
         {
             $image.height = Math.round($image.width * $image.lw_ratio);
-            $image.scale_factor = $image.width / $image.start_width;
+            $image.scale_factor = $image.width / $image.src_width;
             $image.css({
                 width: Math.round($image.width),
                 height: Math.round($image.width * $image.lw_ratio),
@@ -112,13 +116,15 @@ function iWindow (iImg) {
         }
         }
     
+
+    
     function updateBoxPosition($box) {
         let scaleIndex = $image.box_scale_val_set[$image.active_set] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
         let xmult = scaleIndex + parseFloat($image.box_scale_x_offset_set[$image.active_set] / 1000);
         let ymult = scaleIndex + parseFloat($image.box_scale_y_offset_set[$image.active_set] / 1000);
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.offset_top) + $viewport.middle_y),
+            left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.box_offset_left) + $viewport.middle_x),
+            top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.box_offset_top) + $viewport.middle_y),
             width: Math.round($image.scale_factor * $box.x_len * xmult),
             height: Math.round($image.scale_factor * $box.y_len * ymult)
         });
@@ -178,8 +184,19 @@ function iWindow (iImg) {
         drag: function (event, ui) {
             $image.position_top  = ui.position.top;
             $image.position_left = ui.position.left;
-            $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
-            $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+            $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+            $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+            if($image.rotation === 0 || $image.rotation == 180)
+            {
+                $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+                $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+            }
+            else
+            {
+                $image.offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+                $image.offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+            }
+            
             $image.update_boxes = true;
         },
         scroll: false,
@@ -194,11 +211,36 @@ function iWindow (iImg) {
     $( '.submit_button' ).button().click(submit_form);
     
     $( '.rotate_button' ).button().click(function() {
-        if(($image.rotation += 90) == 360)
+        if(($image.rotation += 90) == 90)
         {
-            $image.rotation = 0;
+            $image.offset_left = $image.box_offset_left
+            $image.offset_top = $image.box_offset_top - $image.src_length;
         }
-        $image.rotate($image.rotation);
+        else
+        {
+            if($image.rotation == 180)
+            {
+                $image.offset_left = $image.box_offset_left + $image.src_width;
+                $image.offset_top = $image.box_offset_top - $image.src_length;
+            }
+            else
+            {
+                if($image.rotation == 270)
+                {
+                    $image.offset_left = $image.box_offset_left + $image.src_length;
+                    $image.offset_top =  $image.box_offset_top - $image.src_width / 2;
+                }
+                else // $image.rotation == 360
+                {
+                    $image.rotation = 0;
+                    $image.offset_top = $image.box_offset_top;
+                    $image.offset_left = $image.box_offset_left;
+                }
+            }
+        }
+        $image.css({'transform': 'rotate(' + $image.rotation + 'deg)'});
+        $image.update_boxes = true;
+            
     });
     
     function submit_form(){
