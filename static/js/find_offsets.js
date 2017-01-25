@@ -179,13 +179,8 @@ function iWindow (iImg) {
         for (let $box of $viewport.boxes)
             updateBoxPosition($box);
     }
-    
-    $image.draggable({
-        drag: function (event, ui) {
-            $image.position_top  = ui.position.top;
-            $image.position_left = ui.position.left;
-            $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
-            $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+
+    function updateOffsets(){
         if($image.rotation == 90)
         {
             $image.offset_left = $image.box_offset_left
@@ -213,9 +208,15 @@ function iWindow (iImg) {
                 }
             }
         }
-
-
-            
+    }
+    
+    $image.draggable({
+        drag: function (event, ui) {
+            $image.position_top  = ui.position.top;
+            $image.position_left = ui.position.left;
+            $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+            $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+            updateOffsets();
             $image.update_boxes = true;
         },
         scroll: false,
@@ -230,33 +231,11 @@ function iWindow (iImg) {
     $( '.submit_button' ).button().click(submit_form);
     
     $( '.rotate_button' ).button().click(function() {
-        if(($image.rotation += 90) == 90)
+        if(($image.rotation += 90) == 360)
         {
-            $image.offset_left = $image.box_offset_left;
-            $image.offset_top = $image.box_offset_top - $image.src_length;
+            $image.rotation = 0;
         }
-        else
-        {
-            if($image.rotation == 180)
-            {
-                $image.offset_left = $image.box_offset_left + $image.src_width;
-                $image.offset_top = $image.box_offset_top - $image.src_length;
-            }
-            else
-            {
-                if($image.rotation == 270)
-                {
-                    $image.offset_left = $image.box_offset_left + $image.src_length;
-                    $image.offset_top =  $image.box_offset_top - $image.src_width / 2;
-                }
-                else // $image.rotation == 360
-                {
-                    $image.rotation = 0;
-                    $image.offset_top = $image.box_offset_top;
-                    $image.offset_left = $image.box_offset_left;
-                }
-            }
-        }
+        updateOffsets()
         $image.css({'transform': 'rotate(' + $image.rotation + 'deg)'});
         $image.update_boxes = true;
             
