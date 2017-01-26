@@ -274,12 +274,11 @@ function iWindow (iImg) {
         let message = {"Char_sets": scale_set,
                        "rotation": $image.rotation};
                        
-        
-        $.post({
-            url: 'ajax/postOffsets',
-            data: message,
-            dataType: 'json'
-        });
+        //  Bad form for a POST request
+        $.getJSON(
+            '/ajax/post_offsets',
+            message,
+        );
         
         
 
