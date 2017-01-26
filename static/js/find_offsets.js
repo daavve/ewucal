@@ -264,20 +264,21 @@ function iWindow (iImg) {
         {
             if (hasStuff[i])
             {
-                scale_set.push({"Chars_valid": true, "Chars": boxes[i], "xmult": xmults[i], "ymult": ymults[i], "rotation": $image.rotation});
+                scale_set.push({"Chars_valid": true, "Chars": boxes[i], "xmult": xmults[i], "ymult": ymults[i]});
             }
         }
         if (hasStuff[3])
         {
             scale_set.push({"Chars_valid": false, "Chars": boxes[3], "xmult": xmults[3], "ymult": ymults[3]});
         }
-        let message = {"Char_sets": scale_set};
+        let message = {"Char_sets": scale_set,
+                       "rotation": $image.rotation};
+                       
         
         $.post({
             url: 'ajax/postOffsets',
             data: message,
             dataType: 'json'
-        
         });
         
         
