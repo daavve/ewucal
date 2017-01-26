@@ -187,3 +187,8 @@ def get_toshi(request):
                     'x2' : x_mid + of_right,
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
+
+
+# Gets the user submission for offset values and records the results in database
+def get_user_submission(request):
+    

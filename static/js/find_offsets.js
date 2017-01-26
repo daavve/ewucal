@@ -76,7 +76,7 @@ function iWindow (iImg) {
         build_a_box(iImg.chars[i]);
     }
     
-    var screenupdate = setInterval(updateZoom, 50);
+    var screenupdate = setInterval(updateZoom, 10);
     function updateZoom(){
         if ($image.update_boxes)
         {
@@ -175,10 +175,6 @@ function iWindow (iImg) {
             }});
     $container.append($y_offset_widget);
 
-    function updateBoxes(){
-        for (let $box of $viewport.boxes)
-            updateBoxPosition($box);
-    }
 
     function updateOffsets(){
         if($image.rotation == 90)
@@ -210,7 +206,7 @@ function iWindow (iImg) {
         }
     }
     
-    $image.draggable({
+    $image.draggable({  // Can correct image spazzing out using cursorAt for rotated images.
         drag: function (event, ui) {
             $image.position_top  = ui.position.top;
             $image.position_left = ui.position.left;
@@ -268,7 +264,7 @@ function iWindow (iImg) {
         {
             if (hasStuff[i])
             {
-                scale_set.push({"Chars_valid": true, "Chars": boxes[i], "xmult": xmults[i], "ymult": ymults[i]});
+                scale_set.push({"Chars_valid": true, "Chars": boxes[i], "xmult": xmults[i], "ymult": ymults[i], "rotation": $image.rotation});
             }
         }
         if (hasStuff[3])
@@ -276,7 +272,15 @@ function iWindow (iImg) {
             scale_set.push({"Chars_valid": false, "Chars": boxes[3], "xmult": xmults[3], "ymult": ymults[3]});
         }
         let message = {"Char_sets": scale_set};
-        console.log(message);
+        
+        $.post({
+            url: 'ajax/postOffsets',
+            data: message,
+            dataType: 'json'
+        
+        });
+        
+        
 
         
     }
