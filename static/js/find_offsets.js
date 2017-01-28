@@ -238,13 +238,10 @@ function iWindow (iImg) {
     });
     
     function submit_form(){
-
-
-        let xmults = [0, 0, 0, 0];
-        let ymults = [0, 0, 0, 0];
-        let boxes = [null, null, null, null];
-        let hasStuff = [false, false, false, false];
-        
+        let xmults = [4];
+        let ymults = [4];
+        let boxes = [4];
+        let hasStuff = [4];
         for (let i = 0; i < 4; ++i)
         {
             let scaleIndex = $image.box_scale_val_set[i] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
@@ -254,10 +251,9 @@ function iWindow (iImg) {
         }
         for (let $box of $viewport.boxes)
         {
-            boxes[$box.collection].push($box.charId);
-            hasStuff[$box.collection] = true;
+            boxes[parseInt($box.collection)].push({'id': $box.charId});
+            hasStuff[parseInt($box.collection)] = true;
         }
-        
         
         let scale_set = [];
         for (let i = 0; i < 3; ++i)
@@ -274,11 +270,16 @@ function iWindow (iImg) {
         let message = {"Char_sets": scale_set,
                        "rotation": $image.rotation};
                        
-        //  Bad form for a POST request
-        $.getJSON(
-            '/ajax/post_offsets',
-            message,
-        );
+                       
+        let token = get_csrf_token();
+
+        
+        $.ajax({
+            url: '/ajax/post_offsets',
+            data: JSON.stringify(message),
+            method: 'POST',
+            dataType: 'json',
+        });
         
         
 

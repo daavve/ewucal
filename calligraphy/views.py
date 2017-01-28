@@ -13,7 +13,7 @@ import subprocess as sub
 import random
 
 from django.views.decorators.csrf import csrf_exempt
-
+from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
 def webroot(request):
@@ -190,5 +190,19 @@ def get_toshi(request):
 
 
 # Gets the user submission for offset values and records the results in database
-def get_user_submission(request):
+# I will probably have to upload a file object because the http header gets so big that
+# Django freaks
+@require_http_methods(['POST'])
+def post_offsets(request):
+    userId = request.user.id
     
+    pst = json.loads(request.body)
+    rotation = pst['rotation']
+    charss = pst['Char_sets']
+    
+    for chars in charss:
+        mychar = chars
+    
+    
+    
+    return JsonResponse({'id': mychar}, safe=False)
