@@ -42,7 +42,6 @@ class Page(models.Model):
 # Temporary work que classes go here
 class ToFindMultiplier(models.Model):
     page_id = models.ForeignKey(Page)
-    times_reviewed = models.IntegerField()
 
 
 class Character(models.Model):
@@ -71,13 +70,13 @@ class Character(models.Model):
     def get_image(self) -> str:
         if self.image_high_rez:
             return str( self.image_high_rez.url)
-        
+
     def get_thumb(self) -> str:
         return str( self.image.url)
 
     def get_id(self) -> str:
         return '#' + str(self.id)
-        
+
     def get_rel_chars(self):
         return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
 
@@ -86,14 +85,14 @@ class Character(models.Model):
 class UserSuppliedPageMultiplier(models.Model):
     user_id = models.ForeignKey(User)
     page_id = models.ForeignKey(Page)
+    image_rotation = models.IntegerField()
 
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
-    image_rotation = models.IntegerField()
     set_offset_x = models.FloatField()
     set_offset_y = models.FloatField()
-    set_chars = []
-    set_has_problems = models.BooleanField()
+    set_chars = models.ManyToManyField(Character)
+    set_valid = models.BooleanField()
 
 
 class RelatedChars(object): # This class exists to hold all chars and related ones

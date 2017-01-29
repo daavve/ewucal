@@ -268,22 +268,23 @@ function iWindow (iImg) {
             scale_set.push({"Chars_valid": false, "Chars": boxes[3], "xmult": xmults[3], "ymult": ymults[3]});
         }
         let message = {"Char_sets": scale_set,
-                       "rotation": $image.rotation};
+                       "rotation": $image.rotation,
+                       "page_id": $image.page_id};
                        
                        
         let token = get_csrf_token();
 
         
-        $.ajax({
+        var ajaxcall = $.ajax({
             url: '/ajax/post_offsets',
             data: JSON.stringify(message),
             method: 'POST',
             dataType: 'json',
-        });
-        
-        
-
-        
+        }).done(function( data ) {
+            location.reload();
+            }).fail( function(){
+                alert("Something went wrong  Call Dave");
+            });
     }
     
     function switch_active_set( e ){
@@ -358,7 +359,7 @@ function iWindow (iImg) {
                         $viewport.has_big_box = true;
                         $viewport.big_box_1 = $.jsPanel({
                             headerTitle: $box.mark,
-                            headerControls: {'controls': 'closeonly'},
+                            headerControls: {'controls': 'none'},
                             contentSize:    {width: $box.x_len + 25, height: $box.y_len + 25},
                             position: {
                                 my:      "left-top",

@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, ToFindMultiplier
+from .models import Author, Work, Page, Character, RelatedChars, ToFindMultiplier, UserSuppliedPageMultiplier, CharSet
 import json
 import subprocess as sub
 import random
@@ -81,7 +81,7 @@ def get_todo(request):
                          'x2' : coords[2],
                          'y2' : coords[3]})
 
-    data = {  'pageIdd':   page.id,
+    data = {  'pageId':   page.id,
               'URL' : Page.get_image(page),
               'height' : page.image_length,
               'width' : page.image_width,
@@ -194,15 +194,27 @@ def get_toshi(request):
 # Django freaks
 @require_http_methods(['POST'])
 def post_offsets(request):
-    userId = request.user.id
-    
     pst = json.loads(request.body)
-    rotation = pst['rotation']
-    charss = pst['Char_sets']
+    c_page      = Page.objects.get(id=(pst['page_id']))
+    user_mult = UserSuppliedPageMultiplier( user_id=request.user,
+                                            page_id=c_page,
+                                            image_rotation=pst['rotation'])
+    user_mult.save()
+    for chars in pst['Char_sets']:
+        charray = []
+        for char in chars['Chars']:
+            charray.append(Character.objects.get(id=char['id']))
+        myset = CharSet(userSupplied=user_mult,
+                set_offset_x = chars['xmult'],
+                set_offset_y = chars['ymult'],
+                set_valid    = bool(chars['Chars_valid']),
+                )
+        myset.save()
+        for char in charray:
+            myset.set_chars.add(char)
+        myset.save()
     
-    for chars in charss:
-        mychar = chars
+    ToFindMultiplier.objects.filter(page_id=c_page).delete()
     
-    
-    
-    return JsonResponse({'id': mychar}, safe=False)
+
+    return JsonResponse({"status" : "Done"})
