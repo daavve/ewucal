@@ -79,7 +79,10 @@ def get_todo(request):
                          'x1' : coords[0],
                          'y1' : coords[1],
                          'x2' : coords[2],
-                         'y2' : coords[3]})
+                         'y2' : coords[3],
+                         'area': (int(coords[2]) - int(coords[0])) * (int(coords[3]) - int(coords[1]))})
+                         
+        charList.sort(key=lambda k: k['area'], reverse=True) 
 
     data = {  'pageId':   page.id,
               'URL' : Page.get_image(page),
