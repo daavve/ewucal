@@ -34,6 +34,7 @@ function iWindow (iImg) {
         box_scale_val_set: [0, 0, 0, 0],
         box_scale_x_offset_set: [0, 0, 0, 0],
         box_scale_y_offset_set: [0, 0, 0, 0],
+        boxes_validated: [false, true, true, true],
         active_set: 0,
         rotation: 0
     });
@@ -149,6 +150,7 @@ function iWindow (iImg) {
             max: 1000,
             slide: function (event, ui) {
                 $image.update_boxes = true;
+                $image.boxes_validated[$image.active_set] = true;
                 $image.box_scale_val_set[$image.active_set] = ui.value;
             }});
     $container.append($scale_widget);
@@ -238,6 +240,15 @@ function iWindow (iImg) {
     });
     
     function submit_form(){
+        for (let i = 0; i < 4; ++i)
+        {
+            if(false == $image.boxes_validated[i])
+            {
+                alert("Check all the sets before re-submitting");
+                return
+            }
+        }
+        
         let xmults = [4];
         let ymults = [4];
         let boxes = [4];
@@ -302,6 +313,7 @@ function iWindow (iImg) {
         $y_offset_widget.slider( "value", $image.box_scale_y_offset_set[next_set]);
         $image.update_boxes = true;
         $image.update_box_visibility = true;
+        $image.boxes_validated[next_set] = true;
     }
     
     function move_active_set(){
@@ -309,6 +321,7 @@ function iWindow (iImg) {
         $image.box_scale_val_set[buttonID] = $image.box_scale_val_set[$image.active_set];
         $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset_set[$image.active_set];
         $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset_set[$image.active_set];
+        $image.boxes_validated[buttonID] = false
         
         for (let $box of $viewport.boxes)
         {
@@ -417,6 +430,7 @@ function iWindow (iImg) {
 
 
 function startMe( $ ){
+    var  $dialog = $( "#dialog" ).dialog({autoOpen: false});
     var  $pages = $.getJSON('/ajax/get_todo').done(iWindow);
 }
 
