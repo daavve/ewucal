@@ -39,11 +39,6 @@ class Page(models.Model):
         return str(self.image.url)
 
 
-# Temporary work que classes go here
-class ToFindMultiplier(models.Model):
-    page_id = models.ForeignKey(Page)
-
-
 class Character(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
@@ -81,7 +76,6 @@ class Character(models.Model):
         return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
 
 # Data related to computed offsets goes here.
-# Duplication due to need for redundancy between users
 class UserSuppliedPageMultiplier(models.Model):
     user_id = models.ForeignKey(User)
     page_id = models.ForeignKey(Page)
