@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, ToFindMultiplier, UserSuppliedPageMultiplier, CharSet
+from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet
 import json
 import subprocess as sub
 import random
@@ -63,7 +63,7 @@ def get_page(request):
 
 # Here we give them everything at once.  We give them the page id, as well as all the data
 def get_todo(request):
-    allPages = ToFindMultiplier.objects.all()
+#    allPages = ToFindMultiplier.objects.all()
     page_id = random.choice(allPages).page_id.id
     page = Page.objects.get(id=page_id)
     chars = Character.objects.filter(parent_page=page)
