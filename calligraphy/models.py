@@ -83,6 +83,12 @@ class UserSuppliedPageMultiplier(models.Model):
 # TO Do list for validating offsets
 class ToValidateOffsets(models.Model):
     toCheck = models.ForeignKey(UserSuppliedPageMultiplier)
+    
+class ToCountCharactersWBoxes(models.Model):
+    toCheck = models.ForeignKey(Page)
+    
+class toCountCharactersWoBoxes(models.Model):
+    toCheck = models.ForeignKey(Page)
 
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
