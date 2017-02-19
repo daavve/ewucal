@@ -36,7 +36,7 @@ class Page(models.Model):
         return '/page/' + str(self.id)
 
     def get_image(self) -> str:
-        return str(self.image.url)
+        return str(self.image)
 
 
 class Character(models.Model):
