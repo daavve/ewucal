@@ -63,8 +63,7 @@ class Character(models.Model):
         return '/char/' + str(self.id)
 
     def get_image(self) -> str:
-        if self.image_high_rez:
-            return str( self.image_high_rez.url)
+            return str( self.image)
 
     def get_thumb(self) -> str:
         return str( self.image.url)

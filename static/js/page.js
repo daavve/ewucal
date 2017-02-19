@@ -173,7 +173,7 @@ function iWindow (iImg) {
                         ).done(function( data, textStatus, jqXHR, panel ){
                                     var $container = $( '#chargrid' ).empty();
                                     $.each(data, function(i, item) {
-                                        var $charInGrid = $( '<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
+                                        var $charInGrid = $( '<div class="item"> <img src="' + item.URL + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
                                         ).extend({
                                             charId: item.id,
                                             URL: item.URL,
@@ -277,7 +277,7 @@ function iWindow (iImg) {
                                 done: function( data, textStatus, jqXHR, panel ){
                                     var $container = $('<div class="container2" id="chargrid"></div>');
                                     $.each(data, function(i, item) {
-                                        var $charInGrid = $( '<div class="item"> <img src="' + item.thumb + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
+                                        var $charInGrid = $( '<div class="item"> <img src="' + item.URL + '" width="' + item.width + '" height="'  + item.height + '" /> </div>' 
                                         ).extend({
                                             charId: item.id,
                                             URL: item.URL,
