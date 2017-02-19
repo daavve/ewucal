@@ -79,6 +79,10 @@ class UserSuppliedPageMultiplier(models.Model):
     user_id = models.ForeignKey(User)
     page_id = models.ForeignKey(Page)
     image_rotation = models.IntegerField()
+    
+# TO Do list for validating offsets
+class ToValidateOffsets(models.Model):
+    toCheck = models.ForeignKey(UserSuppliedPageMultiplier)
 
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
