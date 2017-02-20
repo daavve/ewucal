@@ -70,7 +70,7 @@ def get_todo(request):
     for char in chars:
         coords = str(char.image).split('(')[1].split(')')[0].split(',')
         charList.append({'charId' : char.id,
-                         'collection': char.collection,
+                         'collection': 0,   # Placeholder
                          'mark': char.mark,
                          'URL' : Character.get_image(char),
                          'x1' : coords[0],
@@ -82,14 +82,21 @@ def get_todo(request):
     charList.sort(key=lambda k: k['area'], reverse=True)
     setsData = []
     charsets = CharSet.objects.filter(userSupplied=multiplier)
+    setNum = -1
     for charset in charsets:
-        setChars = []
-        for char in charset.set_chars.all():
-            setChars.append({'charID': char.id})
+        if charset.set_valid:
+            setNum+=1
+            curSet = setNum
+        else:
+            curSet = 3
         setsData.append({'set_offset_x': charset.set_offset_x,
                          'set_offset_y': charset.set_offset_y,
-                         'set_valid': charset.set_valid,
-                         'chars': setChars})
+                         'set_num'     : curSet})
+        for char in charset.set_chars.all():
+            for charL in charList:          # WARNING: O(i^j)
+                if charL['charId'] == char.id:
+                    charL['collection'] = setNum
+        
     
 
     data = {  'pageId':   page.id,
@@ -199,8 +206,6 @@ def get_toshi(request):
 
 
 # Gets the user submission for offset values and records the results in database
-# I will probably have to upload a file object because the http header gets so big that
-# Django freaks
 @require_http_methods(['POST'])
 def post_offsets(request):
     pst = json.loads(request.body)
