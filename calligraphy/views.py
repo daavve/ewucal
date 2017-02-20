@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet
+from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, ToValidateOffsets
 import json
 import subprocess as sub
 import random
@@ -63,26 +63,34 @@ def get_page(request):
 
 # Here we give them everything at once.  We give them the page id, as well as all the data
 def get_todo(request):
-#    allPages = ToFindMultiplier.objects.all()
-    page_id = random.choice(allPages).page_id.id
-    page = Page.objects.get(id=page_id)
+    multiplier = UserSuppliedPageMultiplier.objects.get(id=random.choice(ToValidateOffsets.objects.all()).toCheck.id)
+    page = Page.objects.get(id=multiplier.page_id.id)
     chars = Character.objects.filter(parent_page=page)
     charList = []
-    charss = []
     for char in chars:
-        charss.append({'char': char.id})
         coords = str(char.image).split('(')[1].split(')')[0].split(',')
         charList.append({'charId' : char.id,
                          'collection': char.collection,
                          'mark': char.mark,
-                         'URL' : Character.get_thumb(char),
+                         'URL' : Character.get_image(char),
                          'x1' : coords[0],
                          'y1' : coords[1],
                          'x2' : coords[2],
                          'y2' : coords[3],
                          'area': (int(coords[2]) - int(coords[0])) * (int(coords[3]) - int(coords[1]))})
                          
-        charList.sort(key=lambda k: k['area'], reverse=True) 
+    charList.sort(key=lambda k: k['area'], reverse=True)
+    setsData = []
+    charsets = CharSet.objects.filter(userSupplied=multiplier)
+    for charset in charsets:
+        setChars = []
+        for char in charset.set_chars.all():
+            setChars.append({'charID': char.id})
+        setsData.append({'set_offset_x': charset.set_offset_x,
+                         'set_offset_y': charset.set_offset_y,
+                         'set_valid': charset.set_valid,
+                         'chars': setChars})
+    
 
     data = {  'pageId':   page.id,
               'URL' : Page.get_image(page),
@@ -91,7 +99,8 @@ def get_todo(request):
               'chars' : charList,
               'mult_min': .3,
               'mult_max': 7,
-              'charss': charss}
+              'rotation': multiplier.image_rotation,
+              'set_data': setsData}
     return JsonResponse(data, safe=False)
 
 @csrf_exempt
@@ -106,9 +115,6 @@ def get_char_relatives(request):
             'uWidth': char.x2 - char.x1,
             'uHeight': char.y2 - char.y1,
             'id': char.id,
-            'thumb': str(Character.get_thumb(char)),
-            'width': char.image_thumb_y,
-            'height': char.image_thumb_x
         })
     return JsonResponse(charList, safe=False)
 
