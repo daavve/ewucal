@@ -63,7 +63,8 @@ def get_page(request):
 
 # Here we give them everything at once.  We give them the page id, as well as all the data
 def get_todo(request):
-    multiplier = UserSuppliedPageMultiplier.objects.get(id=random.choice(ToValidateOffsets.objects.all()).toCheck.id)
+    choice_from_list = random.choice(ToValidateOffsets.objects.all())
+    multiplier = UserSuppliedPageMultiplier.objects.get(id=choice_from_list.toCheck.id)
     page = Page.objects.get(id=multiplier.page_id.id)
     chars = Character.objects.filter(parent_page=page)
     charList = []
@@ -108,6 +109,8 @@ def get_todo(request):
               'mult_min': .3,
               'mult_max': 7,
               'rotation': multiplier.image_rotation,
+              'mult_id': multiplier.id,
+              'choice_id': choice_from_list.id,
               'set_data': setsData}
     return JsonResponse(data, safe=False)
 
@@ -210,26 +213,26 @@ def get_toshi(request):
 @require_http_methods(['POST'])
 def post_offsets(request):
     pst = json.loads(request.body)
-    c_page      = Page.objects.get(id=(pst['page_id']))
-    user_mult = UserSuppliedPageMultiplier( user_id=request.user,
-                                            page_id=c_page,
-                                            image_rotation=pst['rotation'])
-    user_mult.save()
-    for chars in pst['Char_sets']:
-        charray = []
-        for char in chars['Chars']:
-            charray.append(Character.objects.get(id=char['id']))
-        myset = CharSet(userSupplied=user_mult,
+    if pst['modified'] is True:
+        user_mult = UserSuppliedPageMultiplier.objects.get(id=pst['mult_id'])
+        user_mult.rotation = pst['rotation']
+        user_mult.save()
+        CharSet.objects.filter(userSupplied=user_mult).delete()
+        for chars in pst['Char_sets']:
+            charray = []
+            for char in chars['Chars']:
+                charray.append(Character.objects.get(id=char['id']))
+            myset = CharSet(userSupplied=user_mult,
                 set_offset_x = chars['xmult'],
                 set_offset_y = chars['ymult'],
                 set_valid    = bool(chars['Chars_valid']),
                 )
-        myset.save()
-        for char in charray:
-            myset.set_chars.add(char)
-        myset.save()
-    
-    ToFindMultiplier.objects.filter(page_id=c_page).delete()
+            myset.save()
+            for char in charray:
+                myset.set_chars.add(char)
+            myset.save()
+    else:
+        ToValidateOffsets.objects.get(id=pst['choice_id']).delete()
     
 
     return JsonResponse({"status" : "Done"})

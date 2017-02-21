@@ -68,7 +68,7 @@ function iWindow (iImg) {
         build_a_box(iImg.chars[i]);
     }
     
-    var screenupdate = setInterval(updateZoom, 250); // this value is a bit lagy, but it keeps the thing from glitching out
+    var screenupdate = setInterval(updateZoom, 10);
     function updateZoom(){
         if ($zoom_widget.update)
         {
@@ -97,14 +97,7 @@ function iWindow (iImg) {
         }
     }
     
-    var $button = $( 'button' ).button().click( function (event) {
-            getToshi($image.page_id, 300).done(function (data) {
-                for(i = 0; i < data.length; ++i) {
-                    build_a_box(data[i]);
-                }
-            });
-    }); 
-    
+   
     function updateBoxes(){
         for (let $box of $viewport.boxes)
             updateBoxPosition($box);
@@ -355,9 +348,6 @@ function getPage(pageId){ // get the page object from the server
     return $.getJSON('/ajax/get_page', {'pageId' : pageId});
 }
 
-function getToshi(pageId, cutNumber) {
-    return $.getJSON('/ajax/get_toshi', {'id' : pageId, 'num' : cutNumber});
-}
 
 function getRelChars(charId){
     return $.getJSON('/ajax/get_char_relatives', {'charId': charId});

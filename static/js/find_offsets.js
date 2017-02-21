@@ -35,9 +35,12 @@ function iWindow (iImg) {
         box_scale_val_set: [0, 0, 0, 0],
         box_scale_x_offset_set: [0, 0, 0, 0],
         box_scale_y_offset_set: [0, 0, 0, 0],
-        boxes_validated: [true, false, false, false],
+        boxes_validated: [true, true, true, true],
         active_set: 0,
-        rotation: 0
+        rotation: 0,
+        modified: false,
+        mult_id: parseInt(iImg.mult_id),
+        choice_id: parseInt(iImg.choice_id)
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -82,6 +85,10 @@ function iWindow (iImg) {
         $image.box_scale_val_set[iImg.set_data[i].set_num] = (iImg.set_data[i].set_multiplier - iImg.mult_min) * 1000 / (iImg.mult_max + 1 - iImg.mult_min);
         $image.box_scale_x_offset_set[iImg.set_data[i].set_num] = iImg.set_data[i].offset_x * 1000;
         $image.box_scale_y_offset_set[iImg.set_data[i].set_num] = iImg.set_data[i].offset_y * 1000;
+        if(iImg.set_data[i].set_num !== 0)
+        {
+            $image.boxes_validated[iImg.set_data[i].set_num] = false;
+        }
     }
     
     var screenupdate = setInterval(updateZoom, 10);
@@ -159,6 +166,7 @@ function iWindow (iImg) {
                 $image.update_boxes = true;
                 $image.boxes_validated[$image.active_set] = true;
                 $image.box_scale_val_set[$image.active_set] = ui.value;
+                $image.modified = true;
             }});
     $container.append($scale_widget);
     
@@ -170,6 +178,7 @@ function iWindow (iImg) {
             slide: function (event, ui) {
                 $image.update_boxes = true;
                 $image.box_scale_x_offset_set[$image.active_set] = ui.value;
+                $image.modified = true;
             }});
     $container.append($x_offset_widget);
     
@@ -181,6 +190,7 @@ function iWindow (iImg) {
             slide: function (event, ui) {
                 $image.update_boxes = true;
                 $image.box_scale_y_offset_set[$image.active_set] = ui.value;
+                $image.modified = true;
             }});
     $container.append($y_offset_widget);
 
@@ -287,8 +297,10 @@ function iWindow (iImg) {
         }
         let message = {"Char_sets": scale_set,
                        "rotation": $image.rotation,
-                       "page_id": $image.page_id};
-                       
+                       "page_id": $image.page_id,
+                       "modified": $image.modified,
+                       "mult_id": $image.mult_id,
+                       "choice_id": $image.choice_id};
                        
         let token = get_csrf_token();
 
