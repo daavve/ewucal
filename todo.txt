@@ -1,0 +1,12 @@
+Do Something like this to toggle the select cursor on / off:
+
+ <script>
+  $(function() {
+    $( "#draggable" ).draggable({
+      cursor:"crosshair"
+    });
+  });
+  </script>
+  
+  
+Use this method to draw an initial bounding box around characters.
