@@ -1,6 +1,7 @@
 //
 //
 // Runs the dynamic part of the website for image
+// This Find offsets also performs the task of validating them
 //
 ////////////////////////////////////////////////////
 
@@ -34,7 +35,7 @@ function iWindow (iImg) {
         box_scale_val_set: [0, 0, 0, 0],
         box_scale_x_offset_set: [0, 0, 0, 0],
         box_scale_y_offset_set: [0, 0, 0, 0],
-        boxes_validated: [false, true, true, true],
+        boxes_validated: [true, false, false, false],
         active_set: 0,
         rotation: 0
     });
@@ -75,6 +76,12 @@ function iWindow (iImg) {
     
     for(i = 0; i < iImg.chars.length; ++i) {
         build_a_box(iImg.chars[i]);
+    }
+    
+    for(i = 0; i < iImg.set_data.length; ++i) {
+        $image.box_scale_val_set[iImg.set_data[i].set_num] = (iImg.set_data[i].set_multiplier - iImg.mult_min) * 1000 / (iImg.mult_max + 1 - iImg.mult_min);
+        $image.box_scale_x_offset_set[iImg.set_data[i].set_num] = iImg.set_data[i].offset_x * 1000;
+        $image.box_scale_y_offset_set[iImg.set_data[i].set_num] = iImg.set_data[i].offset_y * 1000;
     }
     
     var screenupdate = setInterval(updateZoom, 10);
@@ -145,7 +152,7 @@ function iWindow (iImg) {
 
     var $scale_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
-            value: 0,
+            value: $image.box_scale_val_set[0],
             min: 0,
             max: 1000,
             slide: function (event, ui) {
@@ -157,7 +164,7 @@ function iWindow (iImg) {
     
     var $x_offset_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
-            value: 0,
+            value: $image.box_scale_x_offset_set[0],
             min: -500,
             max: 500,
             slide: function (event, ui) {
@@ -168,7 +175,7 @@ function iWindow (iImg) {
     
     var $y_offset_widget = $('<div class="ui-slider-handle"></div>')
         .slider({
-            value: 0,
+            value: $image.box_scale_x_offset_set[0],
             min: -500,
             max: 500,
             slide: function (event, ui) {
@@ -181,7 +188,7 @@ function iWindow (iImg) {
     function updateOffsets(){
         if($image.rotation == 90)
         {
-            $image.offset_left = $image.box_offset_left
+            $image.offset_left = $image.box_offset_left;
             $image.offset_top = $image.box_offset_top - $image.src_length;
         }
         else
@@ -233,7 +240,7 @@ function iWindow (iImg) {
         {
             $image.rotation = 0;
         }
-        updateOffsets()
+        updateOffsets();
         $image.css({'transform': 'rotate(' + $image.rotation + 'deg)'});
         $image.update_boxes = true;
             
@@ -242,10 +249,10 @@ function iWindow (iImg) {
     function submit_form(){
         for (let i = 0; i < 4; ++i)
         {
-            if(false == $image.boxes_validated[i])
+            if(false === $image.boxes_validated[i])
             {
                 alert("Check all the sets before re-submitting");
-                return
+                return;
             }
         }
         
@@ -321,7 +328,7 @@ function iWindow (iImg) {
         $image.box_scale_val_set[buttonID] = $image.box_scale_val_set[$image.active_set];
         $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset_set[$image.active_set];
         $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset_set[$image.active_set];
-        $image.boxes_validated[buttonID] = false
+        $image.boxes_validated[buttonID] = false;
         
         for (let $box of $viewport.boxes)
         {

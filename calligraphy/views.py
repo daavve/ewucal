@@ -89,9 +89,10 @@ def get_todo(request):
             curSet = setNum
         else:
             curSet = 3
-        setsData.append({'set_offset_x': charset.set_offset_x,
-                         'set_offset_y': charset.set_offset_y,
-                         'set_num'     : curSet})
+        setsData.append({'set_multiplier': charset.set_offset_x,
+                         'offset_x'  : 0,
+                         'offset_y'  :  charset.set_offset_y - charset.set_offset_x,
+                         'set_num'       : curSet})
         for char in charset.set_chars.all():
             for charL in charList:          # WARNING: O(i^j)
                 if charL['charId'] == char.id:
