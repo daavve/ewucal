@@ -42,6 +42,8 @@ class Page(models.Model):
 class Character(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
+    
+    supplied_by = models.ForeignKey(User)
 
     parent_page = models.ForeignKey(Page, null=True)
     parent_author = models.ForeignKey(Author, null=True)
