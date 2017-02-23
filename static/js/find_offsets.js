@@ -246,6 +246,16 @@ function iWindow (iImg) {
     $( '.submit_button' ).button().click(submit_form);
     
     $( '.rotate_button' ).button().click(function() {
+        do_rotation();
+    });
+    
+    let num_rotates = parseInt(iImg.rotation) / 90; //Pretty Hacky, but works
+    for(i = 0; i < num_rotates; ++i){
+        do_rotation();
+    }
+    
+    
+    function do_rotation(){
         if(($image.rotation += 90) == 360)
         {
             $image.rotation = 0;
@@ -253,8 +263,7 @@ function iWindow (iImg) {
         updateOffsets();
         $image.css({'transform': 'rotate(' + $image.rotation + 'deg)'});
         $image.update_boxes = true;
-            
-    });
+    }
     
     function submit_form(){
         for (let i = 0; i < 4; ++i)
