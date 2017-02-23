@@ -17,6 +17,7 @@ from . import views
 urlpatterns = [
     url(r'^page/(?P<page_id>[0-9]+)$',  views.individual_page),
     url(r'^validate/find-offsets',       views.validate_find_offsets),
+    url(r'^validate/draw-chars',        views.draw_chars),
     url(r'^validate',                   views.validate_root),
     url(r'^ajax/get_page',              views.get_page),
     url(r'^ajax/get_char_relatives',    views.get_char_relatives),

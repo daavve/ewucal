@@ -1,0 +1,19 @@
+{% extends parent_template|default:"ewucal/base.html" %}
+{% block content %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
+
+<div id="pageIdHolder" pageId="{{ page.id }}"></div>
+
+<div class="container">
+    <div id="page_viewport">
+        <img src="" class="draggable">
+    </div>
+</div>
+
+<button>next</button>
+<button>previous</button>
+<button>set</button>
+
+{% endblock %}
+

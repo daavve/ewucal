@@ -16,6 +16,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
+def draw_chars(request):
+    tmplt = loader.get_template('calligraphy/draw_chars.html')
+    return HttpResponse(tmplt.render(request=request))
+
 def webroot(request):
     tmplt = loader.get_template('calligraphy/view_root.html')
     cntxt = {'user': request.user}
