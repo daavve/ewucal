@@ -32,15 +32,8 @@ function iWindow (iImg) {
         src_width: parseInt(iImg.width),
         update_boxes: true,
         update_box_visibility: true,
-        box_scale_val_set: [0, 0, 0, 0],
-        box_scale_x_offset_set: [0, 0, 0, 0],
-        box_scale_y_offset_set: [0, 0, 0, 0],
-        boxes_validated: [true, true, true, true],
-        active_set: 0,
         rotation: 0,
         modified: false,
-        mult_id: parseInt(iImg.mult_id),
-        choice_id: parseInt(iImg.choice_id)
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -79,16 +72,6 @@ function iWindow (iImg) {
     
     for(i = 0; i < iImg.chars.length; ++i) {
         build_a_box(iImg.chars[i]);
-    }
-    
-    for(i = 0; i < iImg.set_data.length; ++i) {
-        $image.box_scale_val_set[iImg.set_data[i].set_num] = (iImg.set_data[i].set_multiplier - iImg.mult_min) * 1000 / (iImg.mult_max + 1 - iImg.mult_min);
-        $image.box_scale_x_offset_set[iImg.set_data[i].set_num] = iImg.set_data[i].offset_x * 1000;
-        $image.box_scale_y_offset_set[iImg.set_data[i].set_num] = iImg.set_data[i].offset_y * 1000;
-        if(iImg.set_data[i].set_num !== 0)
-        {
-            $image.boxes_validated[iImg.set_data[i].set_num] = false;
-        }
     }
     
     var screenupdate = setInterval(updateZoom, 10);
@@ -134,14 +117,11 @@ function iWindow (iImg) {
 
     
     function updateBoxPosition($box) {
-        let scaleIndex = $image.box_scale_val_set[$image.active_set] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
-        let xmult = scaleIndex + parseFloat($image.box_scale_x_offset_set[$image.active_set] / 1000);
-        let ymult = scaleIndex + parseFloat($image.box_scale_y_offset_set[$image.active_set] / 1000);
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.box_offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.box_offset_top) + $viewport.middle_y),
-            width: Math.round($image.scale_factor * $box.x_len * xmult),
-            height: Math.round($image.scale_factor * $box.y_len * ymult)
+            left: Math.round($image.scale_factor * ($box.x_top + $image.box_offset_left) + $viewport.middle_x),
+            top: Math.round($image.scale_factor * ($box.y_top + $image.box_offset_top) + $viewport.middle_y),
+            width: Math.round($image.scale_factor * $box.x_len),
+            height: Math.round($image.scale_factor * $box.y_len)
         });
     }
     
@@ -156,44 +136,6 @@ function iWindow (iImg) {
                 $image.width = ui.value;
             }});
     $container.append($zoom_widget);
-
-    var $scale_widget = $('<div class="ui-slider-handle"></div>')
-        .slider({
-            value: $image.box_scale_val_set[0],
-            min: 0,
-            max: 1000,
-            slide: function (event, ui) {
-                $image.update_boxes = true;
-                $image.boxes_validated[$image.active_set] = true;
-                $image.box_scale_val_set[$image.active_set] = ui.value;
-                $image.modified = true;
-            }});
-    $container.append($scale_widget);
-    
-    var $x_offset_widget = $('<div class="ui-slider-handle"></div>')
-        .slider({
-            value: $image.box_scale_x_offset_set[0],
-            min: -500,
-            max: 500,
-            slide: function (event, ui) {
-                $image.update_boxes = true;
-                $image.box_scale_x_offset_set[$image.active_set] = ui.value;
-                $image.modified = true;
-            }});
-    $container.append($x_offset_widget);
-    
-    var $y_offset_widget = $('<div class="ui-slider-handle"></div>')
-        .slider({
-            value: $image.box_scale_x_offset_set[0],
-            min: -500,
-            max: 500,
-            slide: function (event, ui) {
-                $image.update_boxes = true;
-                $image.box_scale_y_offset_set[$image.active_set] = ui.value;
-                $image.modified = true;
-            }});
-    $container.append($y_offset_widget);
-
 
     function updateOffsets(){
         if($image.rotation == 90)
@@ -238,11 +180,6 @@ function iWindow (iImg) {
         addClasses: false
     });
     
-    $( "input" ).checkboxradio();
-    $( ".active_bar" ).controlgroup();
-    $( "[name='active']").on( "change", switch_active_set );
-    
-    $( '.transfer_button' ).button().click(move_active_set);
     $( '.submit_button' ).button().click(submit_form);
     
     $( '.rotate_button' ).button().click(function() {
@@ -459,7 +396,7 @@ function iWindow (iImg) {
 
 function startMe( $ ){
     var  $dialog = $( "#dialog" ).dialog({autoOpen: false});
-    var  $pages = $.getJSON('/ajax/get_todo').done(iWindow);
+    var  $pages = $.getJSON('/ajax/get_to_verify_page').done(iWindow);
 }
 
 
