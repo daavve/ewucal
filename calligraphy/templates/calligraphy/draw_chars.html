@@ -2,18 +2,20 @@
 {% block content %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/draw_chars.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/get_csrf_token.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/json2.js"></script>
 
-<div id="pageIdHolder" pageId="{{ page.id }}"></div>
 
 <div class="container">
     <div id="page_viewport">
         <img src="" class="draggable">
     </div>
+    <button class="rotate_button">Rotate</button>
 </div>
 
-<button>next</button>
-<button>previous</button>
-<button>set</button>
+
+<button class="submit_button">Submit</button>
 
 {% endblock %}
 
