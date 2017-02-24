@@ -85,10 +85,10 @@ class UserSuppliedPageMultiplier(models.Model):
 class ToValidateOffsets(models.Model):
     toCheck = models.ForeignKey(UserSuppliedPageMultiplier)
     
-class ToCountCharactersWBoxes(models.Model):
+class ToDrawBoxesWBoxes(models.Model):
     toCheck = models.ForeignKey(Page)
     
-class toCountCharactersWoBoxes(models.Model):
+class ToDrawBoxesWoBoxes(models.Model):
     toCheck = models.ForeignKey(Page)
 
 class CharSet(models.Model):
