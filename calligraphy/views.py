@@ -69,15 +69,11 @@ def get_page(request):
     
 def get_to_verify_page(request):
     choice_from_list = random.choice(ToDrawBoxesWBoxes.objects.all())
-    page = Page.objects.get(id=multiplier.page_id.id)
+    page = Page.objects.get(id=choice_from_list.toCheck.id)
     chars = Character.objects.filter(parent_page=page)
     charList = []
     for char in chars:
         charList.append({'charId' : char.id,
-                         'pageId' : char.parent_page.id,
-                         'authorId' : char.parent_author.id,
-                         'authorName': char.author_name,
-                         'workId' : char.parent_work.id,
                          'URL' : Character.get_image(char),
                          'mark' : char.mark,
                          'x1' : char.x1,
@@ -85,7 +81,7 @@ def get_to_verify_page(request):
                          'x2' : char.x2,
                          'y2' : char.y2})
 
-    data = { 'pageId' : page_id,
+    data = { 'pageId' : page.id,
               'URL' : Page.get_image(page),
               'height' : page.image_length,
               'width' : page.image_width,
