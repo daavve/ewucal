@@ -28,6 +28,7 @@ class Page(models.Model):
     image = models.ImageField(blank=True, storage=fs)
     image_width = models.IntegerField(null=True)
     image_length = models.IntegerField(null=True)
+    image_bad = models.BooleanField(default=False)  #Indicates something wrong with the downloaded image
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
     transform_type = models.CharField(max_length=8, null=True)
