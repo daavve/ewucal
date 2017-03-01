@@ -34,6 +34,8 @@ function iWindow (iImg) {
         update_box_visibility: true,
         rotation: 0,
         modified: false,
+        box_last_selected: null,
+        box_is_selected: false
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -263,24 +265,6 @@ function iWindow (iImg) {
             });
     }
     
-    function switch_active_set( e ){
-        for (let $box of $viewport.boxes)
-        {
-            if ($box.selected)
-            {
-                toggle_box_selection($box);
-            }
-        }
-        let next_set = parseInt(e.currentTarget.attributes.data.value);
-        $image.active_set = next_set;
-        $scale_widget.slider( "value", $image.box_scale_val_set[next_set]);
-        $x_offset_widget.slider( "value", $image.box_scale_x_offset_set[next_set]);
-        $y_offset_widget.slider( "value", $image.box_scale_y_offset_set[next_set]);
-        $image.update_boxes = true;
-        $image.update_box_visibility = true;
-        $image.boxes_validated[next_set] = true;
-    }
-    
     function move_active_set(){
         let buttonID = parseInt($(this)[0].attributes.data.value);
         $image.box_scale_val_set[buttonID] = $image.box_scale_val_set[$image.active_set];
@@ -300,18 +284,23 @@ function iWindow (iImg) {
     }
     
     function toggle_box_selection($box){
-        if($box.selected)
+        if($image.box_is_selected)
         {
-            $box.toggleClass('char_box_select', false);
-            $box.toggleClass('char_box', true);
-            $box.selected = false;
+            if($image.box_last_selected.charId != $box.charId)
+            {
+                $image.box_last_selected.toggleClass('char_box_select', false);
+                $image.box_last_selected.toggleClass('char_box', true);
+                $image.box_last_selected.selected = false;
+                $box.toggleClass('char_box'. false);
+                $box.toggleClass('char_box_select', true);
+                $box.selected = true;
+            }
         }
-        else
-        {
-            $box.toggleClass('char_box'. false);
-            $box.toggleClass('char_box_select', true);
-            $box.selected = true;
-        }
+        $box.toggleClass('char_box'. false);
+        $box.toggleClass('char_box_select', true);
+        $box.selected = true;
+        $image.box_is_selected = true;
+        $image.box_last_selected = $box;
     }
     
     function build_a_box(iChar){
