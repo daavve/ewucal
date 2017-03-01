@@ -379,6 +379,64 @@ function iWindow (iImg) {
             $viewport.boxes.add($charBox);
     }
 }
+////////////////////////////////////////////////////////////////////////////////////////
+
+document.addEventListener('keydown', (event) => {
+    event.preventDefault();
+    const keyName = event.key;
+
+  if (keyName === 'ArrowUp') {
+        console.log('ArrowUp');
+    return;
+  }
+    if (keyName === 'ArrowDown') {
+        console.log('ArrowDown');
+    return;
+  }
+  
+    if (keyName === 'ArrowRight') {
+        console.log('ArrowRight');
+    return;
+  }
+    if (keyName === 'ArrowLeft') {
+        console.log('ArrowLeft');
+    return;
+  }
+  
+    if (keyName === '+') {
+        console.log('+');
+    return;
+    }
+    
+    if (keyName === '-') {
+        console.log('-');
+    return;
+    }
+    
+    if (keyName === 'w') {
+        console.log('w');
+    return;
+    }
+    
+    if (keyName === 's') {
+        console.log('s');
+    return;
+    }
+    
+    if (keyName === 'a') {
+        console.log('a');
+    return;
+    }
+    
+    if (keyName === 'd') {
+        console.log('d');
+    return;
+    }
+    
+    alert(`Key pressed ${keyName}`);
+
+}, false);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
