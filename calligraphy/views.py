@@ -79,7 +79,9 @@ def get_to_verify_page(request):
                          'x1' : char.x1,
                          'y1' : char.y1,
                          'x2' : char.x2,
-                         'y2' : char.y2})
+                         'y2' : char.y2,
+                         'area': (char.x2 - char.x1) * (char.y2 - char.y1)})
+    charList.sort(key=lambda k: k['area'], reverse=True)
 
     data = { 'pageId' : page.id,
               'URL' : Page.get_image(page),
