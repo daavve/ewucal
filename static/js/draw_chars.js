@@ -136,6 +136,7 @@ function iWindow (iImg) {
             slide: function (event, ui) {
                 $image.update_boxes = true;
                 $image.width = ui.value;
+                console.log(ui.value);
             }});
     $container.append($zoom_widget);
 
@@ -378,11 +379,10 @@ function iWindow (iImg) {
             $viewport.append($charBox);
             $viewport.boxes.add($charBox);
     }
-}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 
-document.addEventListener('keydown', (event) => {
-    event.preventDefault();
+$(document).keydown(function(event) {
     const keyName = event.key;
 
   if (keyName === 'ArrowUp') {
@@ -404,12 +404,14 @@ document.addEventListener('keydown', (event) => {
   }
   
     if (keyName === '+') {
-        console.log('+');
+        $image.update_boxes = true;
+        $image.width = $image.width + $image.width / 10;
     return;
     }
     
     if (keyName === '-') {
-        console.log('-');
+        $image.update_boxes = true;
+        $image.width = $image.width - $image.width / 10;
     return;
     }
     
@@ -435,8 +437,8 @@ document.addEventListener('keydown', (event) => {
     
     alert(`Key pressed ${keyName}`);
 
-}, false);
-
+});
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
