@@ -140,7 +140,7 @@ function iWindow (iImg) {
             }});
     $container.append($zoom_widget);
 
-    function updateOffsets(){
+    function updateOffsetsForRotation(){
         if($image.rotation == 90)
         {
             $image.offset_left = $image.box_offset_left;
@@ -176,7 +176,7 @@ function iWindow (iImg) {
             $image.position_left = ui.position.left;
             $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
             $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
-            updateOffsets();
+            updateOffsetsForRotation();
             $image.update_boxes = true;
         },
         scroll: false,
@@ -200,7 +200,7 @@ function iWindow (iImg) {
         {
             $image.rotation = 0;
         }
-        updateOffsets();
+        updateOffsetsForRotation();
         $image.css({'transform': 'rotate(' + $image.rotation + 'deg)'});
         $image.update_boxes = true;
     }
@@ -383,29 +383,39 @@ function iWindow (iImg) {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 $(document).keydown(function(event) {
+    event.preventDefault();
     const keyName = event.key;
 
   if (keyName === 'ArrowUp') {
-        console.log('ArrowUp');
+        $image.box_offset_top = $image.box_offset_top + 50 / $image.scale_factor;
+        updateOffsetsForRotation();
+        $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowDown') {
-        console.log('ArrowDown');
+        $image.box_offset_top = $image.box_offset_top - 50 / $image.scale_factor;
+        updateOffsetsForRotation();
+        $image.update_boxes = true;
     return;
   }
   
     if (keyName === 'ArrowRight') {
-        console.log('ArrowRight');
+        $image.box_offset_left = $image.box_offset_left - 50 / $image.scale_factor;
+        updateOffsetsForRotation();
+        $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowLeft') {
-        console.log('ArrowLeft');
+        $image.box_offset_left = $image.box_offset_left + 50 / $image.scale_factor;
+        updateOffsetsForRotation();
+        $image.update_boxes = true;
     return;
   }
   
     if (keyName === '+') {
         $image.update_boxes = true;
         $image.width = $image.width + $image.width / 10;
+        console.log($image.scale_factor);
     return;
     }
     
