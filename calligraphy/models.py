@@ -76,6 +76,14 @@ class Character(models.Model):
     def get_rel_chars(self):
         return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
 
+class Char_location_update(models.Model):
+    target_char = models.ForeignKey(Character)
+    supplied_by = models.ForeignKey(User)
+    x1 = models.IntegerField()
+    y1 = models.IntegerField()
+    x2 = models.IntegerField()
+    y2 = models.IntegerField()
+
 # Data related to computed offsets goes here.
 class UserSuppliedPageMultiplier(models.Model):
     user_id = models.ForeignKey(User)
