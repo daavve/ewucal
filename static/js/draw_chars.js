@@ -35,7 +35,8 @@ function iWindow (iImg) {
         rotation: 0,
         modified: false,
         box_last_selected: null,
-        box_is_selected: false
+        box_is_selected: false,
+        fine_adjust: false,
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -387,61 +388,115 @@ $(document).keydown(function(event) {
     const keyName = event.key;
 
   if (keyName === 'ArrowUp') {
-        $image.box_offset_top = $image.box_offset_top + 50 / $image.scale_factor;
+        $image.box_offset_top += 50 / $image.scale_factor;
         updateOffsetsForRotation();
         $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowDown') {
-        $image.box_offset_top = $image.box_offset_top - 50 / $image.scale_factor;
+        $image.box_offset_top -= 50 / $image.scale_factor;
         updateOffsetsForRotation();
         $image.update_boxes = true;
     return;
   }
   
     if (keyName === 'ArrowRight') {
-        $image.box_offset_left = $image.box_offset_left - 50 / $image.scale_factor;
+        $image.box_offset_left -= 50 / $image.scale_factor;
         updateOffsetsForRotation();
         $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowLeft') {
-        $image.box_offset_left = $image.box_offset_left + 50 / $image.scale_factor;
+        $image.box_offset_left += 50 / $image.scale_factor;
         updateOffsetsForRotation();
         $image.update_boxes = true;
     return;
   }
   
+    if (keyName === 'CapsLock') {
+        $image.fine_adjust = !$image.fine_adjust;
+        return;
+    }
+    function getInc(){
+        if($image.fine_adjust)
+        {
+            return 1;
+        }
+        else
+        {
+            return $image.height / 10;
+        }
+    }
+  
     if (keyName === '+') {
+        $image.width += $image.width / 10;
         $image.update_boxes = true;
-        $image.width = $image.width + $image.width / 10;
-        console.log($image.scale_factor);
     return;
     }
     
     if (keyName === '-') {
+        $image.width -= $image.width / 10;
         $image.update_boxes = true;
-        $image.width = $image.width - $image.width / 10;
     return;
     }
     
-    if (keyName === 'w') {
-        console.log('w');
+    if (keyName === '3') {
+        let inc = getInc();
+        $image.box_last_selected.y_top -= inc;
+        $image.box_last_selected.y_len += inc;
+        $image.update_boxes = true;
     return;
     }
     
-    if (keyName === 's') {
-        console.log('s');
+    if (keyName === 'e' || keyName === 'E') {
+        let inc = getInc();
+        $image.box_last_selected.y_top += inc;
+        $image.box_last_selected.y_len -= inc;
+        $image.update_boxes = true;
     return;
     }
     
-    if (keyName === 'a') {
-        console.log('a');
+    if (keyName === 'a' || keyName === 'A') {
+        let inc = getInc();
+        $image.box_last_selected.x_top -= inc;
+        $image.box_last_selected.x_len += inc;
+        $image.update_boxes = true;
     return;
     }
     
-    if (keyName === 'd') {
-        console.log('d');
+    if (keyName === 's' || keyName === 'S') {
+        let inc = getInc();
+        $image.box_last_selected.x_top += inc;
+        $image.box_last_selected.x_len -= inc;
+        $image.update_boxes = true
+    return;
+    }
+    
+    if (keyName === 'g' || keyName === 'G') {
+        let inc = getInc();
+        $image.box_last_selected.x_len += inc;
+        $image.update_boxes = true
+    return;
+    }
+    
+    if (keyName === 'f' || keyName === 'F') {
+        let inc = getInc();
+        $image.box_last_selected.x_len -= inc;
+        $image.update_boxes = true
+    return;
+    }
+    
+    if (keyName === 'd' || keyName === 'D') {
+        let inc = getInc();
+        $image.box_last_selected.y_len -= inc;
+        $image.update_boxes = true
+    return;
+    }
+    
+    if (keyName === 'c' || keyName === 'C') {
+        let inc = getInc();
+        $image.box_last_selected.y_len += inc;
+        $image.update_boxes = true
     return;
     }
     
