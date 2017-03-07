@@ -25,9 +25,9 @@ function iWindow (iImg) {
         position_left: null,
         middle_x: null,
         middle_y: null,
-        page_id: parseInt(iImg.pageId),
-        src_length: parseInt(iImg.height),
-        src_width: parseInt(iImg.width),
+        page_id: iImg.pageId,
+        src_length: iImg.height,
+        src_width: iImg.width,
         update_boxes: true,
         update_box_visibility: true,
         rotation: 0,
@@ -79,6 +79,7 @@ function iWindow (iImg) {
     function updateZoom(){
         if ($image.update_boxes)
         {
+            $image.update_boxes = false;
             $image.height = Math.round($image.width * $image.lw_ratio);
             $image.scale_factor = $image.width / $image.src_width;
             $image.css({
@@ -87,7 +88,6 @@ function iWindow (iImg) {
                 left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
             });
-            $image.update_boxes = false;
             $viewport.middle_x = Math.round($viewport.width() / 2);
             $viewport.middle_y = Math.round($viewport.height() / 2);
             for (let $box of $viewport.boxes)
@@ -186,7 +186,7 @@ function iWindow (iImg) {
         do_rotation();
     });
     
-    let num_rotates = parseInt(iImg.rotation) / 90; //Pretty Hacky, but works
+    let num_rotates = iImg.rotation / 90; //Pretty Hacky, but works
     for(i = 0; i < num_rotates; ++i){
         do_rotation();
     }
@@ -219,14 +219,14 @@ function iWindow (iImg) {
         for (let i = 0; i < 4; ++i)
         {
             let scaleIndex = $image.box_scale_val_set[i] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
-            xmults[i] = scaleIndex + parseFloat($image.box_scale_x_offset_set[i] / 1000);
-            ymults[i] = scaleIndex + parseFloat($image.box_scale_y_offset_set[i] / 1000);
+            xmults[i] = scaleIndex + $image.box_scale_x_offset_set[i] / 1000;
+            ymults[i] = scaleIndex + $image.box_scale_y_offset_set[i] / 1000;
             boxes[i] = [];
         }
         for (let $box of $viewport.boxes)
         {
-            boxes[parseInt($box.collection)].push({'id': $box.charId});
-            hasStuff[parseInt($box.collection)] = true;
+            boxes[$box.collection].push({'id': $box.charId});
+            hasStuff[$box.collection] = true;
         }
         
         let scale_set = [];
@@ -264,7 +264,7 @@ function iWindow (iImg) {
     }
     
     function move_active_set(){
-        let buttonID = parseInt($(this)[0].attributes.data.value);
+        let buttonID = $(this)[0].attributes.data.value;
         $image.box_scale_val_set[buttonID] = $image.box_scale_val_set[$image.active_set];
         $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset_set[$image.active_set];
         $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset_set[$image.active_set];
