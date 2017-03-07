@@ -171,8 +171,8 @@ function iWindow (iImg) {
     
     $image.draggable({  // Can correct image spazzing out using cursorAt for rotated images.
         drag: function (event, ui) {
-            $image.box_offset_left = (ui.position_left - $viewport.middle_x) / $image.scale_factor;
-            $image.box_offset_top = (ui.position_top - $viewport.middle_y) / $image.scale_factor;
+            $image.box_offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor;
+            $image.box_offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor;
             updateOffsetsForRotation();
             $image.update_boxes = true;
         },
@@ -491,20 +491,20 @@ $(document).keydown(function(event) {
     return;
     }
     
-    if (keyName === 'w' || keyName === 'W') {
-        let x = 1;
+    if (keyName === 'Insert') {
+        console.log('INS!');
         //TODO: Add new box feature
         return;
     }
     
-    if (keyName === 'r' || keyName === 'R') {
-        let x = 1;
+    if (keyName === 'Delete') {
+        console.log("DEL!")
         //TODO: delete selected box feature
         return;
     }
     
     if (keyName === ' ') {
-        let x = 1;
+        console.log('SPACE!');
         //TODO: select character in middle of screen
         return;
     }
