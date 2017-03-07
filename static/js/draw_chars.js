@@ -95,25 +95,7 @@ function iWindow (iImg) {
                 updateBoxPosition($box);
             }
         }
-        else
-        {
-            if ($image.update_box_visibility)
-            {
-                for (let $box of $viewport.boxes)
-                {
-                    if ($box.collection == $image.active_set)
-                    {
-                        $box.show();
-                    }
-                    else
-                    {
-                        $box.hide();
-                    }
-                }
-                $image.update_box_visibility = false;
-            }
-        }
-        }
+    }
     
 
     
