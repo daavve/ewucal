@@ -245,24 +245,6 @@ function iWindow (iImg) {
             });
     }
     
-    function move_active_set(){
-        let buttonID = $(this)[0].attributes.data.value;
-        $image.box_scale_val_set[buttonID] = $image.box_scale_val_set[$image.active_set];
-        $image.box_scale_x_offset_set[buttonID] = $image.box_scale_x_offset_set[$image.active_set];
-        $image.box_scale_y_offset_set[buttonID] = $image.box_scale_y_offset_set[$image.active_set];
-        $image.boxes_validated[buttonID] = false;
-        
-        for (let $box of $viewport.boxes)
-        {
-            if ($box.selected)
-            {
-                toggle_box_selection($box);
-                $box.collection = buttonID;
-            }
-        }
-        $image.update_box_visibility = true;
-    }
-    
     function toggle_box_selection($box){
         if($image.box_is_selected)
         {
