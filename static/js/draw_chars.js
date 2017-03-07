@@ -347,6 +347,7 @@ function iWindow (iImg) {
                 x_thumb: iChar.x_thumb,
                 y_thumb: iChar.y_thumb,
                 selected: false,
+                deleted: false,
                 collection: iChar.collection
             }).mouseenter(function(){
                 let $box = $(this).data('self');
@@ -500,8 +501,8 @@ $(document).keydown(function(event) {
     }
     
     if (keyName === 'Delete') {
-        console.log("DEL!")
-        //TODO: delete selected box feature
+        $image.box_last_selected.deleted = true;
+        $image.box_last_selected.hide();
         return;
     }
     
