@@ -19,9 +19,7 @@ function iWindow (iImg) {
         lw_ratio: null,
         scale_factor: null,
         zoom_factor: null,
-        offset_top: null,
         box_offset_top: null,
-        position_top: null,
         offset_left: null,
         box_offset_left: null,
         position_left: null,
@@ -173,10 +171,8 @@ function iWindow (iImg) {
     
     $image.draggable({  // Can correct image spazzing out using cursorAt for rotated images.
         drag: function (event, ui) {
-            $image.position_top  = ui.position.top;
-            $image.position_left = ui.position.left;
-            $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
-            $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+            $image.box_offset_left = (ui.position_left - $viewport.middle_x) / $image.scale_factor;
+            $image.box_offset_top = (ui.position_top - $viewport.middle_y) / $image.scale_factor;
             updateOffsetsForRotation();
             $image.update_boxes = true;
         },
@@ -388,27 +384,52 @@ $(document).keydown(function(event) {
     const keyName = event.key;
 
   if (keyName === 'ArrowUp') {
+        if(event.ctrlKey){
+            let inc = getInc();
+            $image.box_last_selected.y_top += inc;
+            $image.box_last_selected.y_len -= inc;
+        }
+        else {
         $image.box_offset_top += 50 / $image.scale_factor;
         updateOffsetsForRotation();
-        $image.update_boxes = true;
+        }
+    $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowDown') {
-        $image.box_offset_top -= 50 / $image.scale_factor;
-        updateOffsetsForRotation();
+        if(event.ctrlKey){
+            $image.box_last_selected.y_len -= getInc();
+        }
+        else{
+            $image.box_offset_top -= 50 / $image.scale_factor;
+            updateOffsetsForRotation();
+        }
         $image.update_boxes = true;
     return;
   }
   
     if (keyName === 'ArrowRight') {
-        $image.box_offset_left -= 50 / $image.scale_factor;
-        updateOffsetsForRotation();
+        if(event.ctrlKey){
+            $image.box_last_selected.x_len -= getInc();
+        }
+        else{
+            $image.box_offset_left -= 50 / $image.scale_factor;
+            updateOffsetsForRotation();
+        }
+        
         $image.update_boxes = true;
-    return;
+        return;
   }
     if (keyName === 'ArrowLeft') {
-        $image.box_offset_left += 50 / $image.scale_factor;
-        updateOffsetsForRotation();
+        if(event.ctrlKey){
+            let inc = getInc();
+            $image.box_last_selected.x_top += inc;
+            $image.box_last_selected.x_len -= inc;
+        }
+        else{
+            $image.box_offset_left += 50 / $image.scale_factor;
+            updateOffsetsForRotation();
+        }
         $image.update_boxes = true;
     return;
   }
@@ -440,7 +461,7 @@ $(document).keydown(function(event) {
     return;
     }
     
-    if (keyName === '3') {
+    if (keyName === '8') {
         let inc = getInc();
         $image.box_last_selected.y_top -= inc;
         $image.box_last_selected.y_len += inc;
@@ -448,15 +469,7 @@ $(document).keydown(function(event) {
     return;
     }
     
-    if (keyName === 'e' || keyName === 'E') {
-        let inc = getInc();
-        $image.box_last_selected.y_top += inc;
-        $image.box_last_selected.y_len -= inc;
-        $image.update_boxes = true;
-    return;
-    }
-    
-    if (keyName === 'a' || keyName === 'A') {
+    if (keyName === '4') {
         let inc = getInc();
         $image.box_last_selected.x_top -= inc;
         $image.box_last_selected.x_len += inc;
@@ -464,43 +477,39 @@ $(document).keydown(function(event) {
     return;
     }
     
-    if (keyName === 's' || keyName === 'S') {
-        let inc = getInc();
-        $image.box_last_selected.x_top += inc;
-        $image.box_last_selected.x_len -= inc;
-        $image.update_boxes = true
-    return;
-    }
-    
-    if (keyName === 'g' || keyName === 'G') {
+    if (keyName === '6') {
         let inc = getInc();
         $image.box_last_selected.x_len += inc;
         $image.update_boxes = true
     return;
     }
     
-    if (keyName === 'f' || keyName === 'F') {
-        let inc = getInc();
-        $image.box_last_selected.x_len -= inc;
-        $image.update_boxes = true
-    return;
-    }
-    
-    if (keyName === 'd' || keyName === 'D') {
-        let inc = getInc();
-        $image.box_last_selected.y_len -= inc;
-        $image.update_boxes = true
-    return;
-    }
-    
-    if (keyName === 'c' || keyName === 'C') {
+    if (keyName === '2') {
         let inc = getInc();
         $image.box_last_selected.y_len += inc;
         $image.update_boxes = true
     return;
     }
     
-    alert(`Key pressed ${keyName}`);
+    if (keyName === 'w' || keyName === 'W') {
+        let x = 1;
+        //TODO: Add new box feature
+        return;
+    }
+    
+    if (keyName === 'r' || keyName === 'R') {
+        let x = 1;
+        //TODO: delete selected box feature
+        return;
+    }
+    
+    if (keyName === ' ') {
+        let x = 1;
+        //TODO: select character in middle of screen
+        return;
+    }
+    
+    console.log(`Key pressed ${keyName}`);
 
 });
 }
