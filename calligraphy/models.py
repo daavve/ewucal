@@ -83,6 +83,7 @@ class Char_location_update(models.Model):
     y1 = models.IntegerField()
     x2 = models.IntegerField()
     y2 = models.IntegerField()
+    should_be_deleted = models.BooleanField()
 
 # Data related to computed offsets goes here.
 class UserSuppliedPageMultiplier(models.Model):
