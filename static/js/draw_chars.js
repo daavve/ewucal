@@ -313,8 +313,8 @@ function iWindow (iImg) {
                     {
                         $( '#big_img_1' ).attr('src', $box.URL);
                         $viewport.big_box_1.resize({
-                                                    width: $box.x_len + 25,
-                                                    height: $box.y_len + 25,
+                                                    width: $box.x_thumb,
+                                                    height: $box.y_thumb,
                                                     resize: 'content'}
                         ).headerTitle($box.mark);
                         $viewport.big_box_1.contentReload();
@@ -325,7 +325,7 @@ function iWindow (iImg) {
                         $viewport.big_box_1 = $.jsPanel({
                             headerTitle: $box.mark,
                             headerControls: {'controls': 'none'},
-                            contentSize:    {width: $box.x_len + 25, height: $box.y_len + 25},
+                            contentSize:    {width: $box.x_thumb, height: $box.y_thumb},
                             position: {
                                 my:      "left-top",
                                 at:      "left-top",
@@ -344,6 +344,8 @@ function iWindow (iImg) {
                 y_top: iChar.y1,
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
+                x_thumb: iChar.x_thumb,
+                y_thumb: iChar.y_thumb,
                 selected: false,
                 collection: iChar.collection
             }).mouseenter(function(){

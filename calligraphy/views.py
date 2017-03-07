@@ -80,6 +80,8 @@ def get_to_verify_page(request):
                          'y1' : char.y1,
                          'x2' : char.x2,
                          'y2' : char.y2,
+                         'x_thumb': char.image_width,
+                         'y_thumb': char.image_height,
                          'area': (char.x2 - char.x1) * (char.y2 - char.y1)})
     charList.sort(key=lambda k: k['area'], reverse=True)
 
