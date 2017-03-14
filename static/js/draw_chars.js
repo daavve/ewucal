@@ -185,6 +185,10 @@ function iWindow (iImg) {
     }
     
     function submit_form(){
+        
+        alert("NO-WORKY")
+        return;
+        
         for (let i = 0; i < 4; ++i)
         {
             if(false === $image.boxes_validated[i])
