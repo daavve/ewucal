@@ -249,6 +249,8 @@ function iWindow (iImg) {
             });
     }
     
+    
+    //Best bet is probably to hide box and place a draggable in the location in the spot
     function toggle_box_selection($box){
         if($image.box_is_selected)
         {
@@ -355,60 +357,34 @@ $(document).keydown(function(event) {
     const keyName = event.key;
 
   if (keyName === 'ArrowUp') {
-        if(event.ctrlKey){
-            let inc = getInc();
-            $image.box_last_selected.y_top += inc;
-            $image.box_last_selected.y_len -= inc;
-        }
-        else {
         $image.box_offset_top += 50 / $image.scale_factor;
         updateOffsetsForRotation();
-        }
     $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowDown') {
-        if(event.ctrlKey){
-            $image.box_last_selected.y_len -= getInc();
-        }
-        else{
-            $image.box_offset_top -= 50 / $image.scale_factor;
-            updateOffsetsForRotation();
-        }
+        $image.box_offset_top -= 50 / $image.scale_factor;
+        updateOffsetsForRotation();
         $image.update_boxes = true;
     return;
   }
   
     if (keyName === 'ArrowRight') {
-        if(event.ctrlKey){
-            $image.box_last_selected.x_len -= getInc();
-        }
-        else{
-            $image.box_offset_left -= 50 / $image.scale_factor;
-            updateOffsetsForRotation();
+        $image.box_offset_left -= 50 / $image.scale_factor;
+        updateOffsetsForRotation();
         }
         
         $image.update_boxes = true;
         return;
   }
     if (keyName === 'ArrowLeft') {
-        if(event.ctrlKey){
-            let inc = getInc();
-            $image.box_last_selected.x_top += inc;
-            $image.box_last_selected.x_len -= inc;
-        }
-        else{
-            $image.box_offset_left += 50 / $image.scale_factor;
-            updateOffsetsForRotation();
+        $image.box_offset_left += 50 / $image.scale_factor;
+        updateOffsetsForRotation();
         }
         $image.update_boxes = true;
     return;
   }
   
-    if (keyName === 'CapsLock') {
-        $image.fine_adjust = !$image.fine_adjust;
-        return;
-    }
     function getInc(){
         if($image.fine_adjust)
         {
@@ -432,36 +408,7 @@ $(document).keydown(function(event) {
     return;
     }
     
-    if (keyName === '8') {
-        let inc = getInc();
-        $image.box_last_selected.y_top -= inc;
-        $image.box_last_selected.y_len += inc;
-        $image.update_boxes = true;
-    return;
-    }
-    
-    if (keyName === '4') {
-        let inc = getInc();
-        $image.box_last_selected.x_top -= inc;
-        $image.box_last_selected.x_len += inc;
-        $image.update_boxes = true;
-    return;
-    }
-    
-    if (keyName === '6') {
-        let inc = getInc();
-        $image.box_last_selected.x_len += inc;
-        $image.update_boxes = true
-    return;
-    }
-    
-    if (keyName === '2') {
-        let inc = getInc();
-        $image.box_last_selected.y_len += inc;
-        $image.update_boxes = true
-    return;
-    }
-    
+   
     if (keyName === 'Insert') {
         console.log('INS!');
         //TODO: Add new box feature
@@ -471,12 +418,6 @@ $(document).keydown(function(event) {
     if (keyName === 'Delete') {
         $image.box_last_selected.deleted = true;
         $image.box_last_selected.hide();
-        return;
-    }
-    
-    if (keyName === ' ') {
-        console.log('SPACE!');
-        //TODO: select character in middle of screen
         return;
     }
     
