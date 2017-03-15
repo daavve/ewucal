@@ -34,7 +34,6 @@ function iWindow (iImg) {
         modified: false,
         box_last_selected: null,
         box_is_selected: false,
-        fine_adjust: false,
     });
     
     if ($image.src_image_length > $image.src_image_width) {
@@ -90,9 +89,10 @@ function iWindow (iImg) {
             });
             $viewport.middle_x = Math.round($viewport.width() / 2);
             $viewport.middle_y = Math.round($viewport.height() / 2);
-            for (let $box of $viewport.boxes)
+            for (let boxPack of $viewport.boxes)
             {
-                updateBoxPosition($box);
+                updateBoxPosition(boxPack.selectable);
+                updateBoxPosition(boxPack.resizable);
             }
         }
     }
@@ -251,7 +251,9 @@ function iWindow (iImg) {
     
     
     //Best bet is probably to hide box and place a draggable in the location in the spot
-    function toggle_box_selection($box){
+    function toggle_box_selection(boxPack){
+        let $box = boxPack.selectable;
+        let $r_box = boxPack.resizable;
         if($image.box_is_selected)
         {
             if($image.box_last_selected.charId != $box.charId)
@@ -259,26 +261,26 @@ function iWindow (iImg) {
                 $image.box_last_selected.toggleClass('char_box_select', false);
                 $image.box_last_selected.toggleClass('char_box', true);
                 $image.box_last_selected.selected = false;
-                $box.toggleClass('char_box'. false);
-                $box.toggleClass('char_box_select', true);
-                $box.selected = true;
             }
         }
-        $box.toggleClass('char_box'. false);
-        $box.toggleClass('char_box_select', true);
         $box.selected = true;
         $image.box_is_selected = true;
         $image.box_last_selected = $box;
+        $box.hide();
+        $r_box.show();
+            
     }
     
     function build_a_box(iChar){
+        
         var $charBox = $('<div class="char_box"></div>').css({
             position: 'absolute'
             }).selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    let $box = $(this).data('self');
-                    toggle_box_selection($box);
+                    let boxPack = $(this).data('self');
+                    let $box = boxPack.selectable;
+                    toggle_box_selection(boxPack);
                     if($viewport.has_big_box)
                     {
                         $( '#big_img_1' ).attr('src', $box.URL);
@@ -320,7 +322,7 @@ function iWindow (iImg) {
                 deleted: false,
                 collection: iChar.collection
             }).mouseenter(function(){
-                let $box = $(this).data('self');
+                let $box = $(this).data('self').selectable;
                 if($box.selected)
                 {
                     $box.toggleClass('char_box_select', false);
@@ -332,7 +334,7 @@ function iWindow (iImg) {
                     $box.toggleClass('char_box_hover', true);
                 }
             }).mouseleave(function(){
-                let $box = $(this).data('self');
+                let $box = $(this).data('self').selectable;
                 if($box.selected)
                 {
                     $box.toggleClass('char_box_hover2', false);
@@ -344,10 +346,31 @@ function iWindow (iImg) {
                     $box.toggleClass('char_box', true);
                 }
             });
+            
+var $dragBox = $('<div class="char_box"></div>').css({
+            position: 'absolute'
+            }).resizable().draggable().extend({
+                charId : iChar.charId,
+                URL : iChar.URL,
+                mark : iChar.mark,
+                x_top: iChar.x1,
+                y_top: iChar.y1,
+                x_len: iChar.x2 - iChar.x1,
+                y_len: iChar.y2 - iChar.y1,
+                x_thumb: iChar.x_thumb,
+                y_thumb: iChar.y_thumb,
+                selected: false,
+                deleted: false,
+                collection: iChar.collection
+            }).hide();
+            
+            var boxPack = {selectable:$charBox, resizable:$dragBox};
 
-            $charBox.data('self', $charBox);
-            $viewport.append($charBox);
-            $viewport.boxes.add($charBox);
+            $charBox.data('self', boxPack);
+            $viewport.append($charBox).append($dragBox);
+            $viewport.boxes.add(boxPack);
+            
+            
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////
