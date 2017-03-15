@@ -347,7 +347,7 @@ function iWindow (iImg) {
                 }
             });
             
-var $dragBox = $('<div class="char_box"></div>').css({
+var $dragBox = $('<div class="char_box_resize"></div>').css({
             position: 'absolute'
             }).resizable().draggable().extend({
                 charId : iChar.charId,

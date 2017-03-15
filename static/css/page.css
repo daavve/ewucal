@@ -39,6 +39,10 @@ border: dashed 5px #999;
 border: 2px solid #ff5b60;
 }
 
+.char_box_resize {
+border: 2px solid #C0001B;
+}
+
 .similar_chars {
      width: 600px;
      height: auto;
