@@ -186,7 +186,7 @@ function iWindow (iImg) {
     
     function submit_form(){
         
-        alert("NO-WORKY")
+        alert("NO-WORKY");
         return;
         
         for (let i = 0; i < 4; ++i)
@@ -372,29 +372,15 @@ $(document).keydown(function(event) {
     if (keyName === 'ArrowRight') {
         $image.box_offset_left -= 50 / $image.scale_factor;
         updateOffsetsForRotation();
-        }
-        
         $image.update_boxes = true;
         return;
-  }
+    }
     if (keyName === 'ArrowLeft') {
         $image.box_offset_left += 50 / $image.scale_factor;
         updateOffsetsForRotation();
-        }
         $image.update_boxes = true;
     return;
   }
-  
-    function getInc(){
-        if($image.fine_adjust)
-        {
-            return 1;
-        }
-        else
-        {
-            return $image.height / 10;
-        }
-    }
   
     if (keyName === '+') {
         $image.width += $image.width / 10;
