@@ -319,50 +319,44 @@ function iWindow (iImg) {
                 x_thumb: iChar.x_thumb,
                 y_thumb: iChar.y_thumb,
                 selected: false,
-                deleted: false,
-                collection: iChar.collection
+                deleted: false
             }).mouseenter(function(){
-                let $box = $(this).data('self').selectable;
-                if($box.selected)
+                if($charBox.selected)
                 {
-                    $box.toggleClass('char_box_select', false);
-                    $box.toggleClass('char_box_hover2', true);
+                    $charBox.toggleClass('char_box_select', false);
+                    $charBox.toggleClass('char_box_hover2', true);
                 }
                 else
                 {
-                    $box.toggleClass('char_box', false);
-                    $box.toggleClass('char_box_hover', true);
+                    $charBox.toggleClass('char_box', false);
+                    $charBox.toggleClass('char_box_hover', true);
                 }
             }).mouseleave(function(){
-                let $box = $(this).data('self').selectable;
-                if($box.selected)
+                if($charBox.selected)
                 {
-                    $box.toggleClass('char_box_hover2', false);
-                    $box.toggleClass('char_box_select', true);
+                    $charBox.toggleClass('char_box_hover2', false);
+                    $charBox.toggleClass('char_box_select', true);
                 }
                 else
                 {
-                    $box.toggleClass('char_box_hover', false);
-                    $box.toggleClass('char_box', true);
+                    $charBox.toggleClass('char_box_hover', false);
+                    $charBox.toggleClass('char_box', true);
                 }
             });
             
 var $dragBox = $('<div class="char_box_resize"></div>').css({
             position: 'absolute'
-            }).resizable().draggable().extend({
+            }).extend({
                 charId : iChar.charId,
-                URL : iChar.URL,
-                mark : iChar.mark,
                 x_top: iChar.x1,
                 y_top: iChar.y1,
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
-                x_thumb: iChar.x_thumb,
-                y_thumb: iChar.y_thumb,
-                selected: false,
-                deleted: false,
-                collection: iChar.collection
-            }).hide();
+            }).resizable({
+                resize: function( event, ui ){
+                    console.log($charBox);
+                }
+            }).draggable().hide();
             
             var boxPack = {selectable:$charBox, resizable:$dragBox};
 
