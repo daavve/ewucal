@@ -353,10 +353,16 @@ var $dragBox = $('<div class="char_box_resize"></div>').css({
                 x_len: iChar.x2 - iChar.x1,
                 y_len: iChar.y2 - iChar.y1,
             }).resizable({
-                resize: function( event, ui ){
-                    console.log($charBox);
+                stop: function( event, ui ){
+                    $dragBox.x_len = Math.round( ui.size.width / $image.scale_factor);
+                    $dragBox.y_len = Math.round( ui.size.height / $image.scale_factor);
                 }
-            }).draggable().hide();
+            }).draggable({
+                stop: function( event, ui ){
+                    $dragBox.x_top = Math.round( (ui.position.left - $viewport.middle_x) / $image.scale_factor - $image.box_offset_left );
+                    $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
+                }
+            }).hide();
             
             var boxPack = {selectable:$charBox, resizable:$dragBox};
 
