@@ -349,7 +349,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').css({
                     $charBox.x_top = $dragBox.x_top;
                     $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
                     $charBox.y_top = $dragBox.y_top;
-                    charBox.changed = true;
+                    $charBox.changed = true;
                 }
             }).hide();
             
