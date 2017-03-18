@@ -253,7 +253,7 @@ function iWindow (iImg) {
     function toggle_box_selection(boxPack){
         let $box = boxPack.selectable;
         let $r_box = boxPack.resizable;
-        if($image.box_is_selected)
+        if($image.box_is_selected && !$image.box_last_selected.selectable.deleted)
         {
                 $image.box_last_selected.resizable.hide();
                 $image.box_last_selected.selectable.show();
@@ -317,7 +317,8 @@ function iWindow (iImg) {
                 x_thumb: iChar.x_thumb,
                 y_thumb: iChar.y_thumb,
                 selected: false,
-                deleted: false
+                deleted: false,
+                changed: false
             }).mouseenter(function(){
                 $charBox.toggleClass('char_box', false);
                 $charBox.toggleClass('char_box_hover', true);
@@ -340,6 +341,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').css({
                     $charBox.x_len = $dragBox.x_len;
                     $dragBox.y_len = Math.round( ui.size.height / $image.scale_factor);
                     $charBox.y_len = $dragBox.y_len;
+                    $charBox.changed = true;
                 }
             }).draggable({
                 stop: function( event, ui ){
@@ -347,6 +349,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').css({
                     $charBox.x_top = $dragBox.x_top;
                     $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
                     $charBox.y_top = $dragBox.y_top;
+                    charBox.changed = true;
                 }
             }).hide();
             
@@ -411,8 +414,9 @@ $(document).keydown(function(event) {
     }
     
     if (keyName === 'Delete') {
-        $image.box_last_selected.deleted = true;
-        $image.box_last_selected.hide();
+        $image.box_last_selected.selectable.deleted = true;
+        $image.box_last_selected.selectable.changed = true;
+        $image.box_last_selected.resizable.hide();
         return;
     }
     
