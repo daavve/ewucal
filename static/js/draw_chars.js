@@ -250,25 +250,23 @@ function iWindow (iImg) {
     }
     
     
-    //Best bet is probably to hide box and place a draggable in the location in the spot
     function toggle_box_selection(boxPack){
         let $box = boxPack.selectable;
         let $r_box = boxPack.resizable;
         if($image.box_is_selected)
         {
-            if($image.box_last_selected.charId != $box.charId)
-            {
-                $image.box_last_selected.toggleClass('char_box_select', false);
-                $image.box_last_selected.toggleClass('char_box', true);
-                $image.box_last_selected.selected = false;
-            }
+                $image.box_last_selected.resizable.hide();
+                $image.box_last_selected.selectable.show();
         }
-        $box.selected = true;
-        $image.box_is_selected = true;
-        $image.box_last_selected = $box;
+        else
+        {
+            $image.box_is_selected = true;
+        }
+        $image.box_last_selected = boxPack;
         $box.hide();
         $r_box.show();
-            
+        $image.update_boxes = true;
+        
     }
     
     function build_a_box(iChar){
@@ -321,27 +319,11 @@ function iWindow (iImg) {
                 selected: false,
                 deleted: false
             }).mouseenter(function(){
-                if($charBox.selected)
-                {
-                    $charBox.toggleClass('char_box_select', false);
-                    $charBox.toggleClass('char_box_hover2', true);
-                }
-                else
-                {
-                    $charBox.toggleClass('char_box', false);
-                    $charBox.toggleClass('char_box_hover', true);
-                }
+                $charBox.toggleClass('char_box', false);
+                $charBox.toggleClass('char_box_hover', true);
             }).mouseleave(function(){
-                if($charBox.selected)
-                {
-                    $charBox.toggleClass('char_box_hover2', false);
-                    $charBox.toggleClass('char_box_select', true);
-                }
-                else
-                {
-                    $charBox.toggleClass('char_box_hover', false);
-                    $charBox.toggleClass('char_box', true);
-                }
+                $charBox.toggleClass('char_box_hover', false);
+                $charBox.toggleClass('char_box', true);
             });
             
 var $dragBox = $('<div class="char_box_resize"></div>').css({
@@ -355,12 +337,16 @@ var $dragBox = $('<div class="char_box_resize"></div>').css({
             }).resizable({
                 stop: function( event, ui ){
                     $dragBox.x_len = Math.round( ui.size.width / $image.scale_factor);
+                    $charBox.x_len = $dragBox.x_len;
                     $dragBox.y_len = Math.round( ui.size.height / $image.scale_factor);
+                    $charBox.y_len = $dragBox.y_len;
                 }
             }).draggable({
                 stop: function( event, ui ){
                     $dragBox.x_top = Math.round( (ui.position.left - $viewport.middle_x) / $image.scale_factor - $image.box_offset_left );
+                    $charBox.x_top = $dragBox.x_top;
                     $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
+                    $charBox.y_top = $dragBox.y_top;
                 }
             }).hide();
             
