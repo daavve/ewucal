@@ -34,7 +34,10 @@ function iWindow (iImg) {
         modified: false,
         box_last_selected: null,
         box_is_selected: false,
+        draw_new_box: false,
+        draw_overlay: $('<div class="draw-overlay"></div>').selectable().hide()
     });
+
     
     if ($image.src_image_length > $image.src_image_width) {
         $image.min_width = $image.src_image_width * settings.longset_side / $image.src_image_length;
@@ -53,14 +56,13 @@ function iWindow (iImg) {
                 'transform-origin': 'left bottom'}).wrap('<div class="page_viewport"></div>');
 
 
-    var $viewport = $image.parent().resizable();
+    var $viewport = $image.parent().resizable().append($image.draw_overlay);
     $viewport.extend({
         middle_x: Math.round($viewport.width() / 2),
         middle_y: Math.round($viewport.height() / 2),
         boxes: null,
         big_box_1: null,
         has_big_box : false
-
     });
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.box_offset_left = $image.offset_left;
@@ -86,7 +88,7 @@ function iWindow (iImg) {
                 height: Math.round($image.width * $image.lw_ratio),
                 left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
-            });
+            });            
             $viewport.middle_x = Math.round($viewport.width() / 2);
             $viewport.middle_y = Math.round($viewport.height() / 2);
             for (let boxPack of $viewport.boxes)
@@ -117,7 +119,6 @@ function iWindow (iImg) {
             slide: function (event, ui) {
                 $image.update_boxes = true;
                 $image.width = ui.value;
-                console.log(ui.value);
             }});
     $container.append($zoom_widget);
 
@@ -158,8 +159,7 @@ function iWindow (iImg) {
             updateOffsetsForRotation();
             $image.update_boxes = true;
         },
-        scroll: false,
-        addClasses: false
+        scroll: false
     });
     
     $( '.submit_button' ).button().click(submit_form);
@@ -250,7 +250,7 @@ function iWindow (iImg) {
     }
     
     
-    function toggle_box_selection(boxPack){
+    function update_box_selection(boxPack){
         let $box = boxPack.selectable;
         let $r_box = boxPack.resizable;
         if($image.box_is_selected && !$image.box_last_selected.selectable.deleted)
@@ -271,14 +271,12 @@ function iWindow (iImg) {
     
     function build_a_box(iChar){
         
-        var $charBox = $('<div class="char_box"></div>').css({
-            position: 'absolute'
-            }).selectable({
+        var $charBox = $('<div class="char_box"></div>').selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
                     let boxPack = $(this).data('self');
                     let $box = boxPack.selectable;
-                    toggle_box_selection(boxPack);
+                    update_box_selection(boxPack);
                     if($viewport.has_big_box)
                     {
                         $( '#big_img_1' ).attr('src', $box.URL);
@@ -303,10 +301,9 @@ function iWindow (iImg) {
                                 offsetX: 800
                             },
                             content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
+                        });
                     }
-                    );
-                }
-            }}).extend({
+                }}).extend({
                 charId : iChar.charId,
                 URL : iChar.URL,
                 mark : iChar.mark,
@@ -327,9 +324,7 @@ function iWindow (iImg) {
                 $charBox.toggleClass('char_box', true);
             });
             
-var $dragBox = $('<div class="char_box_resize"></div>').css({
-            position: 'absolute'
-            }).extend({
+var $dragBox = $('<div class="char_box_resize"></div>').extend({
                 charId : iChar.charId,
                 x_top: iChar.x1,
                 y_top: iChar.y1,
@@ -408,8 +403,23 @@ $(document).keydown(function(event) {
     
    
     if (keyName === 'Insert') {
-        console.log('INS!');
-        //TODO: Add new box feature
+        if($image.draw_new_box)
+        {
+            $image.css( 'cursor', 'default' );
+            $image.draw_new_box = false;
+        }
+        else
+        {
+            $image.draw_new_box = true;
+            $image.draw_overlay.show().css({
+                width: Math.round($image.width),
+                height: Math.round($image.width * $image.lw_ratio),
+                left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
+                top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
+            });
+        }
+        
+        
         return;
     }
     

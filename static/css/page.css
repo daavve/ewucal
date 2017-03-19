@@ -25,10 +25,12 @@ border: dashed 5px #999;
 }
 .char_box {
     border: 2px solid #40ff18;
+    position: absolute;
 }
 
 .char_box_hover {
     border: 2px solid #63a0ff;
+    position: absolute;
 }
 
 .char_box_hover2 {
@@ -40,7 +42,8 @@ border: 2px solid #ff5b60;
 }
 
 .char_box_resize {
-border: 2px solid #C0001B;
+    border: 2px solid #C0001B;
+    position: absolute;
 }
 
 .similar_chars {
@@ -80,3 +83,8 @@ border: 2px solid #C0001B;
 .last-row, .last-row ~ .item {
   margin-bottom: 0;
 }
+
+.draw-overlay {
+    position: absolute;
+    cursor: crosshair;
+  }
