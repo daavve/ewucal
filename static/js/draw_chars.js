@@ -12,7 +12,6 @@ function iWindow (iImg) {
         zoom_max: 20, // 100X initial zoom
     };
 
-   
     var $image = $('.draggable').extend({
         min_width: null,
         max_width: null,
@@ -34,8 +33,9 @@ function iWindow (iImg) {
         modified: false,
         box_last_selected: null,
         box_is_selected: false,
-        draw_new_box: false,
-        draw_overlay: $('<div class="draw-overlay"></div>').selectable().hide()
+        draw_new_box_mode: false,
+        x_start: null,
+        y_start: null
     });
 
     
@@ -56,14 +56,41 @@ function iWindow (iImg) {
                 'transform-origin': 'left bottom'}).wrap('<div class="page_viewport"></div>');
 
 
-    var $viewport = $image.parent().resizable().append($image.draw_overlay);
+    var $viewport = $image.parent().resizable();
     $viewport.extend({
         middle_x: Math.round($viewport.width() / 2),
         middle_y: Math.round($viewport.height() / 2),
-        boxes: null,
-        big_box_1: null,
-        has_big_box : false
+        x_start: null,
+        y_start: null
     });
+
+        $viewport.extend({
+        draw_overlay: $('<div class="draw-overlay"></div>').selectable({
+            start: function(e){
+                $viewport.x_start = e.pageX;
+                $viewport.y_start = e.pageY;
+            },
+            stop: function(e){
+                let p1 = reverseCoordinates({x: Math.min($viewport.x_start, e.pageX) - 14,
+                                             y: Math.min($viewport.y_start, e.pageY) - 14
+                                        });
+                let p2 = reverseCoordinates({x: Math.max($viewport.x_start, e.pageX) - 14,
+                                             y: Math.max($viewport.y_start, e.pageY) - 14
+                                        });
+                console.log({
+                    pageX: Math.min($viewport.x_start, e.pageX)
+                });
+                build_a_box({
+                    x1: p1.x,
+                    x2: p2.x,
+                    y1: p1.y,
+                    y2: p2.y
+                });
+                $image.update_boxes = true;
+                }}).hide()
+    });
+    $viewport.append($viewport.draw_overlay);
+    
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
     $image.box_offset_left = $image.offset_left;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
@@ -83,14 +110,25 @@ function iWindow (iImg) {
             $image.update_boxes = false;
             $image.height = Math.round($image.width * $image.lw_ratio);
             $image.scale_factor = $image.width / $image.src_width;
+            $viewport.middle_x = Math.round($viewport.width() / 2);
+            $viewport.middle_y = Math.round($viewport.height() / 2);
+            
+            let im_left = Math.round($image.width * $image.lw_ratio);
             $image.css({
                 width: Math.round($image.width),
                 height: Math.round($image.width * $image.lw_ratio),
                 left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
                 top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
-            });            
-            $viewport.middle_x = Math.round($viewport.width() / 2);
-            $viewport.middle_y = Math.round($viewport.height() / 2);
+            });   
+            if($image.draw_new_box_mode)
+            {
+                $viewport.draw_overlay.css({
+                    width: Math.round($image.width),
+                    height: Math.round($image.width * $image.lw_ratio),
+                    left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
+                    top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
+                });
+            }
             for (let boxPack of $viewport.boxes)
             {
                 updateBoxPosition(boxPack.selectable);
@@ -99,6 +137,11 @@ function iWindow (iImg) {
         }
     }
     
+    function reverseCoordinates(xy) {
+        return  {x: Math.round((xy.x - $viewport.middle_x) / $image.scale_factor - $image.box_offset_left),
+                 y: Math.round((xy.y  - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top)
+                };
+    }
 
     
     function updateBoxPosition($box) {
@@ -168,7 +211,7 @@ function iWindow (iImg) {
         do_rotation();
     });
     
-    let num_rotates = iImg.rotation / 90; //Pretty Hacky, but works
+    let num_rotates = iImg.rotation / 90;
     for(i = 0; i < num_rotates; ++i){
         do_rotation();
     }
@@ -277,32 +320,6 @@ function iWindow (iImg) {
                     let boxPack = $(this).data('self');
                     let $box = boxPack.selectable;
                     update_box_selection(boxPack);
-                    if($viewport.has_big_box)
-                    {
-                        $( '#big_img_1' ).attr('src', $box.URL);
-                        $viewport.big_box_1.resize({
-                                                    width: $box.x_thumb,
-                                                    height: $box.y_thumb,
-                                                    resize: 'content'}
-                        ).headerTitle($box.mark);
-                        $viewport.big_box_1.contentReload();
-                    }
-                    else
-                    {
-                        $viewport.has_big_box = true;
-                        $viewport.big_box_1 = $.jsPanel({
-                            headerTitle: $box.mark,
-                            headerControls: {'controls': 'none'},
-                            contentSize:    {width: $box.x_thumb, height: $box.y_thumb},
-                            position: {
-                                my:      "left-top",
-                                at:      "left-top",
-                                offsetY: 100,
-                                offsetX: 800
-                            },
-                            content: $('<img src="' + $box.URL + '"id="big_img_1">').data('parentBox', $box)
-                        });
-                    }
                 }}).extend({
                 charId : iChar.charId,
                 URL : iChar.URL,
@@ -345,6 +362,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                     $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
                     $charBox.y_top = $dragBox.y_top;
                     $charBox.changed = true;
+                    console.log({ui: ui.position.left});
                 }
             }).hide();
             
@@ -403,34 +421,39 @@ $(document).keydown(function(event) {
     
    
     if (keyName === 'Insert') {
-        if($image.draw_new_box)
+        if($image.draw_new_box_mode)
         {
-            $image.css( 'cursor', 'default' );
-            $image.draw_new_box = false;
+            $viewport.draw_overlay.hide();
+            $image.draw_new_box_mode = false;
         }
         else
         {
-            $image.draw_new_box = true;
-            $image.draw_overlay.show().css({
-                width: Math.round($image.width),
-                height: Math.round($image.width * $image.lw_ratio),
-                left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
-                top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
-            });
+            if($image.box_is_selected)
+            {
+                $image.box_is_selected = false;
+                $image.box_last_selected.resizable.hide();
+                $image.box_last_selected.selectable.show();
+            }
+            $viewport.draw_overlay.show();
+            $image.draw_new_box_mode = true;
+            $image.update_boxes = true;
         }
         
         
         return;
     }
-    
     if (keyName === 'Delete') {
-        $image.box_last_selected.selectable.deleted = true;
-        $image.box_last_selected.selectable.changed = true;
-        $image.box_last_selected.resizable.hide();
+        if($image.box_is_selected)
+        {
+            $image.box_is_selected = false;
+            $image.box_last_selected.selectable.deleted = true;
+            $image.box_last_selected.selectable.changed = true;
+            $image.box_last_selected.resizable.hide();
+        }
         return;
     }
     
-    console.log(`Key pressed ${keyName}`);
+//    console.log(`Key pressed ${keyName}`);
 
 });
 }

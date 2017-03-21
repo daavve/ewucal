@@ -85,6 +85,7 @@ border: 2px solid #ff5b60;
 }
 
 .draw-overlay {
+    z-index: 1;
     position: absolute;
     cursor: crosshair;
   }
