@@ -84,6 +84,7 @@ function iWindow (iImg) {
                     y2: p2.y
                 });
                 $image.box_last_selected.selectable.changed = true;
+                $image.box_last_selected.selectable.added = true;
                 $image.update_boxes = true;
                 
                 }}).hide()
@@ -228,59 +229,56 @@ function iWindow (iImg) {
     
     function submit_form(){
         
-        alert("NO-WORKY");
-        return;
-        
-        for (let i = 0; i < 4; ++i)
+
+        let deleted_boxes = [];
+        let modified_boxes = [];
+        let new_boxes = []
+        let modified = false;
+        for (let boxPack of $viewport.boxes)
         {
-            if(false === $image.boxes_validated[i])
+            if (boxPack.selectable.changed)
             {
-                alert("Check all the sets before re-submitting");
-                return;
-            }
-        }
+                modified = true;
+                let $box = boxPack.selectable;
+                if($box.deleted)
+                {
+                    deleted_boxes.push({charId: $box.charId});
+                }
+                else
+                {
+                    if($box.added)
+                    {
+                        new_boxes.push({ 
+                            x_top: $box.x_top,
+                            y_top: $box.y_top,
+                            x_len: $box.x_len,
+                            y_len: $box.y_len,
+                        });
+                    }
+                    else
+                    {
+                        modified_boxes.push({
+                            charId: $box.charId,
+                            x_top: $box.x_top,
+                            y_top: $box.y_top,
+                            x_len: $box.x_len,
+                            y_len: $box.y_len,
+                        });
+                    }
+                }
+        let message;
         
-        let xmults = [4];
-        let ymults = [4];
-        let boxes = [4];
-        let hasStuff = [4];
-        for (let i = 0; i < 4; ++i)
-        {
-            let scaleIndex = $image.box_scale_val_set[i] * (iImg.mult_max + 1 - iImg.mult_min) / 1000 + iImg.mult_min;
-            xmults[i] = scaleIndex + $image.box_scale_x_offset_set[i] / 1000;
-            ymults[i] = scaleIndex + $image.box_scale_y_offset_set[i] / 1000;
-            boxes[i] = [];
-        }
-        for (let $box of $viewport.boxes)
-        {
-            boxes[$box.collection].push({'id': $box.charId});
-            hasStuff[$box.collection] = true;
-        }
-        
-        let scale_set = [];
-        for (let i = 0; i < 3; ++i)
-        {
-            if (hasStuff[i])
-            {
-                scale_set.push({"Chars_valid": true, "Chars": boxes[i], "xmult": xmults[i], "ymult": ymults[i]});
-            }
-        }
-        if (hasStuff[3])
-        {
-            scale_set.push({"Chars_valid": false, "Chars": boxes[3], "xmult": xmults[3], "ymult": ymults[3]});
-        }
-        let message = {"Char_sets": scale_set,
-                       "rotation": $image.rotation,
-                       "page_id": $image.page_id,
-                       "modified": $image.modified,
-                       "mult_id": $image.mult_id,
-                       "choice_id": $image.choice_id};
+        message = {deleted_boxes: deleted_boxes
+                   modified_boxes: modified_boxes,
+                   new_boxes: new_boxes,
+                   page_id: $image.page_id,
+                   modified: modified};
                        
         let token = get_csrf_token();
 
         
         var ajaxcall = $.ajax({
-            url: '/ajax/post_offsets',
+            url: '/ajax/post_characters',
             data: JSON.stringify(message),
             method: 'POST',
             dataType: 'json',
@@ -289,6 +287,7 @@ function iWindow (iImg) {
             }).fail( function(){
                 alert("Something went wrong  Call Dave");
             });
+       }
     }
     
     
@@ -329,7 +328,8 @@ function iWindow (iImg) {
                 y_thumb: iChar.y_thumb,
                 selected: false,
                 deleted: false,
-                changed: false
+                changed: false,
+                added: false
             }).mouseenter(function(){
                 $charBox.toggleClass('char_box', false);
                 $charBox.toggleClass('char_box_hover', true);
