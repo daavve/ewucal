@@ -77,16 +77,15 @@ function iWindow (iImg) {
                 let p2 = reverseCoordinates({x: Math.max($viewport.x_start, e.pageX) - 14,
                                              y: Math.max($viewport.y_start, e.pageY) - 14
                                         });
-                console.log({
-                    pageX: Math.min($viewport.x_start, e.pageX)
-                });
-                build_a_box({
+                $image.box_last_selected = build_a_box({
                     x1: p1.x,
                     x2: p2.x,
                     y1: p1.y,
                     y2: p2.y
                 });
+                $image.box_last_selected.selectable.changed = true;
                 $image.update_boxes = true;
+                
                 }}).hide()
     });
     $viewport.append($viewport.draw_overlay);
@@ -317,9 +316,7 @@ function iWindow (iImg) {
         var $charBox = $('<div class="char_box"></div>').selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    let boxPack = $(this).data('self');
-                    let $box = boxPack.selectable;
-                    update_box_selection(boxPack);
+                    update_box_selection($(this).data('self'));
                 }}).extend({
                 charId : iChar.charId,
                 URL : iChar.URL,
@@ -362,7 +359,6 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                     $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
                     $charBox.y_top = $dragBox.y_top;
                     $charBox.changed = true;
-                    console.log({ui: ui.position.left});
                 }
             }).hide();
             
@@ -372,7 +368,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
             $viewport.append($charBox).append($dragBox);
             $viewport.boxes.add(boxPack);
             
-            
+            return boxPack;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -425,6 +421,7 @@ $(document).keydown(function(event) {
         {
             $viewport.draw_overlay.hide();
             $image.draw_new_box_mode = false;
+            update_box_selection($image.box_last_selected);
         }
         else
         {
@@ -453,7 +450,7 @@ $(document).keydown(function(event) {
         return;
     }
     
-//    console.log(`Key pressed ${keyName}`);
+    console.log(`Key pressed ${keyName}`);
 
 });
 }
