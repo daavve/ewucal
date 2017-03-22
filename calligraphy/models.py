@@ -44,6 +44,26 @@ class FlagForReview(models.Model):
     flagged_by = models.ForeignKey(User)
     parent_page = models.ForeignKey(Page)
 
+class Character_orig(models.Model):
+    author_name = models.CharField(max_length=64, blank=True)
+    parent_work_name = models.CharField(max_length=64, blank=True)
+    
+    supplied_by = models.ForeignKey(User)
+
+    parent_page = models.ForeignKey(Page, null=True)
+    parent_author = models.ForeignKey(Author, null=True)
+    parent_work = models.ForeignKey(Work, null=True)
+    mark = models.CharField(max_length=64, blank=True)
+    x1 = models.IntegerField(blank=True)
+    y1 = models.IntegerField(blank=True)
+    x2 = models.IntegerField(blank=True)
+    y2 = models.IntegerField(blank=True)
+
+    image = models.ImageField(blank=True, storage=fs)
+    image_width = models.IntegerField(default=0)
+    image_height = models.IntegerField(default=0)
+
+
 class Character(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
