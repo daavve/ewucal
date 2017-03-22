@@ -13,6 +13,7 @@ function iWindow (iImg) {
     };
 
     var $image = $('.draggable').extend({
+        to_do_id: iImg.toDoId,
         min_width: null,
         max_width: null,
         lw_ratio: null,
@@ -207,8 +208,8 @@ function iWindow (iImg) {
     
     $( '.submit_button' ).button().click(submit_form);
     
-    $( '.rotate_button' ).button().click(function() {
-        do_rotation();
+    $( '.flag_for_review_button' ).button().click(function() {
+        console.log("flagging for review......");
     });
     
     let num_rotates = iImg.rotation / 90;
@@ -228,26 +229,27 @@ function iWindow (iImg) {
     }
     
     function submit_form(){
-        
-
         let deleted_boxes = [];
         let modified_boxes = [];
-        let new_boxes = []
+        let new_boxes = [];
         let modified = false;
+        let deleted = false;
+        let added = false;
         for (let boxPack of $viewport.boxes)
         {
             if (boxPack.selectable.changed)
             {
-                modified = true;
                 let $box = boxPack.selectable;
                 if($box.deleted)
                 {
+                    deleted = true;
                     deleted_boxes.push({charId: $box.charId});
                 }
                 else
                 {
                     if($box.added)
                     {
+                        added = true;
                         new_boxes.push({ 
                             x_top: $box.x_top,
                             y_top: $box.y_top,
@@ -257,6 +259,7 @@ function iWindow (iImg) {
                     }
                     else
                     {
+                        modified = true;
                         modified_boxes.push({
                             charId: $box.charId,
                             x_top: $box.x_top,
@@ -266,14 +269,19 @@ function iWindow (iImg) {
                         });
                     }
                 }
+            }
+        }
         let message;
         
-        message = {deleted_boxes: deleted_boxes
+        message = {to_do_id: $image.to_do_id,
+                   deleted_boxes: deleted_boxes,
                    modified_boxes: modified_boxes,
                    new_boxes: new_boxes,
                    page_id: $image.page_id,
-                   modified: modified};
-                       
+                   modified: modified,
+                   deleted: deleted,
+                   added: added};
+        
         let token = get_csrf_token();
 
         
@@ -287,7 +295,6 @@ function iWindow (iImg) {
             }).fail( function(){
                 alert("Something went wrong  Call Dave");
             });
-       }
     }
     
     
@@ -450,7 +457,7 @@ $(document).keydown(function(event) {
         return;
     }
     
-    console.log(`Key pressed ${keyName}`);
+//    console.log(`Key pressed ${keyName}`);
 
 });
 }

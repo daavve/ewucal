@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^ajax/get_to_verify_page',    views.get_to_verify_page),
     url(r'^ajax/get_toshi',             views.get_toshi),
     url(r'^ajax/post_offsets',          views.post_offsets),
+    url(r'^ajax/post_characters',       views.post_characters),
     url(r'^$',                          views.webroot)
 ]

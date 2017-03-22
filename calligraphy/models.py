@@ -40,6 +40,10 @@ class Page(models.Model):
         return str(self.image)
 
 
+class FlagForReview(models.Model):
+    flagged_by = models.ForeignKey(User)
+    parent_page = models.ForeignKey(Page)
+
 class Character(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
