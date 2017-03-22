@@ -19,9 +19,7 @@ function iWindow (iImg) {
         lw_ratio: null,
         scale_factor: null,
         zoom_factor: null,
-        box_offset_top: null,
         offset_left: null,
-        box_offset_left: null,
         position_left: null,
         middle_x: null,
         middle_y: null,
@@ -30,7 +28,6 @@ function iWindow (iImg) {
         src_width: iImg.width,
         update_boxes: true,
         update_box_visibility: true,
-        rotation: 0,
         modified: false,
         box_last_selected: null,
         box_is_selected: false,
@@ -93,9 +90,7 @@ function iWindow (iImg) {
     $viewport.append($viewport.draw_overlay);
     
     $image.offset_left = -$viewport.middle_x / $image.scale_factor;
-    $image.box_offset_left = $image.offset_left;
     $image.offset_top = -$viewport.middle_y / $image.scale_factor;
-    $image.box_offset_top = $image.offset_top;
     var $container = $viewport.parent();
     
     $viewport.boxes = new Set();
@@ -139,16 +134,16 @@ function iWindow (iImg) {
     }
     
     function reverseCoordinates(xy) {
-        return  {x: Math.round((xy.x - $viewport.middle_x) / $image.scale_factor - $image.box_offset_left),
-                 y: Math.round((xy.y  - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top)
+        return  {x: Math.round((xy.x - $viewport.middle_x) / $image.scale_factor - $image.offset_left),
+                 y: Math.round((xy.y  - $viewport.middle_y) / $image.scale_factor - $image.offset_top)
                 };
     }
 
     
     function updateBoxPosition($box) {
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top + $image.box_offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top + $image.box_offset_top) + $viewport.middle_y),
+            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
+            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
             width: Math.round($image.scale_factor * $box.x_len),
             height: Math.round($image.scale_factor * $box.y_len)
         });
@@ -166,69 +161,31 @@ function iWindow (iImg) {
             }});
     $container.append($zoom_widget);
 
-    function updateOffsetsForRotation(){
-        if($image.rotation == 90)
-        {
-            $image.offset_left = $image.box_offset_left;
-            $image.offset_top = $image.box_offset_top - $image.src_length;
-        }
-        else
-        {
-            if($image.rotation == 180)
-            {
-                $image.offset_left = $image.box_offset_left + $image.src_width;
-                $image.offset_top = $image.box_offset_top - $image.src_length;
-            }
-            else
-            {
-                if($image.rotation == 270)
-                {
-                    $image.offset_left = $image.box_offset_left + $image.src_length;
-                    $image.offset_top =  $image.box_offset_top - $image.src_width / 2;
-                }
-                else // $image.rotation == 360
-                {
-                    $image.rotation = 0;
-                    $image.offset_top = $image.box_offset_top;
-                    $image.offset_left = $image.box_offset_left;
-                }
-            }
-        }
-    }
     
     $image.draggable({  // Can correct image spazzing out using cursorAt for rotated images.
         drag: function (event, ui) {
-            $image.box_offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor;
-            $image.box_offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor;
-            updateOffsetsForRotation();
+            $image.offset_left = (ui.position.left - $viewport.middle_x) / $image.scale_factor;
+            $image.offset_top = (ui.position.top - $viewport.middle_y) / $image.scale_factor;
             $image.update_boxes = true;
         },
         scroll: false
     });
     
-    $( '.submit_button' ).button().click(submit_form);
+    $( '.submit_button' ).button().click(function() {
+            submit_form(false);
+        });
     
     $( '.flag_for_review_button' ).button().click(function() {
-        console.log("flagging for review......");
+        let result = confirm("Are you sure?");
+        if(result === true)
+        {
+            submit_form(true);
+        }
     });
     
-    let num_rotates = iImg.rotation / 90;
-    for(i = 0; i < num_rotates; ++i){
-        do_rotation();
-    }
+
     
-    
-    function do_rotation(){
-        if(($image.rotation += 90) == 360)
-        {
-            $image.rotation = 0;
-        }
-        updateOffsetsForRotation();
-        $image.css({'transform': 'rotate(' + $image.rotation + 'deg)'});
-        $image.update_boxes = true;
-    }
-    
-    function submit_form(){
+    function submit_form(flagged){
         let deleted_boxes = [];
         let modified_boxes = [];
         let new_boxes = [];
@@ -274,6 +231,7 @@ function iWindow (iImg) {
         let message;
         
         message = {to_do_id: $image.to_do_id,
+                   flagged_for_review: flagged,
                    deleted_boxes: deleted_boxes,
                    modified_boxes: modified_boxes,
                    new_boxes: new_boxes,
@@ -361,9 +319,9 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                 }
             }).draggable({
                 stop: function( event, ui ){
-                    $dragBox.x_top = Math.round( (ui.position.left - $viewport.middle_x) / $image.scale_factor - $image.box_offset_left );
+                    $dragBox.x_top = Math.round( (ui.position.left - $viewport.middle_x) / $image.scale_factor - $image.offset_left );
                     $charBox.x_top = $dragBox.x_top;
-                    $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.box_offset_top );
+                    $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.offset_top );
                     $charBox.y_top = $dragBox.y_top;
                     $charBox.changed = true;
                 }
@@ -385,27 +343,23 @@ $(document).keydown(function(event) {
     const keyName = event.key;
 
   if (keyName === 'ArrowUp') {
-        $image.box_offset_top += 50 / $image.scale_factor;
-        updateOffsetsForRotation();
-    $image.update_boxes = true;
+        $image.offset_top += 50 / $image.scale_factor;
+        $image.update_boxes = true;
     return;
   }
     if (keyName === 'ArrowDown') {
-        $image.box_offset_top -= 50 / $image.scale_factor;
-        updateOffsetsForRotation();
+        $image.offset_top -= 50 / $image.scale_factor;
         $image.update_boxes = true;
     return;
   }
   
     if (keyName === 'ArrowRight') {
-        $image.box_offset_left -= 50 / $image.scale_factor;
-        updateOffsetsForRotation();
+        $image.offset_left -= 50 / $image.scale_factor;
         $image.update_boxes = true;
         return;
     }
     if (keyName === 'ArrowLeft') {
-        $image.box_offset_left += 50 / $image.scale_factor;
-        updateOffsetsForRotation();
+        $image.offset_left += 50 / $image.scale_factor;
         $image.update_boxes = true;
     return;
   }

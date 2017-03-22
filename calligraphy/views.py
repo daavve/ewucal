@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, ToValidateOffsets, Char_location_update
+from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, ToValidateOffsets, Char_location_update, FlagForReview
 from .models import ToDrawBoxesWBoxes
 import json
 import subprocess as sub
@@ -276,43 +276,44 @@ def post_offsets(request):
     
 @require_http_methods(['POST'])
 def post_characters(request):
-    updated = False
     pst = json.loads(request.body)
-    if pst['modified'] is True:
-        updated = True
-        for modChar in pst['modified_boxes']:
-            tChar = Character.objects.get(id=modChar['charId'])
-            x_1 = int(modChar['x_top'])
-            y_1 = int(modChar['y_top'])
-            x_2 = int(modChar['x_len']) + x_1
-            y_2 = int(modChar['y_len']) + y_1
-            mChar = Char_location_update(supplied_by = request.user,
-                                         target_char = tChar,
-                                         should_be_deleted = False,
-                                         x1 = x_1,
-                                         y1 = y_1,
-                                         x2 = x_2,
-                                         y2 = y_2)
-            mChar.save()
-                                         
-    if pst['deleted'] is True:
-        updated = True
-        for delchar in pst['deleted_boxes']:
-            tChar = Character.objects.get(id=delchar['charId'])
-            dChar = Char_location_update(supplied_by = request.user,
-                                         target_char = tChar,
-                                         should_be_deleted = True,
-                                         x1 = 0,
-                                         x2 = 0,
-                                         y1 = 0,
-                                         y2 = 0)
-            dChar.save()
-            
-    if pst['added'] is True:
-        update = True
-        page_id = int(pst['page_id'])
-        mypage = Page.objects.get(id=page_id)
-        for newChar in pst['new_boxes']:
+    page_id = int(pst['page_id'])
+    mypage = Page.objects.get(id=page_id)
+    if pst['flagged_for_review']:
+        newFlag = FlagForReview(flagged_by = request.user,
+                      parent_page = mypage)
+        newFlag.save()
+    else:
+        if pst['modified']:
+            updated = True
+            for modChar in pst['modified_boxes']:
+                tChar = Character.objects.get(id=modChar['charId'])
+                x_1 = int(modChar['x_top'])
+                y_1 = int(modChar['y_top'])
+                x_2 = int(modChar['x_len']) + x_1
+                y_2 = int(modChar['y_len']) + y_1
+                mChar = Char_location_update(supplied_by = request.user,
+                                            target_char = tChar,
+                                            should_be_deleted = False,
+                                            x1 = x_1,
+                                            y1 = y_1,
+                                            x2 = x_2,
+                                            y2 = y_2)
+                mChar.save()
+        if pst['deleted']:
+            updated = True
+            for delchar in pst['deleted_boxes']:
+                tChar = Character.objects.get(id=delchar['charId'])
+                dChar = Char_location_update(supplied_by = request.user,
+                                            target_char = tChar,
+                                            should_be_deleted = True,
+                                            x1 = 0,
+                                            x2 = 0,
+                                            y1 = 0,
+                                            y2 = 0)
+                dChar.save()
+        if pst['added']:
+            for newChar in pst['new_boxes']:
             x_1 = int(newChar['x_top'])
             y_1 = int(newChar['y_top'])
             x_2 = int(newChar['x_len']) + x_1
@@ -325,8 +326,6 @@ def post_characters(request):
                                  y2 = y_2)
             new_char.save()
     
-    if update is False:
-        ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
-    
+    ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
     
     return JsonResponse({"status" : "Done"})
