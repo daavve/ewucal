@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, ToValidateOffsets, FlagForReview
+from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
 from .models import ToDrawBoxesWBoxes
 import json
 import subprocess as sub
@@ -91,59 +91,6 @@ def get_to_verify_page(request):
               'height' : page.image_length,
               'width' : page.image_width,
               'chars' : charList}
-    return JsonResponse(data, safe=False)
-
-# Here we give them everything at once.  We give them the page id, as well as all the data
-def get_todo(request):
-    choice_from_list = random.choice(ToValidateOffsets.objects.all())
-    multiplier = UserSuppliedPageMultiplier.objects.get(id=choice_from_list.toCheck.id)
-    page = Page.objects.get(id=multiplier.page_id.id)
-    chars = Character.objects.filter(parent_page=page)
-    charList = []
-    for char in chars:
-        coords = str(char.image).split('(')[1].split(')')[0].split(',')
-        charList.append({'charId' : char.id,
-                         'collection': 0,   # Placeholder
-                         'mark': char.mark,
-                         'URL' : Character.get_image(char),
-                         'x1' : coords[0],
-                         'y1' : coords[1],
-                         'x2' : coords[2],
-                         'y2' : coords[3],
-                         'area': (int(coords[2]) - int(coords[0])) * (int(coords[3]) - int(coords[1]))})
-                         
-    charList.sort(key=lambda k: k['area'], reverse=True)
-    setsData = []
-    charsets = CharSet.objects.filter(userSupplied=multiplier)
-    setNum = -1
-    for charset in charsets:
-        if charset.set_valid:
-            setNum+=1
-            curSet = setNum
-        else:
-            curSet = 3
-        setsData.append({'set_multiplier': charset.set_offset_x,
-                         'offset_x'  : 0,
-                         'offset_y'  :  charset.set_offset_y - charset.set_offset_x,
-                         'set_num'       : curSet})
-        for char in charset.set_chars.all():
-            for charL in charList:          # WARNING: O(i^j)
-                if charL['charId'] == char.id:
-                    charL['collection'] = setNum
-        
-    
-
-    data = {  'pageId':   page.id,
-              'URL' : Page.get_image(page),
-              'height' : page.image_length,
-              'width' : page.image_width,
-              'chars' : charList,
-              'mult_min': .3,
-              'mult_max': 7,
-              'rotation': multiplier.image_rotation,
-              'mult_id': multiplier.id,
-              'choice_id': choice_from_list.id,
-              'set_data': setsData}
     return JsonResponse(data, safe=False)
 
 @csrf_exempt
