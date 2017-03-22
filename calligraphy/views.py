@@ -314,17 +314,17 @@ def post_characters(request):
                 dChar.save()
         if pst['added']:
             for newChar in pst['new_boxes']:
-            x_1 = int(newChar['x_top'])
-            y_1 = int(newChar['y_top'])
-            x_2 = int(newChar['x_len']) + x_1
-            y_2 = int(newChar['y_len']) + y_1
-            new_char = Character(supplied_by = request.user,
-                                 parent_page = mypage,
-                                 x1 = x_1,
-                                 y1 = y_1,
-                                 x2 = x_2,
-                                 y2 = y_2)
-            new_char.save()
+                x_1 = int(newChar['x_top'])
+                y_1 = int(newChar['y_top'])
+                x_2 = int(newChar['x_len']) + x_1
+                y_2 = int(newChar['y_len']) + y_1
+                new_char = Character(supplied_by = request.user,
+                                    parent_page = mypage,
+                                    x1 = x_1,
+                                    y1 = y_1,
+                                    x2 = x_2,
+                                    y2 = y_2)
+                new_char.save()
     
     ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
     
