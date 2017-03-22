@@ -97,11 +97,13 @@ function iWindow (iImg) {
         {
             $image.height = Math.round($image.width * $image.lw_ratio);
             $image.scale_factor = $image.width / $image.src_width;
+            $image.position_top = Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y);
+            $image.position_left = Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x);
             $image.css({
                 width: Math.round($image.width),
-                height: Math.round($image.width * $image.lw_ratio),
-                left: Math.round($image.offset_left * $image.scale_factor + $viewport.middle_x),
-                top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
+                height: $image.height,
+                left:$image.position_left,
+                top: $image.position_top
             });
             $image.update_boxes = false;
             $viewport.middle_x = Math.round($viewport.width() / 2);
@@ -452,6 +454,61 @@ function iWindow (iImg) {
             $viewport.append($charBox);
             $viewport.boxes.add($charBox);
     }
+
+$(document).keydown(function(event) {
+    event.preventDefault();
+    const keyName = event.key;
+
+  if (keyName === 'ArrowUp') {
+        $image.position_top += 50 / $image.scale_factor;
+        $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+        updateOffsets();
+        $image.update_boxes = true;
+    return;
+  }
+    if (keyName === 'ArrowDown') {
+        $image.position_top -= 50 / $image.scale_factor;;
+        $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+        updateOffsets();
+        $image.update_boxes = true;
+    return;
+  }
+  
+    if (keyName === 'ArrowRight') {
+        $image.position_left -= 50 / $image.scale_factor;
+        $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+        $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+        updateOffsets();
+        $image.update_boxes = true;
+        return;
+    }
+    if (keyName === 'ArrowLeft') {
+        $image.position_left += 50 / $image.scale_factor;
+        $image.box_offset_left = ($image.position_left - $viewport.middle_x) / $image.scale_factor;
+        $image.box_offset_top = ($image.position_top - $viewport.middle_y) / $image.scale_factor;
+        updateOffsets();
+        $image.update_boxes = true;
+    return;
+  }
+  
+    if (keyName === '+') {
+        $image.width += $image.width / 10;
+        updateOffsets();
+        $image.update_boxes = true;
+    return;
+    }
+    
+    if (keyName === '-') {
+        $image.width -= $image.width / 10;
+        $image.update_boxes = true;
+    return;
+    }
+    
+
+//    console.log(`Key pressed ${keyName}`);
+
+});
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
