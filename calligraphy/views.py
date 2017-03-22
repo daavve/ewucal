@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, ToValidateOffsets, Char_location_update, FlagForReview
+from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, ToValidateOffsets, FlagForReview
 from .models import ToDrawBoxesWBoxes
 import json
 import subprocess as sub
@@ -276,6 +276,7 @@ def post_offsets(request):
     
 @require_http_methods(['POST'])
 def post_characters(request):
+    '''
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
     mypage = Page.objects.get(id=page_id)
@@ -327,5 +328,5 @@ def post_characters(request):
                 new_char.save()
     
     ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
-    
+    '''
     return JsonResponse({"status" : "Done"})
