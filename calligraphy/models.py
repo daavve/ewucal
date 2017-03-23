@@ -118,7 +118,6 @@ class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
     set_offset_x = models.FloatField()
     set_offset_y = models.FloatField()
-    set_chars = models.ManyToManyField(Character)
     set_chars_orig = models.ManyToManyField(Character_orig)
     set_valid = models.BooleanField()
 
