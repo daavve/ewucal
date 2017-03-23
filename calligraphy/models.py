@@ -82,6 +82,9 @@ class Character(models.Model):
     image = models.ImageField(blank=True, storage=fs)
     image_width = models.IntegerField(default=0)
     image_height = models.IntegerField(default=0)
+    
+    #This exists so we can keep track of the characters we merged
+    char_parents = models.ManyToManyField(Character_orig)
 
     def get_absolute_url(self):
         return '/char/' + str(self.id)
@@ -104,9 +107,6 @@ class UserSuppliedPageMultiplier(models.Model):
     page_id = models.ForeignKey(Page)
     image_rotation = models.IntegerField()
     
-# TO Do list for validating offsets
-class ToValidateOffsets(models.Model):
-    toCheck = models.ForeignKey(UserSuppliedPageMultiplier)
     
 class ToDrawBoxesWBoxes(models.Model):
     toCheck = models.ForeignKey(Page)
