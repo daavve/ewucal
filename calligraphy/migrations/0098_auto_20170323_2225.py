@@ -24,10 +24,8 @@ class Char_xy(object):
         self.overlap_degree_and_target = []
 
 class Char(object):
-    def __init__(self, inChar, oldChar):
+    def __init__(self, inChar):
         self.db_cur = inChar
-        self.db_old = oldChar
-        self.parent = None
         self.idd = inChar.id
         self.mark = inChar.mark
         self.x  = Char_xy(self, inChar.x1, inChar.x2)
@@ -35,60 +33,55 @@ class Char(object):
         self.overlaps_with = []
         self.size = (inChar.x2 - inChar.x1) * (inChar.y2 - inChar.y1)
         
-class Transparency(object):
-    def __init__(self, chars):
-        self.chars = chars
-        for char in chars:
-            char.parent = self
 
 delete_list = []
 
-def delete_duplicates(transparencies) -> None:
+def delete_duplicates(chars_sheet) -> None:
     chars_x = []
     chars_y = []
-    chars_sheet = []
-    for transparency in transparencies:
-        for char in transparency.chars:
-            chars_sheet.append(char)
-            chars_x.append(char.x)
-            chars_y.append(char.y)
+    for char in chars_sheet:
+#        if char.mark == '生':
+#            print(char.mark)
+        chars_x.append(char.x)
+        chars_y.append(char.y)
     chars_x.sort(key=lambda k: k.a)
     chars_y.sort(key=lambda k: k.a)
+    
+    NUM_CHARS = len(chars_sheet)
 
-    NUM_CHARS = len(chars_x)
+
     for i in range(0, NUM_CHARS):
         for j in range(i + 1, NUM_CHARS):
-            if chars_x[i].b > chars_x[j].a:
+            if chars_x[i].b >= chars_x[j].a:
                 ammount = (chars_x[i].b - chars_x[j].a) / (chars_x[i].b - chars_x[i].a)
                 o_ammount = Overlap_ammount(chars_x[j].parent, ammount)
+                o_ammount2 = Overlap_ammount(chars_x[i].parent, ammount)
                 chars_x[i].overlap_degree_and_target.append(o_ammount)
+                chars_x[j].overlap_degree_and_target.append(o_ammount2)
             else:
                break
-                
-    NUM_CHARS = len(chars_y)
+
     for i in range(0, NUM_CHARS):
         for j in range(i + 1, NUM_CHARS):
-            if chars_y[i].b > chars_y[j].a:
+            if chars_y[i].b >= chars_y[j].a:
                 ammount = (chars_y[i].b - chars_y[j].a) / (chars_y[i].b - chars_y[i].a)
                 o_ammount = Overlap_ammount(chars_y[j].parent, ammount)
+                o_ammount2 = Overlap_ammount(chars_y[i].parent, ammount)
                 chars_y[i].overlap_degree_and_target.append(o_ammount)
+                chars_y[j].overlap_degree_and_target.append(o_ammount2)
             else:
                 break
         
-    # Now we take the interestion of the X and the Y sets,
-    
-    
     for char_x in chars_x:
         for x_overlap_degree_and_target in char_x.overlap_degree_and_target:
             for y_overlap_degree_and_target in char_x.parent.y.overlap_degree_and_target:
                 if x_overlap_degree_and_target.overlap_target is y_overlap_degree_and_target.overlap_target:
-                    if x_overlap_degree_and_target.overlap_degree * y_overlap_degree_and_target.overlap_degree > .4:
+                    if x_overlap_degree_and_target.overlap_degree * y_overlap_degree_and_target.overlap_degree > .5:
                         char_x.parent.overlaps_with.append(x_overlap_degree_and_target.overlap_target)
 
     # Fix the ordered collections
     chars_sheet.sort(key=lambda k:k.size, reverse=True)
     for char in chars_sheet:
-        print(char.size)
         at_least_one_mark = False
         if len(char.overlaps_with) > 0:
             char_stack = []
@@ -118,30 +111,20 @@ def delete_duplicates(transparencies) -> None:
                             delete_list.append(char_s)
                         else:
                             delete_cascade = True
-                            delete_cascade = True
+
 
 
 def do_stuff(apps, schemd_editor) -> None:
-    Chars_back = apps.get_model('calligraphy', 'Character_orig')
     Chars      = apps.get_model('calligraphy', 'Character')
-    CharSet    = apps.get_model('calligraphy', 'CharSet')
-    UserMult   = apps.get_model('calligraphy', 'UserSuppliedPageMultiplier')
-    
-    for mult in UserMult.objects.all():
-        charSets = CharSet.objects.filter(userSupplied=mult)
-        if len(charSets) > 1:
-            transparencies = [];
-            for charS in charSets:
-                if charS.set_valid:
-                    charSet = []
-                    for old_char in charS.set_chars_orig.all():
-                        new_char = Chars.objects.get(id=old_char.id)
-                        charSet.append(Char(new_char, old_char))
-                    transparencies.append(Transparency(charSet))
-            print(str(mult.page_id.id) + "-------------------------------------------------------------------------------->")
-            delete_duplicates(transparencies)
-    for char in delete_list:
-        char.db_cur.delete()
+    Page       = apps.get_model('calligraphy', 'Page')
+    for page in Page.objects.all():
+        char_set = []
+        for char in Chars.objects.filter(parent_page=page):
+            char_set.append(Char(char))
+        delete_duplicates(char_set)
+    for dels in delete_list:
+        dels.db_cur.delete()
+
 
 class Migration(migrations.Migration):
 
