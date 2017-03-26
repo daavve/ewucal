@@ -82,9 +82,6 @@ class Character(models.Model):
     image_width = models.IntegerField(default=0)
     image_height = models.IntegerField(default=0)
     
-    #This exists so we can keep track of the characters we merged
-    char_parents = models.ManyToManyField(Character_orig)
-
     def get_absolute_url(self):
         return '/char/' + str(self.id)
 
