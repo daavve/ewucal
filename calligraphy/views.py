@@ -188,13 +188,7 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 
-@require_http_methods(['POST']) # TODO:  some chars may still have bad offsets due to lack of ability to make new usermodified object for page that has not been modified previously.
-# userId = request.user.id
- #c_page      = Page.objects.get(id=(pst['page_id'])) 
-#    user_mult = UserSuppliedPageMultiplier( user_id=request.user, 
-#                                            page_id=c_page, 
-#                                            image_rotation=pst['rotation']) 
-#    user_mult.save() 
+@require_http_methods(['POST'])
 def post_offsets(request):
     pst = json.loads(request.body)
     if pst['modified'] is True:
@@ -223,7 +217,6 @@ def post_offsets(request):
     
 @require_http_methods(['POST'])
 def post_characters(request):
-    '''
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
     mypage = Page.objects.get(id=page_id)
@@ -231,6 +224,7 @@ def post_characters(request):
         newFlag = FlagForReview(flagged_by = request.user,
                       parent_page = mypage)
         newFlag.save()
+        ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
     else:
         if pst['modified']:
             updated = True
@@ -261,6 +255,7 @@ def post_characters(request):
                                             y2 = 0)
                 dChar.save()
         if pst['added']:
+            updated = True
             for newChar in pst['new_boxes']:
                 x_1 = int(newChar['x_top'])
                 y_1 = int(newChar['y_top'])
@@ -273,7 +268,6 @@ def post_characters(request):
                                     x2 = x_2,
                                     y2 = y_2)
                 new_char.save()
-    
-    ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
-    '''
+    if not updated:
+        ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
     return JsonResponse({"status" : "Done"})
