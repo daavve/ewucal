@@ -232,9 +232,9 @@ def post_characters(request):
                 tChar = Character.objects.get(id=modChar['charId'])
                 tChar.x1 = int(modChar['x_top'])
                 tChar.y1 = int(modChar['y_top'])
-                tChar.x2 = int(modChar['x_len']) + x_1
-                tChar.y2 = int(modChar['y_len']) + y_1
-                mChar.save()
+                tChar.x2 = int(modChar['x_len']) + int(modChar['y_top'])
+                tChar.y2 = int(modChar['y_len']) + int(modChar['y_top'])
+                tChar.save()
         if pst['deleted']:
             updated = True
             for delchar in pst['deleted_boxes']:
@@ -245,8 +245,8 @@ def post_characters(request):
             for newChar in pst['new_boxes']:
                 x_1 = int(newChar['x_top'])
                 y_1 = int(newChar['y_top'])
-                x_2 = int(newChar['x_len']) + x_1
-                y_2 = int(newChar['y_len']) + y_1
+                x_2 = int(newChar['x_len']) + int(newChar['x_top'])
+                y_2 = int(newChar['y_len']) + int(newChar['y_top'])
                 new_char = Character(supplied_by = request.user,
                                     parent_page = mypage,
                                     x1 = x_1,
