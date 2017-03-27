@@ -222,12 +222,12 @@ def post_characters(request):
     mypage = Page.objects.get(id=page_id)
     parent_work = Work.objects.get(id=mypage.parent_work.id)
     parent_author = Author.objects.get(id=parent_work.author.id)
+    updated = False
 
     if pst['flagged_for_review']:
         newFlag = FlagForReview(flagged_by = request.user,
                       parent_page = mypage)
         newFlag.save()
-        ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
     else:
         if pst['modified']:
             updated = True
