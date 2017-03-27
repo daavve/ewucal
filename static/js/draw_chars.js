@@ -242,10 +242,10 @@ function iWindow (iImg) {
                     {
                         added = true;
                         new_boxes.push({ 
-                            x_top: $box.x_top,
-                            y_top: $box.y_top,
-                            x_len: $box.x_len,
-                            y_len: $box.y_len,
+                            x_1: $box.x_top,
+                            y_1: $box.y_top,
+                            x_2: $box.x_len + $box_x_top,
+                            y_2: $box.y_len + $box.y_top,
                         });
                     }
                     else
@@ -253,10 +253,10 @@ function iWindow (iImg) {
                         modified = true;
                         modified_boxes.push({
                             charId: $box.charId,
-                            x_top: $box.x_top,
-                            y_top: $box.y_top,
-                            x_len: $box.x_len,
-                            y_len: $box.y_len,
+                            x_1: $box.x_top,
+                            y_1: $box.y_top,
+                            x_2: $box.x_len + $box_x_top,
+                            y_2: $box.y_len + $box.y_top,
                         });
                     }
                 }
