@@ -215,7 +215,7 @@ function iWindow (iImg) {
 
     
     function submit_form(flagged){
-        if(!$image.all_boxes_reviewed)
+        if(!$image.all_boxes_reviewed && ! flagged)
         {
             alert("review all boxes before submitting: Use TAB / shift TAB to cycle through chars");
             return;
