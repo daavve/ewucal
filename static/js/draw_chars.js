@@ -8,7 +8,9 @@
 
 function iWindow (iImg) {
     var settings = {
-        longset_side: 500,
+        window_width: screen.availWidth - 40,
+        window_height: screen.availHeight - 250,
+        window_ratio: (screen.availWidth - 40) / (screen.availHeight - 250),
         zoom_max: 20, // 100X initial zoom
     };
 
@@ -30,24 +32,22 @@ function iWindow (iImg) {
         update_box_visibility: true,
         modified: false,
         box_last_selected: null,
+        box_first: null,
         box_is_selected: false,
         draw_new_box_mode: false,
         x_start: null,
-        y_start: null
+        y_start: null,
     });
-
     
-    if ($image.src_image_length > $image.src_image_width) {
-        $image.min_width = $image.src_image_width * settings.longset_side / $image.src_image_length;
-    }
-    else {
-        $image.min_width = settings.longset_side;
-    }
-    $image.width = $image.min_width;
-    $image.max_width = $image.min_width * settings.zoom_max;
     $image.lw_ratio = $image.src_length / $image.src_width;
+    $image.min_width = settings.window_width / 4 ;
+    console.log( $image.src_length);
+    console.log($image.lw_ratio);
+    $image.width = $image.min_width;
+    $image.scale_factor = $image.width / $image.src_width;
+    $image.max_width = $image.min_width * settings.zoom_max;
+    
     $image.height = $image.min_width * $image.lw_ratio;
-    $image.scale_factor = $image.min_width / $image.src_width;
     
     $image.attr('src', iImg.URL);
     $image.css({'position': 'absolute',
@@ -61,6 +61,13 @@ function iWindow (iImg) {
         x_start: null,
         y_start: null
     });
+    $viewport.css({
+        width: settings.window_width,
+        height: settings.window_height
+    });
+    
+    $image.offset_left  = (settings.window_width / 2 - $viewport.middle_x) / $image.scale_factor - $image.width / 2;
+    $image.offset_top  =  (settings.window_height / 2 - $viewport.middle_y) / $image.scale_factor -  $image.height / 2;
 
         $viewport.extend({
         draw_overlay: $('<div class="draw-overlay"></div>').selectable({
@@ -89,8 +96,6 @@ function iWindow (iImg) {
     });
     $viewport.append($viewport.draw_overlay);
     
-    $image.offset_left = -$viewport.middle_x / $image.scale_factor;
-    $image.offset_top = -$viewport.middle_y / $image.scale_factor;
     var $container = $viewport.parent();
     
     $viewport.boxes = new Set();
@@ -98,6 +103,9 @@ function iWindow (iImg) {
     for(i = 0; i < iImg.chars.length; ++i) {
         build_a_box(iImg.chars[i]);
     }
+    
+    $image.offset_left = (175 - $viewport.middle_x) / $image.scale_factor;
+    $image.offset_top = (20 - $viewport.middle_y) / $image.scale_factor;
     
     var screenupdate = setInterval(updateZoom, 10);
     function updateZoom(){
@@ -125,8 +133,27 @@ function iWindow (iImg) {
                     top: Math.round($image.offset_top * $image.scale_factor + $viewport.middle_y)
                 });
             }
+            let i = 0;
+            let last_box;
             for (let boxPack of $viewport.boxes)
             {
+                if(++i === 1) //Fist
+                {
+                    $image.box_first = boxPack;
+                }
+                else
+                {
+                    if(i === $viewport.boxes.size) //last
+                    {
+                        boxPack.next_block = $image.box_first;
+                        $image.box_first.last_block = boxPack
+                    }
+
+                    last_box.next_block = boxPack;
+                    boxPack.last_block = last_box;
+                }
+                last_box = boxPack;
+                
                 updateBoxPosition(boxPack.selectable);
                 updateBoxPosition(boxPack.resizable);
             }
@@ -256,7 +283,7 @@ function iWindow (iImg) {
     }
     
     
-    function update_box_selection(boxPack){
+    function update_box_selection(boxPack, recenter){
         let $box = boxPack.selectable;
         let $r_box = boxPack.resizable;
         if($image.box_is_selected && !$image.box_last_selected.selectable.deleted)
@@ -269,18 +296,27 @@ function iWindow (iImg) {
             $image.box_is_selected = true;
         }
         $image.box_last_selected = boxPack;
+        
+        if(recenter) //zoom in and move the window so the box is centered
+        {
+            $image.offset_left  = (settings.window_width / 2 - $viewport.middle_x) / $image.scale_factor - $box.x_top - $box.y_len / 2;
+            $image.offset_top  =  (settings.window_height / 2 - $viewport.middle_y) / $image.scale_factor - $box.y_top - $box.y_len / 2;
+        }
+        
+        
         $box.hide();
         $r_box.show();
         $image.update_boxes = true;
         
     }
     
+    
     function build_a_box(iChar){
         
         var $charBox = $('<div class="char_box"></div>').selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    update_box_selection($(this).data('self'));
+                    update_box_selection($(this).data('self'), true);
                 }}).extend({
                 charId : iChar.charId,
                 URL : iChar.URL,
@@ -327,7 +363,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                 }
             }).hide();
             
-            var boxPack = {selectable:$charBox, resizable:$dragBox};
+            var boxPack = {selectable:$charBox, resizable:$dragBox, next_box:null, prev_box:null};
 
             $charBox.data('self', boxPack);
             $viewport.append($charBox).append($dragBox);
@@ -382,7 +418,7 @@ $(document).keydown(function(event) {
         {
             $viewport.draw_overlay.hide();
             $image.draw_new_box_mode = false;
-            update_box_selection($image.box_last_selected);
+            update_box_selection($image.box_last_selected, false);
         }
         else
         {
@@ -409,6 +445,24 @@ $(document).keydown(function(event) {
             $image.box_last_selected.resizable.hide();
         }
         return;
+    }
+    
+    if (keyName == 'Tab') {
+        if($image.box_is_selected)
+        {
+            if(event.shiftKey)
+            {
+                update_box_selection($image.box_last_selected.prev_block, true);
+            }
+            else
+            {
+                update_box_selection($image.box_last_selected.next_block, true);
+            }
+        }
+        else
+        {
+            update_box_selection($image.box_first, true);
+        }
     }
     
 //    console.log(`Key pressed ${keyName}`);
