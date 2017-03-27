@@ -230,30 +230,16 @@ def post_characters(request):
             updated = True
             for modChar in pst['modified_boxes']:
                 tChar = Character.objects.get(id=modChar['charId'])
-                x_1 = int(modChar['x_top'])
-                y_1 = int(modChar['y_top'])
-                x_2 = int(modChar['x_len']) + x_1
-                y_2 = int(modChar['y_len']) + y_1
-                mChar = Char_location_update(supplied_by = request.user,
-                                            target_char = tChar,
-                                            should_be_deleted = False,
-                                            x1 = x_1,
-                                            y1 = y_1,
-                                            x2 = x_2,
-                                            y2 = y_2)
+                tChar.x1 = int(modChar['x_top'])
+                tChar.y1 = int(modChar['y_top'])
+                tChar.x2 = int(modChar['x_len']) + x_1
+                tChar.y2 = int(modChar['y_len']) + y_1
                 mChar.save()
         if pst['deleted']:
             updated = True
             for delchar in pst['deleted_boxes']:
-                tChar = Character.objects.get(id=delchar['charId'])
-                dChar = Char_location_update(supplied_by = request.user,
-                                            target_char = tChar,
-                                            should_be_deleted = True,
-                                            x1 = 0,
-                                            x2 = 0,
-                                            y1 = 0,
-                                            y2 = 0)
-                dChar.save()
+                Character.objects.get(id=delchar['charId']).delete()
+
         if pst['added']:
             updated = True
             for newChar in pst['new_boxes']:
