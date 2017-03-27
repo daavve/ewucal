@@ -220,6 +220,9 @@ def post_characters(request):
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
     mypage = Page.objects.get(id=page_id)
+    parent_work = Work.objects.get(id=mypage.parent_work.id)
+    parent_author = Author.objects.get(id=parent_work.author.id)
+
     if pst['flagged_for_review']:
         newFlag = FlagForReview(flagged_by = request.user,
                       parent_page = mypage)
@@ -252,7 +255,9 @@ def post_characters(request):
                                     x1 = x_1,
                                     y1 = y_1,
                                     x2 = x_2,
-                                    y2 = y_2)
+                                    y2 = y_2,
+                                    parent_author = parent_author,
+                                    parent_work = parent_work)
                 new_char.save()
     if not updated:
         ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
