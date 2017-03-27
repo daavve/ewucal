@@ -38,11 +38,10 @@ function iWindow (iImg) {
         x_start: null,
         y_start: null,
     });
+
     
     $image.lw_ratio = $image.src_length / $image.src_width;
-    $image.min_width = settings.window_width / 4 ;
-    console.log( $image.src_length);
-    console.log($image.lw_ratio);
+    $image.min_width = settings.window_width* .3;
     $image.width = $image.min_width;
     $image.scale_factor = $image.width / $image.src_width;
     $image.max_width = $image.min_width * settings.zoom_max;
@@ -66,8 +65,7 @@ function iWindow (iImg) {
         height: settings.window_height
     });
     
-    $image.offset_left  = (settings.window_width / 2 - $viewport.middle_x) / $image.scale_factor - $image.width / 2;
-    $image.offset_top  =  (settings.window_height / 2 - $viewport.middle_y) / $image.scale_factor -  $image.height / 2;
+
 
         $viewport.extend({
         draw_overlay: $('<div class="draw-overlay"></div>').selectable({
@@ -105,8 +103,11 @@ function iWindow (iImg) {
     }
     
     $image.offset_left = (175 - $viewport.middle_x) / $image.scale_factor;
-    $image.offset_top = (20 - $viewport.middle_y) / $image.scale_factor;
+    $image.offset_top = (20 - $viewport.middle_y) / $image.scale_factor ;
+
     
+    
+    console.log($viewport.middle_y)
     var screenupdate = setInterval(updateZoom, 10);
     function updateZoom(){
         if ($image.update_boxes)
@@ -148,7 +149,6 @@ function iWindow (iImg) {
                         boxPack.next_block = $image.box_first;
                         $image.box_first.last_block = boxPack
                     }
-
                     last_box.next_block = boxPack;
                     boxPack.last_block = last_box;
                 }
@@ -301,6 +301,7 @@ function iWindow (iImg) {
         {
             $image.offset_left  = (settings.window_width / 2 - $viewport.middle_x) / $image.scale_factor - $box.x_top - $box.y_len / 2;
             $image.offset_top  =  (settings.window_height / 2 - $viewport.middle_y) / $image.scale_factor - $box.y_top - $box.y_len / 2;
+           $image.width = settings.window_width / $box.y_len * $image.src_width * .3;
         }
         
         
@@ -452,7 +453,7 @@ $(document).keydown(function(event) {
         {
             if(event.shiftKey)
             {
-                update_box_selection($image.box_last_selected.prev_block, true);
+                update_box_selection($image.box_last_selected.last_block, true);
             }
             else
             {
@@ -465,7 +466,7 @@ $(document).keydown(function(event) {
         }
     }
     
-//    console.log(`Key pressed ${keyName}`);
+//    console.logconsole.log(`Key pressed ${keyName}`);
 
 });
 }
