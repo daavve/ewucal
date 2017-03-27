@@ -458,11 +458,18 @@ $(document).keydown(function(event) {
             $image.box_last_selected.selectable.deleted = true;
             $image.box_last_selected.selectable.changed = true;
             $image.box_last_selected.resizable.hide();
+            $image.update_boxes = true;
         }
         return;
     }
     
     if (keyName == 'Tab') {
+        f($image.draw_new_box_mode)
+        {
+            $viewport.draw_overlay.hide();
+            $image.draw_new_box_mode = false;
+            update_box_selection($image.box_last_selected, false);
+        }
         if($image.box_is_selected)
         {
             if(event.shiftKey)
