@@ -86,7 +86,7 @@ function iWindow (iImg) {
                     x2: p2.x,
                     y1: p1.y,
                     y2: p2.y
-                });
+                }, true);
                 $image.box_last_selected.selectable.changed = true;
                 $image.box_last_selected.selectable.added = true;
                 $image.update_boxes = true;
@@ -100,7 +100,7 @@ function iWindow (iImg) {
     $viewport.boxes = new Set();
     
     for(i = 0; i < iImg.chars.length; ++i) {
-        build_a_box(iImg.chars[i]);
+        build_a_box(iImg.chars[i], false);
     }
     $image.offset_left = (175 - $viewport.middle_x) / $image.scale_factor;
     $image.offset_top = (20 - $viewport.middle_y) / $image.scale_factor ;
@@ -321,7 +321,7 @@ function iWindow (iImg) {
     }
     
     
-    function build_a_box(iChar){
+    function build_a_box(iChar, reviewed){
         
         var $charBox = $('<div class="char_box"></div>').selectable({
                 autoRefresh: false,
@@ -378,7 +378,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                            next_box:null,
                            prev_box:null,
                            box_num: null,
-                           reviewed: false};
+                           reviewed: reviewed};
 
             $charBox.data('self', boxPack);
             $viewport.append($charBox).append($dragBox);
@@ -464,7 +464,7 @@ $(document).keydown(function(event) {
     }
     
     if (keyName == 'Tab') {
-        f($image.draw_new_box_mode)
+        if($image.draw_new_box_mode)
         {
             $viewport.draw_overlay.hide();
             $image.draw_new_box_mode = false;
