@@ -233,10 +233,10 @@ def post_characters(request):
             updated = True
             for modChar in pst['modified_boxes']:
                 tChar = Character.objects.get(id=modChar['charId'])
-                tChar.x1 = int(modChar['x_top'])
-                tChar.y1 = int(modChar['y_top'])
-                tChar.x2 = int(modChar['x_len']) + int(modChar['y_top'])
-                tChar.y2 = int(modChar['y_len']) + int(modChar['y_top'])
+                tChar.x1 = int(modChar['x_1'])
+                tChar.y1 = int(modChar['y_1'])
+                tChar.x2 = int(modChar['x_2'])
+                tChar.y2 = int(modChar['y_2'])
                 tChar.save()
         if pst['deleted']:
             updated = True
@@ -246,18 +246,14 @@ def post_characters(request):
         if pst['added']:
             updated = True
             for newChar in pst['new_boxes']:
-                x_1 = int(newChar['x_top'])
-                y_1 = int(newChar['y_top'])
-                x_2 = int(newChar['x_len']) + int(newChar['x_top'])
-                y_2 = int(newChar['y_len']) + int(newChar['y_top'])
                 new_char = Character(supplied_by = request.user,
-                                    parent_page = mypage,
-                                    x1 = x_1,
-                                    y1 = y_1,
-                                    x2 = x_2,
-                                    y2 = y_2,
-                                    parent_author = parent_author,
-                                    parent_work = parent_work)
+                                     parent_page = mypage,
+                                     x1 = int(newChar['x_1']),
+                                     y1 = int(newChar['y_1']),
+                                     x2 = int(newChar['x_2']),
+                                     y2 = int(newChar['y_2']),
+                                     parent_author = parent_author,
+                                     parent_work = parent_work)
                 new_char.save()
     if not updated:
         ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
