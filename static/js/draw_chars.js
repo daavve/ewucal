@@ -34,6 +34,7 @@ function iWindow (iImg) {
         box_last_selected: null,
         box_first: null,
         box_is_selected: false,
+        all_boxes_reviewed: false,
         draw_new_box_mode: false,
         x_start: null,
         y_start: null,
@@ -131,8 +132,13 @@ function iWindow (iImg) {
             }
             let i = 0;
             let last_box;
+            let all_reviewed = true;
             for (let boxPack of $viewport.boxes)
             {
+                if(!boxPack.reviewed)
+                {
+                    all_reviewed = false;
+                }
                 if(++i === 1) //Fist
                 {
                     $image.box_first = boxPack;
@@ -152,6 +158,7 @@ function iWindow (iImg) {
                 updateBoxPosition(boxPack.selectable);
                 updateBoxPosition(boxPack.resizable);
             }
+            $image.all_boxes_reviewed = all_reviewed;
         }
     }
     
@@ -208,6 +215,11 @@ function iWindow (iImg) {
 
     
     function submit_form(flagged){
+        if(!$image.all_boxes_reviewed)
+        {
+            alert("review all boxes before submitting: Use TAB / shift TAB to cycle through chars");
+            return;
+        }
         let deleted_boxes = [];
         let modified_boxes = [];
         let new_boxes = [];
@@ -279,6 +291,7 @@ function iWindow (iImg) {
     
     
     function update_box_selection(boxPack, recenter){
+        boxPack.reviewed = true;
         let $box = boxPack.selectable;
         let $r_box = boxPack.resizable;
         if($image.box_is_selected && !$image.box_last_selected.selectable.deleted)
@@ -360,7 +373,12 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                 }
             }).hide();
             
-            var boxPack = {selectable:$charBox, resizable:$dragBox, next_box:null, prev_box:null, box_num: null};
+            var boxPack = {selectable:$charBox,
+                           resizable:$dragBox,
+                           next_box:null,
+                           prev_box:null,
+                           box_num: null,
+                           reviewed: false};
 
             $charBox.data('self', boxPack);
             $viewport.append($charBox).append($dragBox);
