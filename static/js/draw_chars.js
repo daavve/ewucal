@@ -310,7 +310,7 @@ function iWindow (iImg) {
             $image.offset_left  = (settings.window_width / 2 - $viewport.middle_x) / $image.scale_factor - $box.x_top - $box.y_len / 2;
             $image.offset_top  =  (settings.window_height / 2 - $viewport.middle_y) / $image.scale_factor - $box.y_top - $box.y_len / 2;
            $image.width = settings.window_width / $box.y_len * $image.src_width * 0.3;
-           document.title = $image.page_id + " : " + boxPack.box_num + ' / ' + $viewport.boxes.size + " " " + boxPack.selectable.mark;
+           document.title = $image.page_id + " : " + boxPack.box_num + ' / ' + $viewport.boxes.size + " : " + boxPack.selectable.mark;
         }
         
         
