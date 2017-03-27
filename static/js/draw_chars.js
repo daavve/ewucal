@@ -326,7 +326,14 @@ function iWindow (iImg) {
         var $charBox = $('<div class="char_box"></div>').selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
-                    update_box_selection($(this).data('self'), true);
+                    if(event.shiftKey)
+                    {
+                        update_box_selection($(this).data('self'), false);
+                    }
+                    else
+                    {
+                        update_box_selection($(this).data('self'), true);
+                    }
                 }}).extend({
                 charId : iChar.charId,
                 URL : iChar.URL,
