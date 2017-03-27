@@ -41,7 +41,7 @@ function iWindow (iImg) {
 
     
     $image.lw_ratio = $image.src_length / $image.src_width;
-    $image.min_width = settings.window_width* .3;
+    $image.min_width = settings.window_width * 0.3;
     $image.width = $image.min_width;
     $image.scale_factor = $image.width / $image.src_width;
     $image.max_width = $image.min_width * settings.zoom_max;
@@ -101,13 +101,8 @@ function iWindow (iImg) {
     for(i = 0; i < iImg.chars.length; ++i) {
         build_a_box(iImg.chars[i]);
     }
-    
     $image.offset_left = (175 - $viewport.middle_x) / $image.scale_factor;
     $image.offset_top = (20 - $viewport.middle_y) / $image.scale_factor ;
-
-    
-    
-    console.log($viewport.middle_y)
     var screenupdate = setInterval(updateZoom, 10);
     function updateZoom(){
         if ($image.update_boxes)
@@ -147,13 +142,13 @@ function iWindow (iImg) {
                     if(i === $viewport.boxes.size) //last
                     {
                         boxPack.next_block = $image.box_first;
-                        $image.box_first.last_block = boxPack
+                        $image.box_first.last_block = boxPack;
                     }
                     last_box.next_block = boxPack;
                     boxPack.last_block = last_box;
                 }
                 last_box = boxPack;
-                
+                boxPack.box_num = i;
                 updateBoxPosition(boxPack.selectable);
                 updateBoxPosition(boxPack.resizable);
             }
@@ -301,7 +296,8 @@ function iWindow (iImg) {
         {
             $image.offset_left  = (settings.window_width / 2 - $viewport.middle_x) / $image.scale_factor - $box.x_top - $box.y_len / 2;
             $image.offset_top  =  (settings.window_height / 2 - $viewport.middle_y) / $image.scale_factor - $box.y_top - $box.y_len / 2;
-           $image.width = settings.window_width / $box.y_len * $image.src_width * .3;
+           $image.width = settings.window_width / $box.y_len * $image.src_width * 0.3;
+           document.title = boxPack.box_num + ' / ' + $viewport.boxes.size;
         }
         
         
@@ -364,7 +360,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                 }
             }).hide();
             
-            var boxPack = {selectable:$charBox, resizable:$dragBox, next_box:null, prev_box:null};
+            var boxPack = {selectable:$charBox, resizable:$dragBox, next_box:null, prev_box:null, box_num: null};
 
             $charBox.data('self', boxPack);
             $viewport.append($charBox).append($dragBox);
