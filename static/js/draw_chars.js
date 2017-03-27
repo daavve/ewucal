@@ -246,7 +246,7 @@ function iWindow (iImg) {
                         new_boxes.push({ 
                             x_1: $box.x_top,
                             y_1: $box.y_top,
-                            x_2: $box.x_len + $box_x_top,
+                            x_2: $box.x_len + $box.x_top,
                             y_2: $box.y_len + $box.y_top,
                         });
                     }
@@ -257,7 +257,7 @@ function iWindow (iImg) {
                             charId: $box.charId,
                             x_1: $box.x_top,
                             y_1: $box.y_top,
-                            x_2: $box.x_len + $box_x_top,
+                            x_2: $box.x_len + $box.x_top,
                             y_2: $box.y_len + $box.y_top,
                         });
                     }
