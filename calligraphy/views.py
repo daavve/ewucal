@@ -245,15 +245,25 @@ def post_characters(request):
 
         if pst['added']:
             updated = True
-            for newChar in pst['new_boxes']:
-                new_char = Character(supplied_by = request.user,
-                                     parent_page = mypage,
-                                     x1 = int(newChar['x_1']),
-                                     y1 = int(newChar['y_1']),
-                                     x2 = int(newChar['x_2']),
-                                     y2 = int(newChar['y_2']),
-                                     parent_author = parent_author,
-                                     parent_work = parent_work)
+            if parent_work is None or parent_author is None:
+                for newChar in pst['new_boxes']:
+                    new_char = Character(supplied_by = request.user,
+                                         parent_page = mypage,
+                                         x1 = int(newChar['x_1']),
+                                         y1 = int(newChar['y_1']),
+                                         x2 = int(newChar['x_2']),
+                                         y2 = int(newChar['y_2']))
+                new_char.save()
+            else:
+                for newChar in pst['new_boxes']:
+                    new_char = Character(supplied_by = request.user,
+                                         parent_page = mypage,
+                                         x1 = int(newChar['x_1']),
+                                         y1 = int(newChar['y_1']),
+                                         x2 = int(newChar['x_2']),
+                                         y2 = int(newChar['y_2']),
+                                         parent_author = parent_author,
+                                         parent_work = parent_work)
                 new_char.save()
     if not updated:
         ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
