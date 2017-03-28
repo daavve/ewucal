@@ -57,7 +57,7 @@ def get_page(request):
             parent_author = char.parent_author.id
         charList.append({'charId' : char.id,
                          'pageId' : char.parent_page.id,
-                         'authorId' : char.parent_author.id,
+                         'authorId' : parent_author,
                          'authorName': char.author_name,
                          'workId' : parent_work,
                          'URL' : Character.get_image(char),
