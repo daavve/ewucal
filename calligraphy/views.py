@@ -228,8 +228,14 @@ def post_characters(request):
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
     mypage = Page.objects.get(id=page_id)
-    parent_work = Work.objects.get(id=mypage.parent_work.id)
-    parent_author = Author.objects.get(id=parent_work.author.id)
+    parent_work = 0
+    parent_author = 0
+    if char.parent_author is None or char.parent_work is None:
+        parent_work = 0
+        parent_author = 0
+    else:
+        parent_work = char.parent_work.id
+        parent_author = char.parent_author.id
     updated = False
 
     if pst['flagged_for_review']:
