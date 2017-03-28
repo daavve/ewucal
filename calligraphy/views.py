@@ -53,7 +53,7 @@ def get_page(request):
             parent-author = 0
         else:
             parent-work = char.parent_work.id
-            parent_author = char.parent_author.id
+            parent-author = char.parent_author.id
         charList.append({'charId' : char.id,
                          'pageId' : char.parent_page.id,
                          'authorId' : char.parent_author.id,
