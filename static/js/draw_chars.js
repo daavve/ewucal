@@ -469,14 +469,11 @@ $(document).keydown(function(event) {
             {
                 $image.boxes.delete($image.box_last_selected);
             }
-            else
-            {
-                $image.box_is_selected = false;
-                $image.box_last_selected.selectable.deleted = true;
-                $image.box_last_selected.selectable.changed = true;
-                $image.box_last_selected.resizable.hide();
-                $viewport.boxes.delete($image.box_last_selected);
-            }
+            $image.box_is_selected = false;
+            $image.box_last_selected.selectable.deleted = true;
+            $image.box_last_selected.selectable.changed = true;
+            $image.box_last_selected.resizable.hide();
+            $viewport.boxes.delete($image.box_last_selected);
         }
         $image.update_boxes = true;
         return;
