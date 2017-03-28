@@ -45,21 +45,21 @@ def get_page(request):
     page_id = request.GET.get('pageId', None)
     page = Page.objects.get(id=page_id)
     chars = Character.objects.filter(parent_page=page_id)
-    parent-work = 0
-    parent-author = 0
+    parent_work = 0
+    parent_author = 0
     charList = []
     for char in chars:
         if char.parent_author is None or char.parent_work is None:
-            parent-work = 0
-            parent-author = 0
+            parent_work = 0
+            parent_author = 0
         else:
-            parent-work = char.parent_work.id
-            parent-author = char.parent_author.id
+            parent_work = char.parent_work.id
+            parent_author = char.parent_author.id
         charList.append({'charId' : char.id,
                          'pageId' : char.parent_page.id,
                          'authorId' : char.parent_author.id,
                          'authorName': char.author_name,
-                         'workId' : char.parent_work.id,
+                         'workId' : parent_work,
                          'URL' : Character.get_image(char),
                          'mark' : char.mark,
                          'x1' : char.x1,
