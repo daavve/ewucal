@@ -254,7 +254,6 @@ def post_characters(request):
                 tChar.y1 = int(modChar['y_1'])
                 tChar.x2 = int(modChar['x_2'])
                 tChar.y2 = int(modChar['y_2'])
-                tChar.supplied_by = request.user
                 tChar.save()
         if pst['deleted']:
             updated = True
