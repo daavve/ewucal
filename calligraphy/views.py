@@ -230,7 +230,7 @@ def post_characters(request):
     mypage = Page.objects.get(id=page_id)
     parent_work = 0
     parent_author = 0
-    if char.parent_author is None or char.parent_work is None:
+    if mypage.parent_work is None or parent_work.author is None:
         parent_work = 0
         parent_author = 0
     else:
