@@ -230,12 +230,12 @@ def post_characters(request):
     mypage = Page.objects.get(id=page_id)
     parent_work = 0
     parent_author = 0
-    if mypage.parent_work is None or parent_work.author is None:
+    if mypage.parent_work is None or mypage.parent_author is None:
         parent_work = 0
         parent_author = 0
     else:
-        parent_work = char.parent_work.id
-        parent_author = char.parent_author.id
+        parent_work = mypage.parent_work.id
+        parent_author = mypage.parent_author.id
     updated = False
 
     if pst['flagged_for_review']:
