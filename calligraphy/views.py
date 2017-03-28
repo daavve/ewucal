@@ -45,8 +45,15 @@ def get_page(request):
     page_id = request.GET.get('pageId', None)
     page = Page.objects.get(id=page_id)
     chars = Character.objects.filter(parent_page=page_id)
+    parent-work, parent-author
     charList = []
     for char in chars:
+        if char.parent_author is None or char.parent_work is None:
+            parent-work = 0
+            parent-author = 0
+        else:
+            parent-work = char.parent_work.id
+            parent_author = char.parent_author.id
         charList.append({'charId' : char.id,
                          'pageId' : char.parent_page.id,
                          'authorId' : char.parent_author.id,
