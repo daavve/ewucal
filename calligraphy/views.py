@@ -8,7 +8,7 @@ from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
-from .models import ToDrawBoxesWBoxes
+from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes
 import json
 import subprocess as sub
 import random
@@ -17,9 +17,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
-def draw_chars(request):
+def draw_chars(request, old_or_new):
     tmplt = loader.get_template('calligraphy/draw_chars.html')
-    return HttpResponse(tmplt.render(request=request))
+    cntxt = {'old_or_new': old_or_new}
+    return HttpResponse(tmplt.render(context=cntxt, request=request))
 
 def webroot(request):
     tmplt = loader.get_template('calligraphy/view_root.html')
@@ -76,7 +77,11 @@ def get_page(request):
     
     
 def get_to_verify_page(request):
-    choice_from_list = random.choice(ToDrawBoxesWBoxes.objects.all())
+    choice_from_list = None
+    if request.GET.get('old_or_new', None) == '1':
+        choice_from_list = random.choice(ToDrawBoxesWBoxes.objects.all())
+    else:
+        choice_from_list = random.choice(ToDrawBoxesWoBoxes.objects.all())
     page = Page.objects.get(id=choice_from_list.toCheck.id)
     chars = Character.objects.filter(parent_page=page)
     charList = []
