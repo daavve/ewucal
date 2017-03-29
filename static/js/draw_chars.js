@@ -274,7 +274,8 @@ function iWindow (iImg) {
                    page_id: $image.page_id,
                    modified: modified,
                    deleted: deleted,
-                   added: added};
+                   added: added,
+                   old_or_new: is_new};
         
         let token = get_csrf_token();
 
@@ -510,11 +511,12 @@ $(document).keydown(function(event) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+var is_new
 
 function startMe( $ ){
     var  $dialog = $( "#dialog" ).dialog({autoOpen: false});
-    var  old_or_new = parseInt($( '#old_or_new' ).attr( 'old_or_new' ));
-    var  $pages = $.getJSON('/ajax/get_to_verify_page', {'old_or_new': old_or_new}).done(iWindow);
+    is_new = parseInt($( '#old_or_new' ).attr( 'old_or_new' ));
+    var  $pages = $.getJSON('/ajax/get_to_verify_page', {'old_or_new': is_new}).done(iWindow);
 }
 
 

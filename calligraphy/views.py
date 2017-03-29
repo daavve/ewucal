@@ -239,19 +239,22 @@ def post_characters(request):
         user_sups = user_supss[0]
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
+    just_added = False
     mypage = Page.objects.get(id=page_id)
-    user_sups.pages_changed.add(mypage)
-    parent_work = 0
-    parent_author = 0
-    if mypage.parent_work is None:
-        parent_work = 0
-        parent_author = 0
+    to_draw_box_from_list = None
+    if int(pst['old_or_new']) == 0:
+        ToDrawBoxesWoBoxes.objects.get(id=pst['to_do_id']).delete()
+        to_draw_box_from_list = ToDrawBoxesWBoxes(toCheck=mypage)
+        to_draw_box_from_list.save()
+        just_added = True
     else:
+        to_draw_box_from_list = ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id'])
+    user_sups.pages_changed.add(mypage)
+    parent_work = None
+    parent_author = None
+    if mypage.parent_work is not None:
         parent_work = Work.objects.get(id=mypage.parent_work.id)
-        if parent_work.author is None:
-            parent_author = 0
-        else:
-            parent_author = Author.objects.get(id=parent_work.author.id)
+        parent_author = Author.objects.get(id=parent_work.author.id)
     updated = False
 
     if pst['flagged_for_review']:
@@ -276,7 +279,7 @@ def post_characters(request):
 
         if pst['added']:
             updated = True
-            if parent_work is None or parent_author is None:
+            if parent_work is None:
                 for newChar in pst['new_boxes']:
                     new_char = Character(supplied_by = request.user,
                                          parent_page = mypage,
@@ -299,5 +302,5 @@ def post_characters(request):
                     new_char.save()
                     user_sups.chars_changed.add(new_char)
     if not updated:
-        ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
+        to_draw_box_from_list.delete()
     return JsonResponse({"status" : "Done"})
