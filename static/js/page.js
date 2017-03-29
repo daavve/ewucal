@@ -354,7 +354,7 @@ function getRelChars(charId){
 }
 
 function startMe( $ ){
-    var pageId = parseInt(currentPageId = $( '#pageIdHolder' ).attr( 'pageId' ));
+    var pageId = parseInt($( '#pageIdHolder' ).attr( 'pageId' ));
     getPage(pageId).done(iWindow);
 }
 

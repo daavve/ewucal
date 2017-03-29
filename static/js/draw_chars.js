@@ -513,7 +513,8 @@ $(document).keydown(function(event) {
 
 function startMe( $ ){
     var  $dialog = $( "#dialog" ).dialog({autoOpen: false});
-    var  $pages = $.getJSON('/ajax/get_to_verify_page').done(iWindow);
+    var  old_or_new = parseInt($( '#old_or_new' ).attr( 'old_or_new' ));
+    var  $pages = $.getJSON('/ajax/get_to_verify_page', {'old_or_new': old_or_new}).done(iWindow);
 }
 
 
