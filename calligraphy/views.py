@@ -8,7 +8,7 @@ from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
-from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes
+from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid
 import json
 import subprocess as sub
 import random
@@ -230,9 +230,17 @@ def post_offsets(request):
     
 @require_http_methods(['POST'])
 def post_characters(request):
+    user_supss = UserDid.objects.filter(user_supplied=request.user)
+    user_sups = None
+    if len(user_supss) == 0:
+        user_sups = UserDid(user_supplied=request.user)
+        user_sups.save()
+    else:
+        user_sups = user_supss[0]
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
     mypage = Page.objects.get(id=page_id)
+    user_sups.pages_changed.add(mypage)
     parent_work = 0
     parent_author = 0
     if mypage.parent_work is None:
@@ -260,6 +268,7 @@ def post_characters(request):
                 tChar.x2 = int(modChar['x_2'])
                 tChar.y2 = int(modChar['y_2'])
                 tChar.save()
+                user_sups.chars_changed.add(tChar)
         if pst['deleted']:
             updated = True
             for delchar in pst['deleted_boxes']:
@@ -275,7 +284,8 @@ def post_characters(request):
                                          y1 = int(newChar['y_1']),
                                          x2 = int(newChar['x_2']),
                                          y2 = int(newChar['y_2']))
-                new_char.save()
+                    new_char.save()
+                    user_sups.chars_changed.add(new_char)
             else:
                 for newChar in pst['new_boxes']:
                     new_char = Character(supplied_by = request.user,
@@ -286,7 +296,8 @@ def post_characters(request):
                                          y2 = int(newChar['y_2']),
                                          parent_author = parent_author,
                                          parent_work = parent_work)
-                new_char.save()
+                    new_char.save()
+                    user_sups.chars_changed.add(new_char)
     if not updated:
         ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id']).delete()
     return JsonResponse({"status" : "Done"})

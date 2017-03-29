@@ -117,6 +117,11 @@ class CharSet(models.Model):
     set_chars_orig = models.ManyToManyField(Character_orig)
     set_valid = models.BooleanField()
 
+class UserDid(models.Model):
+    user_supplied = models.ForeignKey(User)
+    pages_changed = models.ManyToManyField(Page)
+    chars_changed = models.ManyToManyField(Character)
+
 
 class RelatedChars(object): # This class exists to hold all chars and related ones
     def __init__(self, inChar: Character):
