@@ -77,12 +77,22 @@ def get_page(request):
     
     
 def get_to_verify_page(request):
-    choice_from_list = None
-    if request.GET.get('old_or_new', None) == '1':
-        choice_from_list = random.choice(ToDrawBoxesWBoxes.objects.all())
+    pageNum = None
+    choice = None
+    choiceNumber = 0
+    request_num = int(request.GET.get('old_or_new', None))
+    if request_num == 1:     # WARNING:  MAGIC NUMBERS
+        choice = random.choice(ToDrawBoxesWBoxes.objects.all())
+        choiceNumber = choice.id
+        pageNum = choice.toCheck.id
     else:
-        choice_from_list = random.choice(ToDrawBoxesWoBoxes.objects.all())
-    page = Page.objects.get(id=choice_from_list.toCheck.id)
+        if request_num == 0:
+            choice = random.choice(ToDrawBoxesWoBoxes.objects.all())
+            choiceNumber = choice.id
+            pageNum = choice.toCheck.id
+        else:
+            pageNum = request_num
+    page = Page.objects.get(id=pageNum)
     chars = Character.objects.filter(parent_page=page)
     charList = []
     for char in chars:
@@ -98,7 +108,7 @@ def get_to_verify_page(request):
                          'area': (char.x2 - char.x1) * (char.y2 - char.y1)})
     charList.sort(key=lambda k: k['area'], reverse=True)
 
-    data = {  'toDoId' : choice_from_list.id,
+    data = {  'toDoId' : choiceNumber,
               'pageId' : page.id,
               'URL' : Page.get_image(page),
               'height' : page.image_length,
@@ -248,7 +258,8 @@ def post_characters(request):
         to_draw_box_from_list.save()
         just_added = True
     else:
-        to_draw_box_from_list = ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id'])
+        if int(pst['old_or_new']) == 1:
+            to_draw_box_from_list = ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id'])
     user_sups.pages_changed.add(mypage)
     parent_work = None
     parent_author = None
