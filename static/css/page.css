@@ -87,5 +87,19 @@ border: 2px solid #ff5b60;
 .draw-overlay {
     z-index: 1;
     position: absolute;
-    cursor: crosshair;
   }
+
+.vLine{
+  position: absolute;
+  background-color: red;
+  height: 100%;
+  width: 2px;
+
+}
+
+ .hLine{
+  position: absolute;
+  background-color: red;
+  height: 2px;
+  width: 100%;
+}

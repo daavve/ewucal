@@ -55,7 +55,21 @@ function iWindow (iImg) {
                 'transform-origin': 'left bottom'}).wrap('<div class="page_viewport"></div>');
 
 
-    var $viewport = $image.parent().resizable();
+    var $viewport = $image.parent().resizable().extend({
+        hLine: $( '<div class="hLine"></div>' ).hide(),
+        vLine: $( '<div class="vLine"></div>' ).hide()
+    })
+    
+    $viewport.append($viewport.hLine).append($viewport.vLine);
+    
+    function updateCrossHairPos(e) {
+        $viewport.hLine.css({top: e.pageY - 14});
+        $viewport.vLine.css({left: e.pageX - 14});
+    }
+    
+    $viewport.mousemove(function(e) {
+        updateCrossHairPos(e)
+    });
     $viewport.extend({
         middle_x: Math.round($viewport.width() / 2),
         middle_y: Math.round($viewport.height() / 2),
@@ -72,6 +86,8 @@ function iWindow (iImg) {
         $viewport.extend({
         draw_overlay: $('<div class="draw-overlay"></div>').selectable({
             start: function(e){
+                $viewport.vLine.hide();
+                $viewport.hLine.hide();
                 $viewport.x_start = e.pageX;
                 $viewport.y_start = e.pageY;
             },
@@ -88,11 +104,15 @@ function iWindow (iImg) {
                     y1: p1.y,
                     y2: p2.y
                 }, true);
+                updateCrossHairPos(e);
+                $viewport.vLine.show();
+                $viewport.hLine.show();
                 $image.box_last_selected.selectable.changed = true;
                 $image.box_last_selected.selectable.added = true;
                 $image.update_boxes = true;
                 
-                }}).hide()
+                }
+        }).hide()
     });
     $viewport.append($viewport.draw_overlay);
     
@@ -442,7 +462,8 @@ $(document).keydown(function(event) {
    
     if (keyName === 'Insert') {
         if($image.draw_new_box_mode)
-        {
+        {   $viewport.hLine.hide();
+            $viewport.vLine.hide();
             $viewport.draw_overlay.hide();
             $image.draw_new_box_mode = false;
             update_box_selection($image.box_last_selected, false);
@@ -455,6 +476,8 @@ $(document).keydown(function(event) {
                 $image.box_last_selected.resizable.hide();
                 $image.box_last_selected.selectable.show();
             }
+            $viewport.hLine.show();
+            $viewport.vLine.show();
             $viewport.draw_overlay.show();
             $image.draw_new_box_mode = true;
             $image.update_boxes = true;
@@ -506,9 +529,18 @@ $(document).keydown(function(event) {
     
 //    console.logconsole.log(`Key pressed ${keyName}`);
 
-});
+	
+$viewport.append( $( '<div id="line"></div>' ) )
+
+//Function to draw a vertical line
+function draw_vertical_line(width, height, linecolor, xpos, ypos) {
+    $('#line').css({'width':width, 'height':height, 'background-color':linecolor, 'left':xpos, 'top':ypos, 'position':'absolute'});
 }
 
+draw_vertical_line(1, 100, '#357d35', 50, 10);
+
+});
+}
 ////////////////////////////////////////////////////////////////////////////////////////
 
 var is_new
@@ -521,3 +553,9 @@ function startMe( $ ){
 
 
 $(document).ready(startMe);
+
+var element = document.getElementById('box');
+
+var drawLines = function(event) {
+  
+}
