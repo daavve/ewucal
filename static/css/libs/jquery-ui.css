@@ -678,6 +678,7 @@ button.ui-button::-moz-focus-inner {
 	position: absolute;
 	z-index: 100;
 	border: 2px solid red;
+    cursor: crosshair;
 }
 .ui-selectmenu-menu {
 	padding: 0;
