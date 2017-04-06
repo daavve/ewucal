@@ -31,6 +31,7 @@ class Page(models.Model):
     parent_work = models.ForeignKey(Work, null=True)
     transcript = models.TextField(blank=True)
     transform_type = models.CharField(max_length=8, null=True)
+    has_copyright_restrictions = models.BooleanField(default=False)
 
     def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
