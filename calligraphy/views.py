@@ -249,14 +249,14 @@ def post_characters(request):
         user_sups = user_supss[0]
     pst = json.loads(request.body)
     page_id = int(pst['page_id'])
-    just_added = False
+    updated = False
     mypage = Page.objects.get(id=page_id)
     to_draw_box_from_list = None
     if int(pst['old_or_new']) == 0:
         ToDrawBoxesWoBoxes.objects.get(id=pst['to_do_id']).delete()
         to_draw_box_from_list = ToDrawBoxesWBoxes(toCheck=mypage)
         to_draw_box_from_list.save()
-        just_added = True
+        updated = True
     else:
         if int(pst['old_or_new']) == 1:
             to_draw_box_from_list = ToDrawBoxesWBoxes.objects.get(id=pst['to_do_id'])
@@ -266,8 +266,6 @@ def post_characters(request):
     if mypage.parent_work is not None:
         parent_work = Work.objects.get(id=mypage.parent_work.id)
         parent_author = Author.objects.get(id=parent_work.author.id)
-    updated = False
-
     if pst['flagged_for_review']:
         newFlag = FlagForReview(flagged_by = request.user,
                       parent_page = mypage)
