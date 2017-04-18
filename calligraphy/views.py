@@ -17,6 +17,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
+def view_progress(request):
+    tmplt = loader.get_template('calligraphy/view_progress.html')
+    return HttpResponse(tmplt.render(request=request))
+
 def draw_chars(request, old_or_new):
     tmplt = loader.get_template('calligraphy/draw_chars.html')
     cntxt = {'old_or_new': old_or_new}
@@ -162,6 +166,14 @@ def get_root_tree(request):
                     'name':     str(page.id),
                     'isParent': 'false'
                     })
+    return JsonResponse(response, safe=False)
+
+
+@csrf_exempt
+def get_progress(request):
+    response = []
+    for userd in UserDid.objects.all():
+        response.append({'user': userd.user_supplied.id})
     return JsonResponse(response, safe=False)
 
 @csrf_exempt
