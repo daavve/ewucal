@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
 from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid
+from django.db.models import Count
 import json
 import subprocess as sub
 import random
@@ -172,8 +173,12 @@ def get_root_tree(request):
 @csrf_exempt
 def get_progress(request):
     response = []
-    for userd in UserDid.objects.all():
-        response.append({'user': userd.user_supplied.id})
+    userds = UserDid.objects.annotate(Count('pages_changed')).annotate(Count('chars_changed'))
+    for userd in userds:
+        response.append({'user': userd.user_supplied.username,
+                         'pages': userd.pages_changed__count,
+                         'chars': userd.chars_changed__count
+                        })
     return JsonResponse(response, safe=False)
 
 @csrf_exempt
