@@ -8,7 +8,7 @@ function makeChart(progress)
         data: {
             labels: progress.names,
             datasets: [{
-                label: '# of Votes',
+                label: '# of Pages',
                 data: progress.pages,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
