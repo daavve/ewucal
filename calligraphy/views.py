@@ -172,12 +172,14 @@ def get_root_tree(request):
 
 @csrf_exempt
 def get_progress(request):
-    response = []
+    users = []
+    pages = []
     userds = UserDid.objects.annotate(Count('pages_changed'))
     for userd in userds:
-        response.append({'user': userd.user_supplied.username,
-                         'pages': userd.pages_changed__count
-                        })
+        users.append(userd.user_supplied.username)
+        pages.append(userd.pages_changed__count)
+    response = {"names": users,
+                "pages": pages}
     return JsonResponse(response, safe=False)
 
 @csrf_exempt
