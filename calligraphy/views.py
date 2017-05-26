@@ -174,9 +174,9 @@ def get_root_tree(request):
 def get_progress(request):
     users = []
     pages = []
-    userds = UserDid.objects.annotate(Count('pages_changed'))
-    remain_box = ToDrawBoxesWBoxes.objects.annotate(Count('toCheck'))
-    remain_no_box = ToDrawBoxesWoBoxes.objects.annotate(Count('toCheck'))
+    userds = int(UserDid.objects.annotate(Count('pages_changed')))
+    remain_box = int(ToDrawBoxesWBoxes.objects.annotate(Count('toCheck')))
+    remain_no_box = int(ToDrawBoxesWoBoxes.objects.annotate(Count('toCheck')))
     
     remaining = [ remain_box, remain_no_box ]
     remain_name = [ "remain_box", "remain_no_box" ]
@@ -187,7 +187,7 @@ def get_progress(request):
     response = {"names":            users,
                 "pages":            pages,
                 "remain_name":       remain_name}
-#                "remaining":    remaining}
+                "remaining":    remaining}
     return JsonResponse(response, safe=False)
 
 @csrf_exempt
