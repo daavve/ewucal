@@ -186,7 +186,7 @@ def get_progress(request):
         pages.append(userd.pages_changed__count)
     response = {"names":            users,
                 "pages":            pages,
-                "remain_name":       remain_name}
+                "remain_name":       remain_name,
                 "remaining":    remaining}
     return JsonResponse(response, safe=False)
 
