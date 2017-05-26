@@ -175,11 +175,19 @@ def get_progress(request):
     users = []
     pages = []
     userds = UserDid.objects.annotate(Count('pages_changed'))
+    remain_box = ToDrawBoxesWBoxes.annotate(Count('to_Check'))
+    remain_no_box = ToDrawBoxesWoBoxes.annotate(Count('to_Check'))
+    
+    remaining = [ remain_box, remain_no_box ]
+    remain_name = [ "remain_box", "remain_no_box" ]
+    
     for userd in userds:
         users.append(userd.user_supplied.username)
         pages.append(userd.pages_changed__count)
-    response = {"names": users,
-                "pages": pages}
+    response = {"names":            users,
+                "pages":            pages,
+                "remain_name":       remain_name,
+                "remaining":    remaining}
     return JsonResponse(response, safe=False)
 
 @csrf_exempt
