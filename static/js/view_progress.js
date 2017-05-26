@@ -40,7 +40,7 @@ function makeChart(progress)
         }
     });
     
-    var ct2x = document.getElementById("remainChart");
+    var ctx2 = document.getElementById("remainChart");
     var myChart = new Chart(ctx2, {
         type: 'bar',
         data: {
