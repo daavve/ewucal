@@ -175,8 +175,8 @@ def get_progress(request):
     users = []
     pages = []
     userds = UserDid.objects.annotate(Count('pages_changed'))
-    remain_box = ToDrawBoxesWBoxes.objects.annotate(Count('id'))
-    remain_no_box = ToDrawBoxesWoBoxes.objects.annotate(Count('id'))
+    remain_box = ToDrawBoxesWBoxes.objects.annotate(Count('toCheck'))
+    remain_no_box = ToDrawBoxesWoBoxes.objects.annotate(Count('toCheck'))
     
     remaining = [ remain_box, remain_no_box ]
     remain_name = [ "remain_box", "remain_no_box" ]
