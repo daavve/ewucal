@@ -503,7 +503,7 @@ $(document).keydown(function(event) {
         return;
     }
     
-    if (keyName == 'Tab') {
+    if (keyName == 'Tab' || keyName == '*' || keyName == '/') {
         if($image.draw_new_box_mode)
         {
             $viewport.draw_overlay.hide();
@@ -512,7 +512,7 @@ $(document).keydown(function(event) {
         }
         if($image.box_is_selected)
         {
-            if(event.shiftKey)
+            if(event.shiftKey || keyName == '/')
             {
                 update_box_selection($image.box_last_selected.last_block, true);
             }
