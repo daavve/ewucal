@@ -392,6 +392,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                     $dragBox.y_len = Math.round( ui.size.height / $image.scale_factor);
                     $charBox.y_len = $dragBox.y_len;
                     $charBox.changed = true;
+                    $image.update_boxes = true;
                 }
             }).draggable({
                 stop: function( event, ui ){
@@ -400,6 +401,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                     $dragBox.y_top = Math.round( (ui.position.top - $viewport.middle_y) / $image.scale_factor - $image.offset_top );
                     $charBox.y_top = $dragBox.y_top;
                     $charBox.changed = true;
+                    $image.update_boxes = true;
                 }
             }).hide();
             
