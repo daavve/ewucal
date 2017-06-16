@@ -99,6 +99,11 @@ class Character(models.Model):
 
     def get_rel_chars(self):
         return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
+        
+class ReasonCharDeleted(models.Model):
+    user_deleted = models.ForeignKey(User)
+    target_char = models.ForeignKey(Character)
+    reason_deleted = models.CharField(max_length=64, blank=False)
 
 # Data related to computed offsets goes here.
 class UserSuppliedPageMultiplier(models.Model):
