@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^page/(?P<page_id>[0-9]+)$',                              views.individual_page),
     url(r'^validate/view-progress',                                 views.view_progress),
     url(r'^validate/find-offsets',                                  views.validate_find_offsets),
+    url(r'^validate/eval-bad-pages',                                views.eval_bad_pages),
     url(r'^validate/draw-chars/(?P<old_or_new>[0-9]+)$',            views.draw_chars),
     url(r'^validate',                                               views.validate_root),
     url(r'^ajax/get_progress',                                      views.get_progress),
@@ -27,6 +28,7 @@ urlpatterns = [
     url(r'^ajax/validate',                                          views.validate_ajax),
     url(r'^ajax/get_to_verify_page',                                views.get_to_verify_page),
     url(r'^ajax/get_toshi',                                         views.get_toshi),
+    url(r'^ajax/get_bad_pages',                                     views.get_bad_pages),
     url(r'^ajax/post_offsets',                                      views.post_offsets),
     url(r'^ajax/post_characters',                                   views.post_characters),
     url(r'^$',                                                      views.webroot)

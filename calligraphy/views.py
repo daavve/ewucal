@@ -26,6 +26,10 @@ def draw_chars(request, old_or_new):
     tmplt = loader.get_template('calligraphy/draw_chars.html')
     cntxt = {'old_or_new': old_or_new}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
+    
+def eval_bad_pages(request):
+    tmplt = loader.get_template('calligraphy/eval_bad_pages.html')
+    return HttpResponse(tmplt.render(request=request))
 
 def webroot(request):
     tmplt = loader.get_template('calligraphy/view_root.html')
@@ -339,3 +343,33 @@ def post_characters(request):
     if not updated:
         to_draw_box_from_list.delete()
     return JsonResponse({"status" : "Done"})
+
+
+@csrf_exempt
+def get_bad_pages(request):
+    choice = random.choice(FlagForReview.objects.all())
+    choiceNumber = choice.id
+    pageNum = choice.parent_page.id
+    page = Page.objects.get(id=pageNum)
+    chars = Character.objects.filter(parent_page=page)
+    charList = []
+    for char in chars:
+        charList.append({'charId' : char.id,
+                         'URL' : Character.get_image(char),
+                         'mark' : char.mark,
+                         'x1' : char.x1,
+                         'y1' : char.y1,
+                         'x2' : char.x2,
+                         'y2' : char.y2,
+                         'x_thumb': char.image_width,
+                         'y_thumb': char.image_height,
+                         'area': (char.x2 - char.x1) * (char.y2 - char.y1)})
+    charList.sort(key=lambda k: k['area'], reverse=True)
+
+    data = {  'toDoId' : choiceNumber,
+              'pageId' : page.id,
+              'URL' : Page.get_image(page),
+              'height' : page.image_length,
+              'width' : page.image_width,
+              'chars' : charList}
+    return JsonResponse(data, safe=False)
