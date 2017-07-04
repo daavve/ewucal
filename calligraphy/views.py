@@ -176,22 +176,29 @@ def get_root_tree(request):
 
 @csrf_exempt
 def get_progress(request):
-    users = []
+    pg_users = []
     pages = []
-    userds = UserDid.objects.annotate(Count('pages_changed'))
+    ch_users = []
+    chars = []
     remain_box = ToDrawBoxesWBoxes.objects.all().count()
     remain_no_box = ToDrawBoxesWoBoxes.objects.all().count()
     
     remaining = [ remain_box, remain_no_box ]
     remain_name = [ "remain_box", "remain_no_box" ]
-    
+    userds = UserDid.objects.annotate(Count('pages_changed'))
     for userd in userds:
-        users.append(userd.user_supplied.username)
+        pg_users.append(userd.user_supplied.username)
         pages.append(userd.pages_changed__count)
-    response = {"names":            users,
-                "pages":            pages,
-                "remain_name":       remain_name,
-                "remaining":    remaining}
+    userds = UserDid.objects.annotate(Count('chars_changed'))
+    for userd in userds:
+        ch_users.append(userd.user_supplied.username)
+        chars.append(userd.chars_changed__count)
+    response = {"pg_names":             pg_users,
+                "pages":                pages,
+                "ch_names":             ch_users,
+                "chars":                chars,
+                "remain_name":          remain_name,
+                "remaining":            remaining}
     return JsonResponse(response, safe=False)
 
 @csrf_exempt
