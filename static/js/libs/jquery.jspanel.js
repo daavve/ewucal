@@ -1,4 +1,3 @@
-/* jquery.jspanel.js file version and date: 3.9.0 2017-05-28 10:25 */
 /* global jsPanel */
 'use strict';
 // Object.assign Polyfill - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Object/assign - ONLY FOR IE11
@@ -35,8 +34,8 @@ if (!Object.assign) {
 }
 
 var jsPanel = {
-    version:             '3.9.0',
-    date:                '2017-05-28 10:25',
+    version:             '3.9.3',
+    date:                '2017-07-15 12:05',
     id:                  0,     // counter to add to automatically generated id attribute
     ziBase:              100,   // the lowest z-index a jsPanel may have
     zi:                  100,   // z-index counter, has initially to be the same as ziBase
@@ -1069,6 +1068,7 @@ var jsPanel = {
             elmtStyles = window.getComputedStyle(elmt, null),
             elmtStylesPosition = elmtStyles.getPropertyValue('position'),
             elmtParentTagName = elmtParent.tagName.toLowerCase(),
+            elmtContent = elmt.querySelector('.jsPanel-content'),
             dragstart,
             drag,
             dragstop;
@@ -1125,7 +1125,6 @@ var jsPanel = {
 
         for (let i = 0; i < handles.length; i++) {
             handles[i].addEventListener(jsPanel.evtStart, function (e) {
-                e.stopPropagation();
                 let elmtRect = elmt.getBoundingClientRect(),             /* needs to be calculated on pointerdown!! */
                     elmtParentRect = elmtParent.getBoundingClientRect(), /* needs to be calculated on pointerdown!! */
                     elmtParentStyles = window.getComputedStyle(elmtParent, null),
@@ -1217,7 +1216,6 @@ var jsPanel = {
                 }
 
                 dragPanel = function (evt) {
-                    evt.stopPropagation();
                     // trigger dragstarted only once per drag
                     if (!dragstarted) {
                         document.dispatchEvent(dragstart);
@@ -1278,9 +1276,11 @@ var jsPanel = {
         document.addEventListener(jsPanel.evtEnd, function () {
             document.removeEventListener(jsPanel.evtMove, dragPanel, false);
             if (dragstarted) {
+                elmtContent.style.pointerEvents = 'inherit';
                 document.dispatchEvent(dragstop);
                 elmt.style.opacity = 1;
                 dragstarted = undefined;
+                jsPanel.calcPositionFactors(element);
                 if (typeof opts.stop === 'function') {opts.stop.call(el, el);}
             }
             // reenable window scrolling
@@ -1315,6 +1315,7 @@ var jsPanel = {
             elmtBottomBorder = parseInt(elmtStyles.getPropertyValue('border-bottom-width'), 10),
             elmtParent = elmt.parentElement,
             elmtParentTagName = elmtParent.tagName.toLowerCase(),
+            elmtContent = elmt.querySelector('.jsPanel-content'),
             maxWidth = typeof opts.maxWidth === 'function' ? opts.maxWidth() : opts.maxWidth,
             maxHeight = typeof opts.maxHeight === 'function' ? opts.maxHeight() : opts.maxHeight,
             minWidth = typeof opts.minWidth === 'function' ? opts.minWidth() : opts.minWidth,
@@ -1374,25 +1375,24 @@ var jsPanel = {
         let handles = elmt.getElementsByClassName('jsPanel-resizeit-handle');
         for (let i = 0; i < handles.length; i++) {
             handles[i].addEventListener(jsPanel.evtStart, function(e) {
-                e.stopPropagation();                                     /* prevent elmt from being dragged as well */
                 let elmtRect = elmt.getBoundingClientRect(),             /* needs to be calculated on pointerdown!! */
                     elmtParentRect = elmtParent.getBoundingClientRect(), /* needs to be calculated on pointerdown!! */
                     elmtParentStyles = window.getComputedStyle(elmtParent, null),
                     elmtParentPosition = elmtParentStyles.getPropertyValue('position'),
                     elmtParentLeftBorder = parseInt(elmtParentStyles.getPropertyValue('border-left-width'), 10),
                     elmtParentTopBorder = parseInt(elmtParentStyles.getPropertyValue('border-top-width'), 10),
-                    //elmtParentRightBorder = parseInt(elmtParentStyles.getPropertyValue('border-right-width'), 10),
                     elmtParentBottomBorder = parseInt(elmtParentStyles.getPropertyValue('border-bottom-width'), 10),
                     startX = e.pageX || e.touches[0].pageX,
                     startY = e.pageY || e.touches[0].pageY,
                     scrollLeft = window.scrollX || window.pageXOffset, // IE11 doesn't know scrollX
-                    scrollTop = window.scrollY || window.pageYOffset,  // IE11 doesn't know scrollY
                     startWidth = elmtRect.width,
                     startHeight = elmtRect.height,
                     startLeft,
                     startTop,
                     resizeHandle = e.target,
                     maxWidthEast = 10000, maxWidthWest = 10000, maxHeightSouth = 10000, maxHeightNorth = 10000;
+
+                elmtContent.style.pointerEvents = 'none';
 
                 if (elmtStylesPosition === 'fixed') {
                     startLeft = elmtRect.left - elmtLeftBorder - elmtRightBorder;
@@ -1612,27 +1612,30 @@ var jsPanel = {
                 }
                 jsPanel.contentResize(element);
 
-                document.removeEventListener(jsPanel.evtMove, resizePanel, false);
-                if (resizestarted) {
-                    document.dispatchEvent(resizestop);
-                    resizestarted = undefined;
-                    //  jsPanel specific code ---------------------------------------
-                    if ((jQuery(elmt).data('status') === 'smallified' || jQuery(elmt).data('status') === 'smallifiedMax') && jQuery(elmt).height() > jQuery(elmt).header.height()) {
-                        // ... and only when element height changed
-                        jQuery(elmt).hideControls(['.jsPanel-btn-normalize', '.jsPanel-btn-smallifyrev']);
-                        jQuery(elmt).data('status', 'normalized');
-                        jQuery(document).trigger('jspanelnormalized');
-                        jQuery(document).trigger('jspanelstatuschange');
-                    }
-                    jsPanel.calcPositionFactors(element);
-                    // jsPanel specific code end ------------------------------------
-                    if (typeof opts.stop === 'function') {
-                        opts.stop.call(el, el);
-                    }
-                }
-                // reenable window scrolling
-                window.removeEventListener(jsPanel.evtEnd, prevDefault, false);
             }
+
+            document.removeEventListener(jsPanel.evtMove, resizePanel, false);
+            if (resizestarted) {
+                elmtContent.style.pointerEvents = 'inherit';
+                document.dispatchEvent(resizestop);
+                resizestarted = undefined;
+                //  jsPanel specific code ---------------------------------------
+                if ((jQuery(elmt).data('status') === 'smallified' || jQuery(elmt).data('status') === 'smallifiedMax') && jQuery(elmt).height() > jQuery(elmt).header.height()) {
+                    // ... and only when element height changed
+                    jQuery(elmt).hideControls(['.jsPanel-btn-normalize', '.jsPanel-btn-smallifyrev']);
+                    jQuery(elmt).data('status', 'normalized');
+                    jQuery(document).trigger('jspanelnormalized');
+                    jQuery(document).trigger('jspanelstatuschange');
+                }
+                jsPanel.calcPositionFactors(element);
+                // jsPanel specific code end ------------------------------------
+                if (typeof opts.stop === 'function') {
+                    opts.stop.call(el, el);
+                }
+            }
+            // reenable window scrolling
+            window.removeEventListener(jsPanel.evtEnd, prevDefault, false);
+
         }, false);
 
         return el;
@@ -3805,7 +3808,7 @@ if ('onpointerup' in window) {
         if (jQuery.ui && jQuery.ui.draggable) {
             jsP.on('dragstop', () => jsPanel.calcPositionFactors(jsP));
         }
-        jsP.on('mousedown', (e) => {
+        jsP.on(jsPanel.evtStart, (e) => {
 
             if (e.target.classList.contains('jsglyph-close') || e.target.classList.contains('jsglyph-minimize')) {
                 return;
