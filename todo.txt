@@ -1,12 +1,7 @@
-Do Something like this to toggle the select cursor on / off:
 
- <script>
-  $(function() {
-    $( "#draggable" ).draggable({
-      cursor:"crosshair"
-    });
-  });
-  </script>
-  
-  
-Use this method to draw an initial bounding box around characters.
+
+High priority:
+    * Integrate segmenation bounding boxes into your program
+
+Low Priority:
+    * Add a don chars bar chart to the progress page
