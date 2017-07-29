@@ -253,7 +253,7 @@ def get_toshi(request):
 def find_boxes(request):
     getdict = request.GET.dict()
     page_id = int(getdict['page_id'])
-    white_chars = bool(getdict['white_chars'])
+    white_chars = getdict['white_chars'] == 'true'
     page = Page.objects.get(id=page_id)
     
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
