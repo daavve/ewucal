@@ -251,11 +251,12 @@ function iWindow (iImg) {
         {
              
             for(let $box of $image.boxes){
-                $box.selectable.remove();
-                $box.resizable.remove();
+                $box.selectable.empty().remove();
+                $box.resizable.empty().remove();
             }
 
-            //$image.boxes = new Set();
+            $image.boxes = new Set();
+            $viewport.boxes = new Set();
             $image.has_boxes = false;
         }
 
