@@ -242,9 +242,20 @@ function iWindow (iImg) {
         get_segment(false);
     });
     
+    var dialate_iteration = 0;
+    
+    
     function get_segment(white_chars) {
+        for (let $box of $image.boxes)
+        {
+           $box.selectable.remove();
+        }
+
+        $image.update_boxes = true;
+        
         $.getJSON('/ajax/find_boxes', {'page_id': $image.page_id,
-                                       'white_chars': white_chars}).done(function( newChars ) {
+                                       'white_chars': white_chars,
+                                       'iteration': dialate_iteration++}).done(function( newChars ) {
                                             for (let char of newChars.chars) {
                                                 build_a_box(char, false);
                                             }
@@ -510,15 +521,15 @@ $(document).keydown(function(event) {
     if (keyName === 'Delete') {
         if($image.box_is_selected)
         {
-            if ($image.box_last_selected.just_added)
-            {
-                $image.boxes.delete($image.box_last_selected);
-            }
+ //           if ($image.box_last_selected.just_added)
+   //         {
+     //           $image.boxes.delete($image.box_last_selected);
+       //     }
             $image.box_is_selected = false;
             $image.box_last_selected.selectable.deleted = true;
             $image.box_last_selected.selectable.changed = true;
             $image.box_last_selected.resizable.hide();
-            $viewport.boxes.delete($image.box_last_selected);
+       //     $viewport.boxes.delete($image.box_last_selected);
         }
         $image.update_boxes = true;
         return;
