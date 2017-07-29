@@ -16,6 +16,7 @@ function iWindow (iImg) {
 
     var $image = $('.draggable').extend({
         boxes: null,        //These are for the actual uploading
+        has_boxes: false,
         to_do_id: iImg.toDoId,
         min_width: null,
         max_width: null,
@@ -246,16 +247,25 @@ function iWindow (iImg) {
     
     
     function get_segment(white_chars) {
-        for (let $box of $image.boxes)
+        if($image.has_boxes)
         {
-           $box.selectable.remove();
+             
+            for(let $box of $image.boxes){
+                $box.selectable.remove();
+                $box.resizable.remove();
+            }
+
+            //$image.boxes = new Set();
+            $image.has_boxes = false;
         }
+
 
         $image.update_boxes = true;
         
         $.getJSON('/ajax/find_boxes', {'page_id': $image.page_id,
                                        'white_chars': white_chars,
                                        'iteration': dialate_iteration++}).done(function( newChars ) {
+                                            $image.has_boxes = true;
                                             for (let char of newChars.chars) {
                                                 build_a_box(char, false);
                                             }
@@ -447,7 +457,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
             $viewport.append($charBox).append($dragBox);
             $viewport.boxes.add(boxPack);
             $image.boxes.add(boxPack);
-            
+            $image.has_boxes = true;
             return boxPack;
     }
 
@@ -521,15 +531,15 @@ $(document).keydown(function(event) {
     if (keyName === 'Delete') {
         if($image.box_is_selected)
         {
- //           if ($image.box_last_selected.just_added)
-   //         {
-     //           $image.boxes.delete($image.box_last_selected);
-       //     }
+            if ($image.box_last_selected.just_added)
+            {
+                $image.boxes.delete($image.box_last_selected);
+            }
             $image.box_is_selected = false;
             $image.box_last_selected.selectable.deleted = true;
             $image.box_last_selected.selectable.changed = true;
             $image.box_last_selected.resizable.hide();
-       //     $viewport.boxes.delete($image.box_last_selected);
+            $viewport.boxes.delete($image.box_last_selected);
         }
         $image.update_boxes = true;
         return;
