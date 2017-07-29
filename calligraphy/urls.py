@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^ajax/get_root_tree',                                     views.get_root_tree),
     url(r'^ajax/validate',                                          views.validate_ajax),
     url(r'^ajax/get_to_verify_page',                                views.get_to_verify_page),
-    url(r'^ajax/get_toshi',                                         views.get_toshi),
+    url(r'^ajax/find_boxes',                                        views.find_boxes),
     url(r'^ajax/get_bad_pages',                                     views.get_bad_pages),
     url(r'^ajax/post_offsets',                                      views.post_offsets),
     url(r'^ajax/post_characters',                                   views.post_characters),

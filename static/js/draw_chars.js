@@ -234,6 +234,25 @@ function iWindow (iImg) {
         }
     });
     
+    $( '.automatic_segment_button_w' ).button().click(function() {
+        get_segment(true);
+    });
+    
+    $( '.automatic_segment_button_b' ).button().click(function() {
+        get_segment(false);
+    });
+    
+    function get_segment(white_chars) {
+        $.getJSON('/ajax/find_boxes', {'page_id': $image.page_id,
+                                       'white_chars': white_chars}).done(function( newChars ) {
+                                            for (let char of newChars.chars) {
+                                                build_a_box(char, false);
+                                            }
+                                            $image.update_boxes = true;
+                                            });
+
+    }
+    
 
     
     function submit_form(flagged){

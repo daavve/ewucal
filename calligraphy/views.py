@@ -18,6 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
+from skimage import io, morphology, util, color, measure, filters
+
 def view_progress(request):
     tmplt = loader.get_template('calligraphy/view_progress.html')
     return HttpResponse(tmplt.render(request=request))
@@ -246,6 +248,40 @@ def get_toshi(request):
                     'x2' : x_mid + of_right,
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
+
+
+def find_boxes(request):
+    getdict = request.GET.dict()
+    page_id = int(getdict['page_id'])
+    white_chars = bool(getdict['white_chars'])
+    page = Page.objects.get(id=page_id)
+    
+    img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
+    imgi = 255 - img
+    threshold = filters.threshold_li(img)
+    if white_chars:
+        bw =  img > threshold
+    else:
+        bw = img < threshold
+    labels = measure.label(bw, connectivity=2)
+    lbl_props = measure.regionprops(labels)
+    charlist = []
+    for prop in lbl_props:
+        bbox = prop.bbox
+        charlist.append({'charId' : 0,
+                    'pageId' : 0,
+                    'authorId' : 0,
+                    'authorName': str(white_chars),
+                    'workId' : 0,
+                    'URL' : '#',
+                    'mark' : '#',
+                    'x1' : bbox[1],
+                    'y1' : bbox[0],
+                    'x2' : bbox[3],
+                    'y2' : bbox[2]})
+        
+    
+    return JsonResponse({'chars': charlist}, safe=False)
 
 
 @require_http_methods(['POST'])
