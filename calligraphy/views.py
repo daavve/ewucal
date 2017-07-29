@@ -271,7 +271,7 @@ def find_boxes(request):
         charlist.append({'charId' : 0,
                     'pageId' : 0,
                     'authorId' : 0,
-                    'authorName': str(white_chars),
+                    'authorName': #,
                     'workId' : 0,
                     'URL' : '#',
                     'mark' : '#',
