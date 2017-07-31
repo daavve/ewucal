@@ -93,11 +93,11 @@ function iWindow (iImg) {
                 $viewport.y_start = e.pageY;
             },
             stop: function(e){
-                let p1 = reverseCoordinates({x: Math.min($viewport.x_start, e.pageX) - 14,
-                                             y: Math.min($viewport.y_start, e.pageY) - 14
+                let p1 = reverseCoordinates({x: Math.min($viewport.x_start, e.pageX) - 15,
+                                             y: Math.min($viewport.y_start, e.pageY) - 13
                                         });
-                let p2 = reverseCoordinates({x: Math.max($viewport.x_start, e.pageX) - 14,
-                                             y: Math.max($viewport.y_start, e.pageY) - 14
+                let p2 = reverseCoordinates({x: Math.max($viewport.x_start, e.pageX) - 15,
+                                             y: Math.max($viewport.y_start, e.pageY) - 13
                                         });
                 $image.box_last_selected = build_a_box({
                     x1: p1.x,
@@ -194,10 +194,10 @@ function iWindow (iImg) {
     
     function updateBoxPosition($box) {
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y),
-            width: Math.round($image.scale_factor * $box.x_len),
-            height: Math.round($image.scale_factor * $box.y_len)
+            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x) - 1,
+            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y) - 1,
+            width: Math.round($image.scale_factor * $box.x_len) + 1,
+            height: Math.round($image.scale_factor * $box.y_len) + 1
         });
     }
     
@@ -244,6 +244,7 @@ function iWindow (iImg) {
     });
     
     var dialate_iteration = 0;
+    var erosion_iteration = 0;
     
     
     function get_segment(white_chars) {
@@ -259,13 +260,22 @@ function iWindow (iImg) {
             $viewport.boxes = new Set();
             $image.has_boxes = false;
         }
+        let iteration = null;
+        if(white_chars)
+        {
+            iteration = erosion_iteration++;
+        }
+        else
+        {
+            iteration = dialate_iteration++;
+        }
 
 
         $image.update_boxes = true;
         
         $.getJSON('/ajax/find_boxes', {'page_id': $image.page_id,
                                        'white_chars': white_chars,
-                                       'iteration': dialate_iteration++}).done(function( newChars ) {
+                                       'iteration': iteration}).done(function( newChars ) {
                                             $image.has_boxes = true;
                                             for (let char of newChars.chars) {
                                                 build_a_box(char, false);
