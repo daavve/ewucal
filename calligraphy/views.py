@@ -254,33 +254,38 @@ def find_boxes(request):
     getdict = request.GET.dict()
     page_id = int(getdict['page_id'])
     white_chars = getdict['white_chars'] == 'true'
+    iteration = int(getdict['iteration'])
     page = Page.objects.get(id=page_id)
     
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
-    imgi = 255 - img
     threshold = filters.threshold_li(img)
     if white_chars:
         bw =  img > threshold
     else:
         bw = img < threshold
+    for times_eroded in range(iteration):
+        bw = morphology.binary_erosion(bw)
+        
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
     charlist = []
     for prop in lbl_props:
         bbox = prop.bbox
-        charlist.append({'charId' : 0,
-                    'pageId' : 0,
-                    'authorId' : 0,
-                    'authorName': '#',
-                    'workId' : 0,
-                    'URL' : '#',
-                    'mark' : '#',
-                    'x1' : bbox[1],
-                    'y1' : bbox[0],
-                    'x2' : bbox[3],
-                    'y2' : bbox[2]})
-        
-    
+        area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
+        if area >= 9:
+            charlist.append({'charId' : 0,
+                        'pageId' : 0,
+                        'authorId' : 0,
+                        'authorName': '#',
+                        'workId' : 0,
+                        'URL' : '#',
+                        'mark' : '#',
+                        'x1' : bbox[1],
+                        'y1' : bbox[0],
+                        'x2' : bbox[3],
+                        'y2' : bbox[2],
+                        'area': area})
+    charlist.sort(key=lambda k: k['area'], reverse=True)
     return JsonResponse({'chars': charlist}, safe=False)
 
 
