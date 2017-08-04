@@ -19,6 +19,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
 from skimage import io, morphology, util, color, measure, filters
+import numpy as np
 
 def view_progress(request):
     tmplt = loader.get_template('calligraphy/view_progress.html')
@@ -259,10 +260,22 @@ def find_boxes(request):
     
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
     threshold = filters.threshold_li(img)
+    img_sobel = filters.sobel(img)
+    threshold_sobel = filters.threshold_li(img_sobel)
     if white_chars:
-        bw =  img > threshold
+        bw =  np.array(img < threshold)
+        sobel = np.array(img_sobel > threshold_sobel)
+        np.putmask(bw, sobel, False)
+        bw = bw == False
     else:
-        bw = img < threshold
+        bw = np.array(img < threshold)
+        sobel = np.array(img_sobel < threshold_sobel)
+        np.putmask(bw, sobel, False)
+        
+    for times_eroded in range(iteration):
+        bw = morphology.binary_erosion(bw)
+
+    
     for times_eroded in range(iteration):
         bw = morphology.binary_erosion(bw)
         
@@ -272,8 +285,7 @@ def find_boxes(request):
     for prop in lbl_props:
         bbox = prop.bbox
         area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
-        if area >= 9:
-            charlist.append({'charId' : 0,
+        charlist.append({'charId' : 0,
                         'pageId' : 0,
                         'authorId' : 0,
                         'authorName': '#',
@@ -286,7 +298,15 @@ def find_boxes(request):
                         'y2' : bbox[2],
                         'area': area})
     charlist.sort(key=lambda k: k['area'], reverse=True)
-    return JsonResponse({'chars': charlist}, safe=False)
+    
+    sendlist = []
+    min_area = charlist[0]['area'] / 50
+    for char in charlist:
+        if char['area'] < min_area:
+            break
+        sendlist.append(char)
+    
+    return JsonResponse({'chars': sendlist}, safe=False)
 
 
 @require_http_methods(['POST'])
