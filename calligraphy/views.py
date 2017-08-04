@@ -18,8 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
-from skimage import io, morphology, util, color, measure, filters
-import numpy as np
+from skimage import io, morphology, util, color, measure, filters, segmentation
 
 def view_progress(request):
     tmplt = loader.get_template('calligraphy/view_progress.html')
@@ -260,24 +259,16 @@ def find_boxes(request):
     
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
     threshold = filters.threshold_li(img)
-    img_sobel = filters.sobel(img)
-    threshold_sobel = filters.threshold_li(img_sobel)
     if white_chars:
-        bw =  np.array(img < threshold)
-        sobel = np.array(img_sobel > threshold_sobel)
-        np.putmask(bw, sobel, False)
-        bw = bw == False
+        bw =  img > threshold
     else:
-        bw = np.array(img < threshold)
-        sobel = np.array(img_sobel < threshold_sobel)
-        np.putmask(bw, sobel, False)
+        bw = img < threshold
+
         
     for times_eroded in range(iteration):
         bw = morphology.binary_erosion(bw)
-
-    
-    for times_eroded in range(iteration):
-        bw = morphology.binary_erosion(bw)
+        
+    bw = segmentation.clear_border(bw)
         
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
