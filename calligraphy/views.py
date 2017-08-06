@@ -250,6 +250,7 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 
+
 def find_boxes(request):
     getdict = request.GET.dict()
     page_id = int(getdict['page_id'])
@@ -291,7 +292,7 @@ def find_boxes(request):
     charlist.sort(key=lambda k: k['area'], reverse=True)
     
     sendlist = []
-    min_area = charlist[0]['area'] / 50
+    min_area = charlist[0]['area'] / 100
     for char in charlist:
         if char['area'] < min_area:
             break
