@@ -250,20 +250,17 @@ def get_toshi(request):
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
 
-def get_me_some_boxes(img, iteration, white_chars):
+def get_me_some_boxes(img, white_chars):
     threshold = filters.threshold_li(img)
     if white_chars:
         bw =  img > threshold
     else:
         bw = img < threshold
 
-        
-    for times_eroded in range(iteration):
-        bw = morphology.binary_erosion(bw)
-        
-        
+       
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
+    sorted(lbl_props, key=lambda k: k['area'], reverse=True)
     charlist = []
     for prop in lbl_props:
         bbox = prop.bbox
@@ -281,18 +278,9 @@ def get_me_some_boxes(img, iteration, white_chars):
                         'y2' : bbox[2],
                         'area': area,
                         'bbox': bbox})
-    charlist.sort(key=lambda k: k['area'], reverse=True)
-    min_area = charlist[0]['area'] / 100
-    newlist = []
-    for char in charlist:
-        if char['area'] > min_area:
-            newlist.append(char)
-        else:
-            break
+    return charlist
     
-    return newlist
-    
-def get_me_some_fast_boxes(img, iteration, white_chars, box_area):
+def get_me_some_fast_boxes(img, iteration, white_chars):
     threshold = filters.threshold_li(img)
     if white_chars:
         bw =  img > threshold
@@ -300,9 +288,13 @@ def get_me_some_fast_boxes(img, iteration, white_chars, box_area):
         bw = img < threshold
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
+    sorted(lbl_props, key=lambda k: k['area'])
+    area_cutoff = lbl_props[len(lbl_props) - 1].area / 100
     for prop in lbl_props:
-        if prop.area < box_area:
+        if prop.area < area_cutoff:
             np.putmask(bw, labels == prop.label, False)
+        else:
+            break
     for num in range(iteration):
         bw = morphology.dilation(bw)
     labels = measure.label(bw, connectivity=2)
@@ -310,7 +302,6 @@ def get_me_some_fast_boxes(img, iteration, white_chars, box_area):
     charlist = []
     for prop in lbl_props:
         bbox = prop.bbox
-        area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
         charlist.append({'charId' : 0,
                         'pageId' : 0,
                         'authorId' : 0,
@@ -322,9 +313,7 @@ def get_me_some_fast_boxes(img, iteration, white_chars, box_area):
                         'y1' : bbox[0],
                         'x2' : bbox[3],
                         'y2' : bbox[2],
-                        'area': area,
                         'bbox': bbox})
-    charlist.sort(key=lambda k: k['area'], reverse=True)
     return charlist
 
 def find_boxes(request):
@@ -334,9 +323,7 @@ def find_boxes(request):
     iteration = int(getdict['iteration'])
     page = Page.objects.get(id=page_id)
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
-    boxes = get_me_some_boxes(img, 0, white_chars)
-    box_area = boxes[0]['area'] / 500
-    boxes = get_me_some_fast_boxes(img, iteration - 1, white_chars, box_area)
+    boxes = get_me_some_fast_boxes(img, iteration - 1, white_chars)
         
     
     return JsonResponse({'chars': boxes}, safe=False)
