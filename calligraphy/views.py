@@ -19,6 +19,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
 from skimage import io, morphology, util, color, measure, filters, segmentation
+from operator import attrgetter
 import numpy as np
 
 def view_progress(request):
@@ -288,9 +289,9 @@ def get_me_some_fast_boxes(img, iteration, white_chars):
         bw = img < threshold
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
-    sorted(lbl_props, key=lambda k: k['area'])
-    area_cutoff = lbl_props[len(lbl_props) - 1].area / 100
-    for prop in lbl_props:
+    sprops = sorted(lbl_props, key=attrgetter('area'))
+    area_cutoff = int(sprops[len(sprops) - 1].area / 100)
+    for prop in sprops:
         if prop.area < area_cutoff:
             np.putmask(bw, labels == prop.label, False)
         else:
@@ -323,7 +324,7 @@ def find_boxes(request):
     iteration = int(getdict['iteration'])
     page = Page.objects.get(id=page_id)
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
-    boxes = get_me_some_fast_boxes(img, iteration - 1, white_chars)
+    boxes = get_me_some_fast_boxes(img, iteration, white_chars)
         
     
     return JsonResponse({'chars': boxes}, safe=False)
