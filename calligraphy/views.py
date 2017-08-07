@@ -19,6 +19,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
 from skimage import io, morphology, util, color, measure, filters, segmentation
+import numpy as np
 
 def view_progress(request):
     tmplt = loader.get_template('calligraphy/view_progress.html')
@@ -249,16 +250,7 @@ def get_toshi(request):
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
 
-
-
-def find_boxes(request):
-    getdict = request.GET.dict()
-    page_id = int(getdict['page_id'])
-    white_chars = getdict['white_chars'] == 'true'
-    iteration = int(getdict['iteration'])
-    page = Page.objects.get(id=page_id)
-    
-    img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
+def get_me_some_boxes(img, iteration, white_chars):
     threshold = filters.threshold_li(img)
     if white_chars:
         bw =  img > threshold
@@ -269,7 +261,6 @@ def find_boxes(request):
     for times_eroded in range(iteration):
         bw = morphology.binary_erosion(bw)
         
-    bw = segmentation.clear_border(bw)
         
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
@@ -288,17 +279,67 @@ def find_boxes(request):
                         'y1' : bbox[0],
                         'x2' : bbox[3],
                         'y2' : bbox[2],
-                        'area': area})
+                        'area': area,
+                        'bbox': bbox})
     charlist.sort(key=lambda k: k['area'], reverse=True)
-    
-    sendlist = []
     min_area = charlist[0]['area'] / 100
+    newlist = []
     for char in charlist:
-        if char['area'] < min_area:
+        if char['area'] > min_area:
+            newlist.append(char)
+        else:
             break
-        sendlist.append(char)
     
-    return JsonResponse({'chars': sendlist}, safe=False)
+    return newlist
+    
+def get_me_some_fast_boxes(img, iteration, white_chars, box_area):
+    threshold = filters.threshold_li(img)
+    if white_chars:
+        bw =  img > threshold
+    else:
+        bw = img < threshold
+    labels = measure.label(bw, connectivity=2)
+    lbl_props = measure.regionprops(labels)
+    for prop in lbl_props:
+        if prop.area < box_area:
+            np.putmask(bw, labels == prop.label, False)
+    for num in range(iteration):
+        bw = morphology.dilation(bw)
+    labels = measure.label(bw, connectivity=2)
+    lbl_props = measure.regionprops(labels)
+    charlist = []
+    for prop in lbl_props:
+        bbox = prop.bbox
+        area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
+        charlist.append({'charId' : 0,
+                        'pageId' : 0,
+                        'authorId' : 0,
+                        'authorName': '#',
+                        'workId' : 0,
+                        'URL' : '#',
+                        'mark' : '#',
+                        'x1' : bbox[1],
+                        'y1' : bbox[0],
+                        'x2' : bbox[3],
+                        'y2' : bbox[2],
+                        'area': area,
+                        'bbox': bbox})
+    charlist.sort(key=lambda k: k['area'], reverse=True)
+    return charlist
+
+def find_boxes(request):
+    getdict = request.GET.dict()
+    page_id = int(getdict['page_id'])
+    white_chars = getdict['white_chars'] == 'true'
+    iteration = int(getdict['iteration'])
+    page = Page.objects.get(id=page_id)
+    img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
+    boxes = get_me_some_boxes(img, 0, white_chars)
+    box_area = boxes[0]['area'] / 500
+    boxes = get_me_some_fast_boxes(img, iteration - 1, white_chars, box_area)
+        
+    
+    return JsonResponse({'chars': boxes}, safe=False)
 
 
 @require_http_methods(['POST'])
