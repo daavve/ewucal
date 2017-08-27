@@ -18,7 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 
-from skimage import io, morphology, util, color, measure, filters, segmentation
+from skimage import io, morphology, util, color, measure, filters, segmentation, transform
 from operator import attrgetter
 import numpy as np
 
@@ -251,37 +251,7 @@ def get_toshi(request):
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
 
-def get_me_some_boxes(img, white_chars):
-    threshold = filters.threshold_li(img)
-    if white_chars:
-        bw =  img > threshold
-    else:
-        bw = img < threshold
-
-       
-    labels = measure.label(bw, connectivity=2)
-    lbl_props = measure.regionprops(labels)
-    sorted(lbl_props, key=lambda k: k['area'], reverse=True)
-    charlist = []
-    for prop in lbl_props:
-        bbox = prop.bbox
-        area = (bbox[3] - bbox[1]) * (bbox[2] - bbox[0])
-        charlist.append({'charId' : 0,
-                        'pageId' : 0,
-                        'authorId' : 0,
-                        'authorName': '#',
-                        'workId' : 0,
-                        'URL' : '#',
-                        'mark' : '#',
-                        'x1' : bbox[1],
-                        'y1' : bbox[0],
-                        'x2' : bbox[3],
-                        'y2' : bbox[2],
-                        'area': area,
-                        'bbox': bbox})
-    return charlist
-    
-def get_me_some_fast_boxes(img, iteration, white_chars):
+def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
     threshold = filters.threshold_li(img)
     if white_chars:
         bw =  img > threshold
@@ -289,19 +259,13 @@ def get_me_some_fast_boxes(img, iteration, white_chars):
         bw = img < threshold
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
-    sprops = sorted(lbl_props, key=attrgetter('area'))
-    area_cutoff = int(sprops[len(sprops) - 1].area / 100)
-    for prop in sprops:
-        if prop.area < area_cutoff:
-            np.putmask(bw, labels == prop.label, False)
-        else:
-            break
-    for num in range(iteration):
-        bw = morphology.dilation(bw)
-    labels = measure.label(bw, connectivity=2)
-    lbl_props = measure.regionprops(labels)
+    sprops = sorted(lbl_props, key=attrgetter('area'), reverse=True)
+    chars_num = len(sprops)
     charlist = []
-    for prop in lbl_props:
+    sprops_iter = sprops.__iter__()
+    stop_here = min(100, chars_num)
+    for i in range(stop_here):
+        prop = sprops_iter.__next__()
         bbox = prop.bbox
         charlist.append({'charId' : 0,
                         'pageId' : 0,
@@ -310,12 +274,12 @@ def get_me_some_fast_boxes(img, iteration, white_chars):
                         'workId' : 0,
                         'URL' : '#',
                         'mark' : '#',
-                        'x1' : bbox[1],
-                        'y1' : bbox[0],
-                        'x2' : bbox[3],
-                        'y2' : bbox[2],
-                        'bbox': bbox})
-    return charlist
+                        'x1' : bbox[1] * scale_val,
+                        'y1' : bbox[0] * scale_val,
+                        'x2' : bbox[3] * scale_val,
+                        'y2' : bbox[2] * scale_val})
+    box_set = {'chars': charlist}
+    return box_set
 
 def find_boxes(request):
     getdict = request.GET.dict()
@@ -324,10 +288,17 @@ def find_boxes(request):
     iteration = int(getdict['iteration'])
     page = Page.objects.get(id=page_id)
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
-    boxes = get_me_some_fast_boxes(img, iteration, white_chars)
-        
+    img_max = max(img.shape)
+    if img_max > 1000:
+        scale_val = img_max / 1000
+        nimg = transform.rescale(img, 1000 / img_max)
+    else:
+        scale_val = 1
+        nimg = img
+    boxset = get_me_some_fast_boxes(nimg, iteration, white_chars, scale_val)
     
-    return JsonResponse({'chars': boxes}, safe=False)
+    
+    return JsonResponse(boxset, safe=False)
 
 
 @require_http_methods(['POST'])
