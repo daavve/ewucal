@@ -263,7 +263,8 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
     chars_num = len(sprops)
     charlist = []
     sprops_iter = sprops.__iter__()
-    stop_here = min(100, chars_num)
+    stop_here = min(10000, chars_num)
+    #stop_here = int(len(sprops) * .1)
     for i in range(stop_here):
         prop = sprops_iter.__next__()
         bbox = prop.bbox
@@ -274,10 +275,10 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
                         'workId' : 0,
                         'URL' : '#',
                         'mark' : '#',
-                        'x1' : bbox[1] * scale_val,
-                        'y1' : bbox[0] * scale_val,
-                        'x2' : bbox[3] * scale_val,
-                        'y2' : bbox[2] * scale_val})
+                        'x1' : int(bbox[1] * scale_val),
+                        'y1' : int(bbox[0] * scale_val),
+                        'x2' : int(bbox[3] * scale_val),
+                        'y2' : int(bbox[2] * scale_val)})
     box_set = {'chars': charlist}
     return box_set
 
@@ -289,9 +290,10 @@ def find_boxes(request):
     page = Page.objects.get(id=page_id)
     img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
     img_max = max(img.shape)
-    if img_max > 1000:
-        scale_val = img_max / 1000
-        nimg = transform.rescale(img, 1000 / img_max)
+    RESCALE_SIZE = 1000
+    if img_max > RESCALE_SIZE:
+        scale_val = img_max / RESCALE_SIZE
+        nimg = transform.rescale(img, RESCALE_SIZE / img_max)
     else:
         scale_val = 1
         nimg = img
