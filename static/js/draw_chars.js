@@ -194,10 +194,10 @@ function iWindow (iImg) {
     
     function updateBoxPosition($box) {
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x) - 1,
-            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y) - 1,
-            width: Math.round($image.scale_factor * $box.x_len) + 1,
-            height: Math.round($image.scale_factor * $box.y_len) + 1
+            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x) - 2,
+            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y) - 2,
+            width: Math.round($image.scale_factor * $box.x_len) + 2,
+            height: Math.round($image.scale_factor * $box.y_len) + 2
         });
     }
     

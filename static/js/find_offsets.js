@@ -140,10 +140,10 @@ function iWindow (iImg) {
         let xmult = scaleIndex + parseFloat($image.box_scale_x_offset_set[$image.active_set] / 1000);
         let ymult = scaleIndex + parseFloat($image.box_scale_y_offset_set[$image.active_set] / 1000);
         $box.css({
-            left: Math.round($image.scale_factor * ($box.x_top * xmult + $image.box_offset_left) + $viewport.middle_x),
-            top: Math.round($image.scale_factor * ($box.y_top * ymult + $image.box_offset_top) + $viewport.middle_y),
-            width: Math.round($image.scale_factor * $box.x_len * xmult),
-            height: Math.round($image.scale_factor * $box.y_len * ymult)
+            left: Math.round($image.scale_factor * ($box.x_top + $image.offset_left) + $viewport.middle_x) - 2,
+            top: Math.round($image.scale_factor * ($box.y_top + $image.offset_top) + $viewport.middle_y) - 2,
+            width: Math.round($image.scale_factor * $box.x_len) + 2,
+            height: Math.round($image.scale_factor * $box.y_len) + 2
         });
     }
     
