@@ -252,7 +252,7 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    SEGMENTS = 3 #eg: 3*3=9
+    SEGMENTS = 5 #eg: 5^2=25
     img_threshold = np.zeros_like(img)
     IMG_LEN = img.shape[0]
     IMG_WID = img.shape[1]
@@ -263,8 +263,10 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
         for j in range(0, IMG_WID, J_STRIDE):
             j_box = min(IMG_WID, j + J_STRIDE)
             subimage = img[i:i_box, j:j_box]
-            threshold = int(filters.threshold_li(subimage))
-            img_threshold[i:i_box, j:j_box].fill(threshold)
+            if subimage.min() == subimage.max():
+                img_threshold[i:i_box, j:j_box].fill(subimage[0][0])
+            else:
+                img_threshold[i:i_box, j:j_box].fill(int(filters.threshold_li(subimage)))
     if white_chars:
         bw =  img > img_threshold
     else:
