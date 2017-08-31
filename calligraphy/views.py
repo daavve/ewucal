@@ -252,19 +252,30 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    threshold = filters.threshold_li(img)
+    SEGMENTS = 3 #eg: 3*3=9
+    img_threshold = np.zeros_like(img)
+    IMG_LEN = img.shape[0]
+    IMG_WID = img.shape[1]
+    I_STRIDE= int(IMG_LEN / SEGMENTS)
+    J_STRIDE = int(IMG_WID / SEGMENTS)
+    for i in range(0, IMG_LEN, I_STRIDE):
+        i_box = min(IMG_LEN, i + I_STRIDE)
+        for j in range(0, IMG_WID, J_STRIDE):
+            j_box = min(IMG_WID, j + J_STRIDE)
+            subimage = img[i:i_box, j:j_box]
+            threshold = int(filters.threshold_li(subimage))
+            img_threshold[i:i_box, j:j_box].fill(threshold)
     if white_chars:
-        bw =  img > threshold
+        bw =  img > img_threshold
     else:
-        bw = img < threshold
+        bw = img < img_threshold
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
     sprops = sorted(lbl_props, key=attrgetter('area'), reverse=True)
     chars_num = len(sprops)
     charlist = []
     sprops_iter = sprops.__iter__()
-    stop_here = min(10000, chars_num)
-    #stop_here = int(len(sprops) * .1)
+    stop_here = min(1000, chars_num)
     for i in range(stop_here):
         prop = sprops_iter.__next__()
         bbox = prop.bbox
@@ -288,15 +299,15 @@ def find_boxes(request):
     white_chars = getdict['white_chars'] == 'true'
     iteration = int(getdict['iteration'])
     page = Page.objects.get(id=page_id)
-    img = util.img_as_ubyte(color.rgb2grey(io.imread(page.get_image())))
+    img = color.rgb2grey(io.imread(page.get_image()))
     img_max = max(img.shape)
     RESCALE_SIZE = 1000
     if img_max > RESCALE_SIZE:
         scale_val = img_max / RESCALE_SIZE
-        nimg = transform.rescale(img, RESCALE_SIZE / img_max)
+        nimg = util.img_as_ubyte(transform.rescale(img, RESCALE_SIZE / img_max))
     else:
         scale_val = 1
-        nimg = img
+        nimg =  util.img_as_ubyte(img)
     boxset = get_me_some_fast_boxes(nimg, iteration, white_chars, scale_val)
     
     
