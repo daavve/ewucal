@@ -251,24 +251,39 @@ def get_toshi(request):
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
 
+#ToDo 4 
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    SEGMENTS = 5 #eg: 5^2=25
+    SEGMENTS = 3 #eg: 5^2=25
+    SUBSEGMENTS = 3 # These are segments we use for averaging purposes
     img_threshold = np.zeros_like(img)
     IMG_LEN = img.shape[0]
     IMG_WID = img.shape[1]
     I_STRIDE= int(IMG_LEN / SEGMENTS)
+    I_STRIDE_M = int(I_STRIDE / SUBSEGMENTS)
     J_STRIDE = int(IMG_WID / SEGMENTS)
+    J_STRIDE_M = int(J_STRIDE / SUBSEGMENTS)
+    threshold_root = filters.threshold_li(img)
     for i in range(0, IMG_LEN, I_STRIDE):
         i_box = min(IMG_LEN, i + I_STRIDE)
         for j in range(0, IMG_WID, J_STRIDE):
             j_box = min(IMG_WID, j + J_STRIDE)
             subimage = img[i:i_box, j:j_box]
             if subimage.min() == subimage.max():
-                img_threshold[i:i_box, j:j_box].fill(subimage[0][0])
+                img_threshold[i:i_box, j:j_box].fill(threshold_root)
             else:
-                img_threshold[i:i_box, j:j_box].fill(int(filters.threshold_li(subimage)))
+                threshold_parent = filters.threshold_li(subimage) + threshold_root
+                for i_sub in range(i, i_box, I_STRIDE_M):
+                    i_box_m = min(i_box, i_sub + I_STRIDE_M)
+                    for j_sub in range(j, j_box, J_STRIDE_M):
+                        j_box_m = min(j_box, j_sub + J_STRIDE_M)
+                        subsubimage = img[i_sub:i_box_m, j_sub:j_box_m]
+                        if subsubimage.min() == subsubimage.max():
+                            this_threshold = int(threshold_parent / 2)
+                        else:
+                            this_threshold = int((threshold_parent + filters.threshold_li(subsubimage)) / 3 )
+                            img_threshold[i_sub:i_box_m, j_sub:j_box_m].fill(this_threshold)
     if white_chars:
-        bw =  img > img_threshold
+        bw = img > img_threshold
     else:
         bw = img < img_threshold
     labels = measure.label(bw, connectivity=2)
