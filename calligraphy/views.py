@@ -253,11 +253,10 @@ def get_toshi(request):
 
 
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    NUM_CHARS_EXPECTED = 100 # Most critical knob, determines number of boxes outputted., can maybe derive this using frequency statistics
-    SEGMENTS = 9 #eg: 5^2=25
-    SUBSEGMENTS = 9
-    WEIGHT_TOP = 5 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
-    WEIGHT_MIDDLE = 3
+    SEGMENTS = 3 #eg: 5^2=25
+    SUBSEGMENTS = 5
+    WEIGHT_TOP = 3 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
+    WEIGHT_MIDDLE = 2
     WEIGHT_BOTTOM = 1
     img_threshold = np.zeros_like(img)
     IMG_LEN = img.shape[0]
@@ -293,19 +292,9 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
         bw = img < img_threshold
     labels = measure.label(bw, connectivity=2)
     lbl_props = measure.regionprops(labels)
-    sprops = sorted(lbl_props, key=attrgetter('area'), reverse=True)
-    chars_num = len(sprops)
-    chars_stop = min(chars_num, NUM_CHARS_EXPECTED)
-    stop_size = int(sprops[int(chars_stop / 10)].area / 10) #Set cutoff at 1/10th area of individual at the 10th percentile
+    #sprops = sorted(lbl_props, key=attrgetter('area'), reverse=True)
     charlist = []
-    sprops_iter = sprops.__iter__()
-    keepgoing = True
-    cntr = 1
-    while keepgoing:
-        prop = sprops_iter.__next__()
-        cntr += 1
-        if prop.area < stop_size or cntr == chars_stop:
-            keepgoing = False
+    for prop in lbl_props: # Do not need a cutoff if I make usre I filter the image first
         bbox = prop.bbox
         charlist.append({'charId' : 0,
                         'pageId' : 0,
@@ -320,6 +309,8 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
                         'y2' : int(bbox[2] * scale_val)})
     box_set = {'chars': charlist}
     return box_set
+
+from scipy import ndimage
 
 def find_boxes(request):
     getdict = request.GET.dict()
@@ -336,6 +327,7 @@ def find_boxes(request):
     else:
         scale_val = 1
         nimg =  util.img_as_ubyte(img)
+    nimg = ndimage.gaussian_filter(nimg, 5)
     boxset = get_me_some_fast_boxes(nimg, iteration, white_chars, scale_val)
     
     
