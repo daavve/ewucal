@@ -253,9 +253,10 @@ def get_toshi(request):
 
 
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    SEGMENTS = 5 #eg: 5^2=25
-    SUBSEGMENTS = 5
-    WEIGHT_TOP = 6 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
+    NUM_CHARS_EXPECTED = 100 # Most critical knob, determines number of boxes outputted., can maybe derive this using frequency statistics
+    SEGMENTS = 9 #eg: 5^2=25
+    SUBSEGMENTS = 9
+    WEIGHT_TOP = 5 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
     WEIGHT_MIDDLE = 3
     WEIGHT_BOTTOM = 1
     img_threshold = np.zeros_like(img)
@@ -294,11 +295,17 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
     lbl_props = measure.regionprops(labels)
     sprops = sorted(lbl_props, key=attrgetter('area'), reverse=True)
     chars_num = len(sprops)
+    chars_stop = min(chars_num, NUM_CHARS_EXPECTED)
+    stop_size = int(sprops[int(chars_stop / 10)].area / 10) #Set cutoff at 1/10th area of individual at the 10th percentile
     charlist = []
     sprops_iter = sprops.__iter__()
-    stop_here = min(10000, chars_num)
-    for i in range(stop_here):
+    keepgoing = True
+    cntr = 1
+    while keepgoing:
         prop = sprops_iter.__next__()
+        cntr += 1
+        if prop.area < stop_size or cntr == chars_stop:
+            keepgoing = False
         bbox = prop.bbox
         charlist.append({'charId' : 0,
                         'pageId' : 0,
