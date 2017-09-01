@@ -251,10 +251,13 @@ def get_toshi(request):
                     'y2' : y_mid + of_bottom})
     return JsonResponse(charlist, safe=False)
 
-#ToDo 4 
+
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    SEGMENTS = 3 #eg: 5^2=25
-    SUBSEGMENTS = 3 # These are segments we use for averaging purposes
+    SEGMENTS = 5 #eg: 5^2=25
+    SUBSEGMENTS = 5
+    WEIGHT_TOP = 6 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
+    WEIGHT_MIDDLE = 3
+    WEIGHT_BOTTOM = 1
     img_threshold = np.zeros_like(img)
     IMG_LEN = img.shape[0]
     IMG_WID = img.shape[1]
@@ -262,26 +265,27 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
     I_STRIDE_M = int(I_STRIDE / SUBSEGMENTS)
     J_STRIDE = int(IMG_WID / SEGMENTS)
     J_STRIDE_M = int(J_STRIDE / SUBSEGMENTS)
-    threshold_root = filters.threshold_li(img)
+    threshold_top = filters.threshold_li(img)
+    threshold_top_weighted = threshold_top * WEIGHT_TOP
     for i in range(0, IMG_LEN, I_STRIDE):
         i_box = min(IMG_LEN, i + I_STRIDE)
         for j in range(0, IMG_WID, J_STRIDE):
             j_box = min(IMG_WID, j + J_STRIDE)
             subimage = img[i:i_box, j:j_box]
             if subimage.min() == subimage.max():
-                img_threshold[i:i_box, j:j_box].fill(threshold_root)
+                img_threshold[i:i_box, j:j_box].fill(threshold_top)
             else:
-                threshold_parent = filters.threshold_li(subimage) + threshold_root
+                threshold_middle_weighted = filters.threshold_li(subimage) * WEIGHT_MIDDLE + threshold_top_weighted
                 for i_sub in range(i, i_box, I_STRIDE_M):
                     i_box_m = min(i_box, i_sub + I_STRIDE_M)
                     for j_sub in range(j, j_box, J_STRIDE_M):
                         j_box_m = min(j_box, j_sub + J_STRIDE_M)
                         subsubimage = img[i_sub:i_box_m, j_sub:j_box_m]
                         if subsubimage.min() == subsubimage.max():
-                            this_threshold = int(threshold_parent / 2)
+                            this_threshold = int(threshold_middle_weighted / (WEIGHT_TOP + WEIGHT_MIDDLE))
                         else:
-                            this_threshold = int((threshold_parent + filters.threshold_li(subsubimage)) / 3 )
-                            img_threshold[i_sub:i_box_m, j_sub:j_box_m].fill(this_threshold)
+                            this_threshold = int((threshold_middle_weighted + filters.threshold_li(subsubimage) * WEIGHT_BOTTOM) / (WEIGHT_TOP + WEIGHT_MIDDLE + WEIGHT_BOTTOM))
+                        img_threshold[i_sub:i_box_m, j_sub:j_box_m].fill(this_threshold)
     if white_chars:
         bw = img > img_threshold
     else:
@@ -292,7 +296,7 @@ def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
     chars_num = len(sprops)
     charlist = []
     sprops_iter = sprops.__iter__()
-    stop_here = min(1000, chars_num)
+    stop_here = min(10000, chars_num)
     for i in range(stop_here):
         prop = sprops_iter.__next__()
         bbox = prop.bbox
