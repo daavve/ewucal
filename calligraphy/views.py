@@ -253,7 +253,7 @@ def get_toshi(request):
 
 
 def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
-    SEGMENTS = 3 #eg: 5^2=25
+    SEGMENTS = 5 #eg: 5^2=25
     SUBSEGMENTS = 5
     WEIGHT_TOP = 3 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
     WEIGHT_MIDDLE = 2
@@ -327,7 +327,7 @@ def find_boxes(request):
     else:
         scale_val = 1
         nimg =  util.img_as_ubyte(img)
-    nimg = ndimage.gaussian_filter(nimg, 5)
+    nimg = ndimage.gaussian_filter(nimg, 1)
     boxset = get_me_some_fast_boxes(nimg, iteration, white_chars, scale_val)
     
     
