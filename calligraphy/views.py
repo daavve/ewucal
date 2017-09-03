@@ -327,7 +327,7 @@ def find_boxes(request):
     else:
         scale_val = 1
         nimg =  util.img_as_ubyte(img)
-    nimg = ndimage.gaussian_filter(nimg, 1)
+    nimg = ndimage.gaussian_filter(nimg, 1) # gets rid of the worst noise
     boxset = get_me_some_fast_boxes(nimg, iteration, white_chars, scale_val)
     
     
