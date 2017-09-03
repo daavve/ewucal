@@ -118,6 +118,9 @@ class ToDrawBoxesWBoxes(models.Model):
 class ToDrawBoxesWoBoxes(models.Model):
     toCheck = models.ForeignKey(Page)
 
+class PagesHaveChars(models.Model):
+    haveChars = models.ForeignKey(Page)
+
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
     set_offset_x = models.FloatField()

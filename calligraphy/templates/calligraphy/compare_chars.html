@@ -1,0 +1,26 @@
+{% extends parent_template|default:"ewucal/base.html" %}
+{% block content %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/page.css">
+<script type="text/javascript" src="{{ STATIC_URL }}js/draw_chars.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/get_csrf_token.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/json2.js"></script>
+
+<div id="old_or_new" old_or_new="2"></div>
+
+<div class="container">
+    <div id="page_viewport">
+        <img src="" class="draggable">
+    </div>
+    <button class="flag_for_review_button">Flag For Review</button>
+    <button class="automatic_segment_button_w">Automatic Segment White Chars</button>
+    <button class="automatic_segment_button_b">Automatic Segment Black Chars</button>
+</div>
+
+
+<button class="submit_button">Submit</button>
+<li> <a href="validate"> -->Back   </a>    </li>
+
+
+{% endblock %}
+

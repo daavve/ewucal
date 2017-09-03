@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^validate/find-offsets',                                  views.validate_find_offsets),
     url(r'^validate/eval-bad-pages',                                views.eval_bad_pages),
     url(r'^validate/draw-chars/(?P<old_or_new>[0-9]+)$',            views.draw_chars),
+    url(r'^validate/compare-chars',                                 views.compare_chars),
     url(r'^validate',                                               views.validate_root),
     url(r'^ajax/get_progress',                                      views.get_progress),
     url(r'^ajax/get_page',                                          views.get_page),

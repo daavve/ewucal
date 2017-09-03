@@ -54,6 +54,11 @@ def individual_page(request, page_id):
     cntxt = {'page': page}
     return HttpResponse(tmplt.render(context=cntxt, request=request))
 
+def compare_chars(request):
+    tmplt = loader.get_template('calligraphy/compare_chars.html')
+    return HttpResponse(tmplt.render(request=request))
+
+
 @csrf_exempt
 def get_page(request):
     page_id = request.GET.get('pageId', None)
@@ -104,7 +109,10 @@ def get_to_verify_page(request):
             choiceNumber = choice.id
             pageNum = choice.toCheck.id
         else:
-            pageNum = request_num
+            if request_num == 2:
+                choice = random.choice(PagesHaveChars.objects.all())
+                choiceNumber = choice.id
+                pageNum = choice.toCheck.id
     page = Page.objects.get(id=pageNum)
     chars = Character.objects.filter(parent_page=page)
     charList = []
@@ -252,7 +260,7 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 
-def get_me_some_fast_boxes(img, iteration, white_chars, scale_val):
+def get_me_some_fast_boxes(img, img_unfiltered, iteration, white_chars, scale_val):
     SEGMENTS = 5 #eg: 5^2=25
     SUBSEGMENTS = 5
     WEIGHT_TOP = 3 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
@@ -328,7 +336,7 @@ def find_boxes(request):
         scale_val = 1
         nimg =  util.img_as_ubyte(img)
     nimg = ndimage.gaussian_filter(nimg, 1) # gets rid of the worst noise
-    boxset = get_me_some_fast_boxes(nimg, iteration, white_chars, scale_val)
+    boxset = get_me_some_fast_boxes(nimg, img, iteration, white_chars, scale_val)
     
     
     return JsonResponse(boxset, safe=False)
