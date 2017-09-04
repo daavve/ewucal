@@ -8,7 +8,7 @@ from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
-from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid
+from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars
 from django.db.models import Count
 import json
 import subprocess as sub
@@ -112,7 +112,7 @@ def get_to_verify_page(request):
             if request_num == 2:
                 choice = random.choice(PagesHaveChars.objects.all())
                 choiceNumber = choice.id
-                pageNum = choice.toCheck.id
+                pageNum = choice.haveChars.id
     page = Page.objects.get(id=pageNum)
     chars = Character.objects.filter(parent_page=page)
     charList = []
