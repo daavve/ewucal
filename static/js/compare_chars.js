@@ -81,9 +81,6 @@ function iWindow (iImg) {
         width: settings.window_width,
         height: settings.window_height
     });
-    
-
-
         $viewport.extend({
         draw_overlay: $('<div class="draw-overlay"></div>').selectable({
             start: function(e){
@@ -248,37 +245,55 @@ function iWindow (iImg) {
     
     
     function get_segment(white_chars) {
-        if($image.has_boxes)
+        $image.update_boxes = true;
+        let box = null;
+        if($image.box_is_selected)
         {
-             
-            for(let $box of $image.boxes){
-                $box.selectable.empty().remove();
-                $box.resizable.empty().remove();
-            }
-
-            $image.boxes = new Set();
-            $viewport.boxes = new Set();
-            $image.has_boxes = false;
-        }
-        let iteration = null;
-        if(white_chars)
-        {
-            iteration = erosion_iteration++;
+            box = $image.box_last_selected.selectable
         }
         else
         {
-            iteration = dialate_iteration++;
+            box = {'x_top': Infinity,
+                   'x_end': 0,
+                   'y_top': Infinity,
+                   'y_end': 0,
+                   'x_len': null,
+                   'y_len': null}
+            for (let boxPack of $image.boxes)
+            {
+                let cbox = boxPack.selectable;
+                let c_x_end = cbox.x_top + cbox.x_len;
+                let c_y_end = cbox.y_top + cbox.y_len;
+                if (box.x_top > cbox.x_top)
+                {
+                    box.x_top = cbox.x_top;
+                }
+                if (box.y_top > cbox.y_top)
+                {
+                    box.y_top = cbox.y_top;
+                }
+                if (box.x_end < c_x_end)
+                {
+                    box.x_end = c_x_end;
+                }
+                if (box.y_end < c_y_end)
+                {
+                    box.y_end = c_y_end;
+                }
+            }
+            box.x_len = box.x_end - box.x_top;
+            box.y_len = box.y_end - box.y_top
         }
-
-
-        $image.update_boxes = true;
-        
         $.getJSON('/ajax/find_boxes', {'page_id': $image.page_id,
                                        'white_chars': white_chars,
-                                       'iteration': iteration}).done(function( newChars ) {
+                                       'x_top': box.x_top,
+                                       'x_len': box.x_len,
+                                        'y_top': box.y_top,
+                                        'y_len': box.y_len}
+                                       ).done(function( newChars ) {
                                             $image.has_boxes = true;
                                             for (let char of newChars.chars) {
-                                                build_a_box(char, false);
+                                                build_a_box(char, true);
                                             }
                                             $image.update_boxes = true;
                                             });
@@ -395,9 +410,18 @@ function iWindow (iImg) {
     }
     
     
-    function build_a_box(iChar, reviewed){
+    function build_a_box(iChar, generated){
         
-        var $charBox = $('<div class="char_box"></div>').selectable({
+        var $charBox = null
+        if(generated)
+        {
+            $charBox = $('<div class="char_box_detected"></div>')
+        }
+        else
+        {
+            $charBox = $('<div class="char_box"></div>')
+        }
+        $charBox.selectable({
                 autoRefresh: false,
                 stop: function(event, ui){
                     if(event.shiftKey)
@@ -460,9 +484,7 @@ var $dragBox = $('<div class="char_box_resize"></div>').extend({
                            resizable:$dragBox,
                            next_box:null,
                            prev_box:null,
-                           box_num: null,
-                           reviewed: reviewed,
-                           just_added: reviewed};
+                           box_num: null};
 
             $charBox.data('self', boxPack);
             $viewport.append($charBox).append($dragBox);
