@@ -260,7 +260,7 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 
-def get_me_some_fast_boxes(img, img_unfiltered, iteration, white_chars, scale_val):
+def get_me_some_fast_boxes(img, img_unfiltered, white_chars, scale_val, x1, y1):
     SEGMENTS = 5 #eg: 5^2=25
     SUBSEGMENTS = 5
     WEIGHT_TOP = 3 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
@@ -311,10 +311,10 @@ def get_me_some_fast_boxes(img, img_unfiltered, iteration, white_chars, scale_va
                         'workId' : 0,
                         'URL' : '#',
                         'mark' : '#',
-                        'x1' : int(bbox[1] * scale_val),
-                        'y1' : int(bbox[0] * scale_val),
-                        'x2' : int(bbox[3] * scale_val),
-                        'y2' : int(bbox[2] * scale_val)})
+                        'x1' : int(bbox[1] * scale_val + x1),
+                        'y1' : int(bbox[0] * scale_val + y1),
+                        'x2' : int(bbox[3] * scale_val + x1),
+                        'y2' : int(bbox[2] * scale_val + y1)})
     box_set = {'chars': charlist}
     return box_set
 
@@ -324,9 +324,14 @@ def find_boxes(request):
     getdict = request.GET.dict()
     page_id = int(getdict['page_id'])
     white_chars = getdict['white_chars'] == 'true'
-    iteration = int(getdict['iteration'])
+    x1 = int(getdict['x_top'])
+    y1 = int(getdict['y_top'])
+    x2 = x1 + int(getdict['x_len'])
+    y2 = y1 + int(getdict['y_len'])
     page = Page.objects.get(id=page_id)
-    img = color.rgb2grey(io.imread(page.get_image()))
+    orimg = color.rgb2grey(io.imread(page.get_image()))
+    img = orimg[y1:y2, x1:x2]
+    
     img_max = max(img.shape)
     RESCALE_SIZE = 1000
     if img_max > RESCALE_SIZE:
@@ -336,7 +341,7 @@ def find_boxes(request):
         scale_val = 1
         nimg =  util.img_as_ubyte(img)
     nimg = ndimage.gaussian_filter(nimg, 1) # gets rid of the worst noise
-    boxset = get_me_some_fast_boxes(nimg, img, iteration, white_chars, scale_val)
+    boxset = get_me_some_fast_boxes(nimg, img, white_chars, scale_val, x1, y1)
     
     
     return JsonResponse(boxset, safe=False)
