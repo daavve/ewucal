@@ -44,6 +44,27 @@ class FlagForReview(models.Model):
     flagged_by = models.ForeignKey(User)
     parent_page = models.ForeignKey(Page)
 
+class DetectedBox(models.Model):
+    parent_page = models.Foreignkey(Page)
+    area = models.IntegerField()
+    convex_area = models.IntegerField()
+    eccentricity = models.FloatField()
+    extant = modles.FloatField()
+    x1 = models.IntegerField()
+    y1 = models.IntegerField()
+    x2 = models.IntegerField()
+    y2 = models.IntegerField()
+    major_axis_length = models.FloatField()
+    minor_axis_length = models.FloatField()
+    orientation = models.FloatField()
+    solidity = models.FloatField()
+    local_centroid_x = models.FloatField()
+    local_centroid_y = models.FloatField()
+    
+    
+
+
+
 class Character_orig(models.Model):
     author_name = models.CharField(max_length=64, blank=True)
     parent_work_name = models.CharField(max_length=64, blank=True)
