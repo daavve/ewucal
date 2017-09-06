@@ -45,7 +45,7 @@ class FlagForReview(models.Model):
     parent_page = models.ForeignKey(Page)
 
 class DetectedBox(models.Model):
-    parent_page = models.Foreignkey(Page)
+    parent_page = models.ForeignKey(Page)
     area = models.IntegerField()
     convex_area = models.IntegerField()
     eccentricity = models.FloatField()
