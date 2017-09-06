@@ -49,7 +49,7 @@ class DetectedBox(models.Model):
     area = models.IntegerField()
     convex_area = models.IntegerField()
     eccentricity = models.FloatField()
-    extant = modles.FloatField()
+    extant = models.FloatField()
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
