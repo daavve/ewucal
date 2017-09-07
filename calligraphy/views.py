@@ -260,6 +260,7 @@ def get_toshi(request):
     return JsonResponse(charlist, safe=False)
 
 
+#Important:  This one still crashes sometimes, probably passing all same values to li_filter again
 def get_me_some_fast_boxes(img, img_unfiltered, white_chars, scale_val, x1, y1):
     SEGMENTS = 5 #eg: 5^2=25
     SUBSEGMENTS = 5

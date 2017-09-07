@@ -46,6 +46,7 @@ class FlagForReview(models.Model):
 
 class DetectedBox(models.Model):
     parent_page = models.ForeignKey(Page)
+    black_chars = models.BooleanField()
     area = models.IntegerField()
     convex_area = models.IntegerField()
     eccentricity = models.FloatField()
@@ -60,8 +61,7 @@ class DetectedBox(models.Model):
     solidity = models.FloatField()
     local_centroid_x = models.FloatField()
     local_centroid_y = models.FloatField()
-    
-    
+
 
 
 
