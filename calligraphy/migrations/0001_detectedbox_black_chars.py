@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('calligraphy', 'tmp'),
+        ('calligraphy', '0108_auto_20170906_0336'),
     ]
 
     operations = [
