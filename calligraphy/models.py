@@ -32,6 +32,7 @@ class Page(models.Model):
     transcript = models.TextField(blank=True)
     transform_type = models.CharField(max_length=8, null=True)
     has_copyright_restrictions = models.BooleanField(default=False)
+    image_works = models.BooleanField(default=True)
 
     def get_absolute_url(self) -> str:
         return '/page/' + str(self.id)
@@ -45,6 +46,8 @@ class FlagForReview(models.Model):
     parent_page = models.ForeignKey(Page)
 
 class DetectedBox(models.Model):
+    inside_validated_box = models.BooleanField() #Indicates validity after Characters were reviewed by cohort
+    inside_orig_box = models.BooleanField()      #Indicates validity based on non-validated character data
     parent_page = models.ForeignKey(Page)
     black_chars = models.BooleanField()
     area = models.IntegerField()
