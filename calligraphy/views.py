@@ -8,7 +8,7 @@ from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
-from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars
+from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars, Character_orig
 from django.db.models import Count
 import json
 import subprocess as sub

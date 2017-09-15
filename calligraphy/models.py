@@ -64,6 +64,8 @@ class DetectedBox(models.Model):
     solidity = models.FloatField()
     local_centroid_x = models.FloatField()
     local_centroid_y = models.FloatField()
+    li_threshold_bottom = models.IntegerField()
+    li_threshold_top = models.IntegerField()
 
 
 
