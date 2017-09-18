@@ -46,8 +46,8 @@ class FlagForReview(models.Model):
     parent_page = models.ForeignKey(Page)
 
 class DetectedBox(models.Model):
-    inside_validated_box = models.BooleanField() #Indicates validity after Characters were reviewed by cohort
-    inside_orig_box = models.BooleanField()      #Indicates validity based on non-validated character data
+    percent_inside_currated_box = models.IntegerField() #Indicates validity after Characters were reviewed by cohort
+    percent_inside_orig_box = models.IntegerField()      #Indicates validity based on non-validated character data
     parent_page = models.ForeignKey(Page)
     black_chars = models.BooleanField()
     area = models.IntegerField()
