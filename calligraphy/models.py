@@ -44,28 +44,32 @@ class Page(models.Model):
 class FlagForReview(models.Model):
     flagged_by = models.ForeignKey(User)
     parent_page = models.ForeignKey(Page)
+    
+# Integer Max: 2147483647
 
 class DetectedBox(models.Model):
-    percent_inside_currated_box = models.IntegerField() #Indicates validity after Characters were reviewed by cohort
-    percent_inside_orig_box = models.IntegerField()      #Indicates validity based on non-validated character data
+    inside_currated_box = models.BooleanField()  # True if overlap rating is > 80%
+    inside_orig_box = models.BooleanField()      # True if overlap rating is > 80%
     parent_page = models.ForeignKey(Page)
-    black_chars = models.BooleanField()
-    area = models.IntegerField()
-    convex_area = models.IntegerField()
-    eccentricity = models.FloatField()
-    extant = models.FloatField()
+    black_chars = models.BooleanField() 
+    area_norm = models.IntegerField()
+    convex_area_norm = models.IntegerField()
+    eccentricity_norm = models.IntegerField()
+    extant_norm = models.IntegerField()
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
     y2 = models.IntegerField()
-    major_axis_length = models.FloatField()
+    major_axis_length = models.FloatField() #Max 1000+ Min: 0
+    maxor_axis_length_norm = models.IntegerField()
     minor_axis_length = models.FloatField()
-    orientation = models.FloatField()
-    solidity = models.FloatField()
-    local_centroid_x = models.FloatField()
-    local_centroid_y = models.FloatField()
-    li_threshold_bottom = models.IntegerField()
-    li_threshold_top = models.IntegerField()
+    minor_axis_length_norm = models.IntegerField()
+    orientation_norm = models.IntegerField()
+    solidity_norm = models.IntegerField()
+    local_centroid_x_norm = models.IntegerField()
+    local_centroid_y_norm = models.IntegerField()
+    li_threshold_bottom_norm = models.IntegerField()
+    li_threshold_top_norm = models.IntegerField()
 
 
 
@@ -146,6 +150,10 @@ class ToDrawBoxesWoBoxes(models.Model):
 
 class PagesHaveChars(models.Model):
     haveChars = models.ForeignKey(Page)
+    x1 = models.IntegerField()       # Perhaps Create it's own object so we can have multiple areas of interest within an image
+    x2 = models.IntegerField()
+    y1 = models.IntegerField()
+    y2 = models.IntegerField()
 
 class CharSet(models.Model):
     userSupplied = models.ForeignKey(UserSuppliedPageMultiplier)
