@@ -60,9 +60,7 @@ class DetectedBox(models.Model):
     y1 = models.IntegerField()
     x2 = models.IntegerField()
     y2 = models.IntegerField()
-    major_axis_length = models.FloatField() #Max 1000+ Min: 0
     maxor_axis_length_norm = models.IntegerField()
-    minor_axis_length = models.FloatField()
     minor_axis_length_norm = models.IntegerField()
     orientation_norm = models.IntegerField()
     solidity_norm = models.IntegerField()
