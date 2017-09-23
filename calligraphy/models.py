@@ -55,7 +55,7 @@ class DetectedBox(models.Model):
     area_norm = models.IntegerField()
     convex_area_norm = models.IntegerField()
     eccentricity_norm = models.IntegerField()
-    extant_norm = models.IntegerField()
+    #extant_norm = models.IntegerField()        #TODO: Go back and recover it.
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
