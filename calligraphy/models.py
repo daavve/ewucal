@@ -138,11 +138,13 @@ class UserSuppliedPageMultiplier(models.Model):
     user_id = models.ForeignKey(User)
     page_id = models.ForeignKey(Page)
     image_rotation = models.IntegerField()
-    
-    
+
+class TodoScanned(models.Model):
+    toCheck = models.ForeignKey(Page)
+
 class ToDrawBoxesWBoxes(models.Model):
     toCheck = models.ForeignKey(Page)
-    
+
 class ToDrawBoxesWoBoxes(models.Model):
     toCheck = models.ForeignKey(Page)
 
