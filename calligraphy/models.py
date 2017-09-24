@@ -53,14 +53,14 @@ class DetectedBox(models.Model):
     parent_page = models.ForeignKey(Page)
     black_chars = models.BooleanField() 
     area_norm = models.IntegerField()
-    convex_area_norm = models.IntegerField()
+    #convex_area_norm = models.IntegerField()   #don't think it's important because it correlates so strongly with area_norm
     eccentricity_norm = models.IntegerField()
-    #extant_norm = models.IntegerField()        #TODO: Go back and recover it.
+    #extant_norm = models.IntegerField()        #TODO: Accedentally set to zero a while ago Go back and recover it.
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
     y2 = models.IntegerField()
-    maxor_axis_length_norm = models.IntegerField()
+    major_axis_length_norm = models.IntegerField()
     minor_axis_length_norm = models.IntegerField()
     orientation_norm = models.IntegerField()
     solidity_norm = models.IntegerField()
