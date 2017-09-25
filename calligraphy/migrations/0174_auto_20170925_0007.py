@@ -7,7 +7,119 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
+from skimage import io, measure, morphology, filters
+import skimage as sk
+from scipy import ndimage
+import numpy as np
+import math
 
+def do_stuff(apps, schemd_editor) -> None:
+    Pages = apps.get_model('calligraphy', 'Page').objects.filter(has_copyright_restrictions=True)
+    Characters = apps.get_model('calligraphy', 'Character').objects
+    DetectedBox = apps.get_model('calligraphy', 'DetectedBox')
+    for curPage in Pages:
+        chars = Characters.filter(parent_page=curPage.id)
+        grid = np.zeros([curPage.image_length,curPage.image_width], dtype=np.uint8)
+        x_1 = 9999999999
+        x_2 = 0
+        y_1 = 9999999999
+        y_2 = 0
+        for char in chars:
+            grid[char.y1:char.y2, char.x1:char.x2].fill(1)
+            if x_1 > char.x1:
+                x_1 = char.x1
+            if y_1 > char.y1:
+                y_1 = char.y1
+            if x_2 < char.x2:
+                x_2 = char.x2
+            if y_2 < char.y2:
+                y_2 = char.y2
+        len_x = x_2 - x_1
+        len_y = y_2 - y_1
+        parent_area = len_x * len_y
+        mult_norm = 1 / parent_area * 2147483647
+        max_len = math.sqrt(math.pow(len_x, 2) + math.pow(len_y, 2))
+        max_mult = 1 / max_len * 2147483647 / 2
+        img_str = str(curPage.image)
+        orimg = sk.img_as_ubyte(io.imread(img_str, as_grey=True))
+        timg = orimg[y_1:y_2, x_1:x_2]
+        print(str(curPage.id) + " " + str(timg.shape))
+        if timg.size < 100:
+            timg = orimg
+        BIGGEST_ALLOWABLE_CHAR = 1000000
+        img = ndimage.gaussian_filter(timg, 1) # gets rid of the worst noise
+        SEGMENTS = 5 #eg: 5^2=25
+        SUBSEGMENTS = 5
+        WEIGHT_TOP = 3 # Final picture calculated (TOP * val_top + MID * val_mid + BOT * val_bot) / (TOP + MID + BOT)
+        WEIGHT_MIDDLE = 2
+        WEIGHT_BOTTOM = 1
+        img_threshold = np.zeros_like(img)
+        IMG_LEN = img.shape[0]
+        IMG_WID = img.shape[1]
+        I_STRIDE= int(IMG_LEN / SEGMENTS)
+        I_STRIDE_M = int(I_STRIDE / SUBSEGMENTS)
+        J_STRIDE = int(IMG_WID / SEGMENTS)
+        J_STRIDE_M = int(J_STRIDE / SUBSEGMENTS)
+        threshold_top = filters.threshold_li(img)
+        threshold_top_weighted = threshold_top * WEIGHT_TOP
+        for i in range(0, IMG_LEN, I_STRIDE):
+            i_box = min(IMG_LEN, i + I_STRIDE)
+            for j in range(0, IMG_WID, J_STRIDE):
+                j_box = min(IMG_WID, j + J_STRIDE)
+                subimage = img[i:i_box, j:j_box]
+                if subimage.min() == subimage.max():
+                    img_threshold[i:i_box, j:j_box].fill(threshold_top)
+                else:
+                    threshold_middle_weighted = filters.threshold_li(subimage) * WEIGHT_MIDDLE + threshold_top_weighted
+                    for i_sub in range(i, i_box, I_STRIDE_M):
+                        i_box_m = min(i_box, i_sub + I_STRIDE_M)
+                        for j_sub in range(j, j_box, J_STRIDE_M):
+                            j_box_m = min(j_box, j_sub + J_STRIDE_M)
+                            subsubimage = img[i_sub:i_box_m, j_sub:j_box_m]
+                            if subsubimage.min() == subsubimage.max():
+                                this_threshold = int(threshold_middle_weighted / (WEIGHT_TOP + WEIGHT_MIDDLE))
+                            else:
+                                this_threshold = int((threshold_middle_weighted + filters.threshold_li(subsubimage) * WEIGHT_BOTTOM) / (WEIGHT_TOP + WEIGHT_MIDDLE + WEIGHT_BOTTOM))
+                            img_threshold[i_sub:i_box_m, j_sub:j_box_m].fill(this_threshold)
+        bw = img > img_threshold
+        labels = measure.label(bw, connectivity=2)
+        while(len(labels) < 10):
+            bw = morphology.binary_erosion(bw)
+            labels = measure.label(bw, connectivity=2)
+        lbl_props = measure.regionprops(labels)
+        for lbl_prop in lbl_props:
+            bbox = lbl_prop.bbox
+            area = (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+            if area < BIGGEST_ALLOWABLE_CHAR:
+                y1 = bbox[0] + y_1
+                y2 = bbox[2] + y_1
+                x1 = bbox[1] + x_1
+                x2 = bbox[3] + x_1
+                area_sum = np.sum(grid[y1:y2, x1:x2])
+                percent_inside = int(100 * area_sum / area)
+                centroid_y = int(lbl_prop.centroid[0])
+                centroid_x = int(lbl_prop.centroid[1])
+                centroid_l = lbl_prop.local_centroid
+                DetectedBox(parent_page = curPage,
+                            black_chars = False,
+                            area_norm = int(lbl_prop.area * mult_norm),
+                            eccentricity_norm = int(lbl_prop.eccentricity * 2147483647),
+                            #extant = int(lbl_prop.extent * 2147483647),
+                            x1 = x1,
+                            x2 = x2,
+                            y1 = y1,
+                            y2 = y2,
+                            major_axis_length_norm = int(lbl_prop.major_axis_length * max_mult),
+                            minor_axis_length_norm = int(lbl_prop.minor_axis_length * max_mult),
+                            orientation_norm = int(lbl_prop.orientation * 683565275),
+                            solidity_norm = int(lbl_prop.solidity * 2147483647),
+                            local_centroid_x_norm = int(centroid_l[1] / (x2 - x1) * 2147483647),
+                            local_centroid_y_norm = int(centroid_l[0] / (y2 - y1) * 2147483647),
+                            inside_currated_box = percent_inside >= 80,
+                            inside_orig_box = False,
+                            li_threshold_bottom_norm = int(img_threshold[centroid_y][centroid_x] * 8421504),
+                            li_threshold_top_norm = int(threshold_top * 8421504)
+                            ).save()
 
 class Migration(migrations.Migration):
 
@@ -15,5 +127,5 @@ class Migration(migrations.Migration):
         ('calligraphy', '0173_auto_20170923_2111'),
     ]
 
-    operations = [
+    operations = [ migrations.RunPython(do_stuff)
     ]
