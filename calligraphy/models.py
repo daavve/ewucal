@@ -50,6 +50,8 @@ class FlagForReview(models.Model):
 class DetectedBox(models.Model):
     inside_currated_box = models.BooleanField()  # True if overlap rating is > 80%
     inside_orig_box = models.BooleanField()      # True if overlap rating is > 80%
+    predict_using_good = models.NullBooleanField() # Currently only used for the collected characters set
+    predict_using_bad  = models.NullBooleanField()
     parent_page = models.ForeignKey(Page)
     black_chars = models.BooleanField() 
     area_norm = models.IntegerField()

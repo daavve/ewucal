@@ -8,7 +8,7 @@ from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
-from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars, Character_orig
+from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars, Character_orig, DetectedBox
 from django.db.models import Count
 import json
 import subprocess as sub
@@ -21,6 +21,10 @@ from django.core.mail import send_mail
 from skimage import io, morphology, util, color, measure, filters, segmentation, transform
 from operator import attrgetter
 import numpy as np
+
+def examine_predictions(request):
+    tmplt = loader.get_template('calligraphy/examine_predictions.html')
+    return HttpResponse(tmplt.render(request=request))
 
 def view_progress(request):
     tmplt = loader.get_template('calligraphy/view_progress.html')
@@ -126,11 +130,42 @@ def get_to_verify_page(request):
                          'y2' : char.y2,
                          'x_thumb': char.image_width,
                          'y_thumb': char.image_height,
-                         'area': (char.x2 - char.x1) * (char.y2 - char.y1)})
+                         'area': (char.x2 - char.x1) * (char.y2 - char.y1)},)
     charList.sort(key=lambda k: k['area'], reverse=True)
 
     data = {  'toDoId' : choiceNumber,
               'pageId' : page.id,
+              'URL' : Page.get_image(page),
+              'height' : page.image_length,
+              'width' : page.image_width,
+              'chars' : charList}
+    return JsonResponse(data, safe=False)
+    
+def get_features(request):
+    page = random.choice(Page.objects.filter(has_copyright_restrictions=True))
+    boxes = DetectedBox.objects.filter(parent_page=page.id)
+    parent_work = 0
+    parent_author = 0
+    charList = []
+    for box in boxes:
+        parent_work = 0
+        parent_author = 0
+        if box.predict_using_good or box.predict_using_bad:
+            charList.append({'charId' : 0,
+                        'pageId' : 0,
+                        'authorId' : 0,
+                        'authorName': 0,
+                        'workId' : parent_work,
+                        'URL' : 0,
+                        'mark' : 0,
+                        'x1' : box.x1,
+                        'y1' : box.y1,
+                        'x2' : box.x2,
+                        'y2' : box.y2,
+                        'predict_good': box.predict_using_good,
+                        'predict_bad': box.predict_using_bad})
+
+    data = { 'pageId' : 0,
               'URL' : Page.get_image(page),
               'height' : page.image_length,
               'width' : page.image_width,

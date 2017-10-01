@@ -41,6 +41,20 @@ border: dashed 5px #999;
 border: 2px solid #ff5b60;
 }
 
+.char_box_predict_good {
+border: 2px solid #00FFF0
+}
+
+.char_box_predict_bad {
+border: 2px solid #FF00C8
+}
+
+.char_box_invisible {
+border: 2px solid #FFFFFF
+}
+
+
+
 .char_box_resize {
     border: 2px solid #C0001B;
     position: absolute;
