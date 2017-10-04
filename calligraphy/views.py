@@ -8,7 +8,7 @@ from django.template import loader
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Author, Work, Page, Character, RelatedChars, UserSuppliedPageMultiplier, CharSet, FlagForReview
-from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars, Character_orig, DetectedBox
+from .models import ToDrawBoxesWBoxes, ToDrawBoxesWoBoxes, UserDid, PagesHaveChars, Character_orig, DetectedBox, DetectedCombinedBox
 from django.db.models import Count
 import json
 import subprocess as sub
@@ -140,18 +140,22 @@ def get_to_verify_page(request):
               'width' : page.image_width,
               'chars' : charList}
     return JsonResponse(data, safe=False)
-    
+
+
+
 def get_features(request):
     page = random.choice(Page.objects.filter(has_copyright_restrictions=True))
-    boxes = DetectedBox.objects.filter(parent_page=page.id)
+    #page = Page.objects.get(id=20001)
+    #boxes = DetectedCombinedBox.objects.filter(parent_page=page.id, based_on_no_predictor=True)
+    boxes = DetectedCombinedBox.objects.filter(parent_page=page.id, based_on_no_predictor=True)
+    page_area = page.image_length * page.image_width
     parent_work = 0
     parent_author = 0
     charList = []
     for box in boxes:
         parent_work = 0
         parent_author = 0
-        if box.predict_using_good or box.predict_using_bad:
-            charList.append({'charId' : 0,
+        charList.append({'charId' : 0,
                         'pageId' : 0,
                         'authorId' : 0,
                         'authorName': 0,
@@ -162,8 +166,8 @@ def get_features(request):
                         'y1' : box.y1,
                         'x2' : box.x2,
                         'y2' : box.y2,
-                        'predict_good': box.predict_using_good,
-                        'predict_bad': box.predict_using_bad})
+                        'predict_good': True,
+                        'predict_bad': None})
 
     data = { 'pageId' : 0,
               'URL' : Page.get_image(page),

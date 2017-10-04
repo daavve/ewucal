@@ -71,7 +71,16 @@ class DetectedBox(models.Model):
     li_threshold_bottom_norm = models.IntegerField()
     li_threshold_top_norm = models.IntegerField()
 
-
+# This one represents what happens when we build boxes using merged smaller-boxes
+class DetectedCombinedBox(models.Model):
+    parent_page = models.ForeignKey(Page)
+    based_on_good_predictor = models.BooleanField()
+    based_on_bad_predictor = models.BooleanField()
+    based_on_no_predictor = models.BooleanField()
+    x1 = models.IntegerField()
+    y1 = models.IntegerField()
+    x2 = models.IntegerField()
+    y2 = models.IntegerField()
 
 
 class Character_orig(models.Model):

@@ -16,7 +16,7 @@ import math
 def do_stuff(apps, schemd_editor) -> None:
     Pages = apps.get_model('calligraphy', 'Page').objects.filter(has_copyright_restrictions=True)
     Characters = apps.get_model('calligraphy', 'Character').objects
-    DetectedBox = apps.get_model('calligraphy', 'DetectedBox')
+    DetectedBox = apps.get_model('calligraphy', 'DetectedBox').objects
     for curPage in Pages:
         chars = Characters.filter(parent_page=curPage.id)
         grid = np.zeros([curPage.image_length,curPage.image_width], dtype=np.uint8)
