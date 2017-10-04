@@ -144,10 +144,9 @@ def get_to_verify_page(request):
 
 
 def get_features(request):
-    page = random.choice(Page.objects.filter(has_copyright_restrictions=True))
-    #page = Page.objects.get(id=20001)
-    #boxes = DetectedCombinedBox.objects.filter(parent_page=page.id, based_on_no_predictor=True)
-    boxes = DetectedCombinedBox.objects.filter(parent_page=page.id, based_on_no_predictor=True)
+    #page = random.choice(Page.objects.filter(has_copyright_restrictions=True))
+    page = Page.objects.get(id=19988)
+    boxes = DetectedCombinedBox.objects.filter(demonstration=True)
     page_area = page.image_length * page.image_width
     parent_work = 0
     parent_author = 0

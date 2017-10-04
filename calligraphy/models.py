@@ -77,6 +77,7 @@ class DetectedCombinedBox(models.Model):
     based_on_good_predictor = models.BooleanField()
     based_on_bad_predictor = models.BooleanField()
     based_on_no_predictor = models.BooleanField()
+    demonstration = models.BooleanField()
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
