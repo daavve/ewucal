@@ -109,7 +109,7 @@ def get_to_verify_page(request):
         pageNum = choice.toCheck.id
     else:
         if request_num == 0:
-            choice = random.choice(TodoScanned.objects.all())
+            choice = random.choice(ToDrawBoxesWoBoxes.objects.all())
             choiceNumber = choice.id
             pageNum = choice.toCheck.id
         else:

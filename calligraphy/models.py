@@ -23,6 +23,8 @@ class Work(models.Model):
 
 
 class Page(models.Model):
+    parent_author = models.ForeignKey(Author, null=True)
+    black_chars = models.BooleanField()
     book_id = models.IntegerField(null=True)
     page_id = models.IntegerField(null=True)
     image = models.ImageField(blank=True, storage=fs)
@@ -53,11 +55,10 @@ class DetectedBox(models.Model):
     predict_using_good = models.NullBooleanField() # Currently only used for the collected characters set
     predict_using_bad  = models.NullBooleanField()
     parent_page = models.ForeignKey(Page)
-    black_chars = models.BooleanField() 
     area_norm = models.IntegerField()
     #convex_area_norm = models.IntegerField()   #don't think it's important because it correlates so strongly with area_norm
     eccentricity_norm = models.IntegerField()
-    #extant_norm = models.IntegerField()        #TODO: Accedentally set to zero a while ago Go back and recover it.
+    #extant_norm = models.IntegerField()        #TODO: Accedentally set to zero a while ago, can go back and recover it.
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
