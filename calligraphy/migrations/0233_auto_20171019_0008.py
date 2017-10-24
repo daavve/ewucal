@@ -102,6 +102,8 @@ def find_nearby_boxes(boxes, cur_page):
                 new_x2 = MID_X + offset
                 if new_x2 > cur_page.image_width:
                     edge_left = True
+                else:
+                    chars_x_update(x_index[new_x1].boxes_id)
             if not edge_top:
                 new_y1 = MID_Y - offset
                 if new_y1 < 0:
