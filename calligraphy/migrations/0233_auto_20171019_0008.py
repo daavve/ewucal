@@ -91,7 +91,7 @@ def find_nearby_boxes(boxes, cur_page):
         chars_confirmed = set()
         y_range = set()
         y_range.add(MID_Y)
-        while len(char_set) < 5:
+        while len(chars_confirmed) < 5:
             if not edge_right:
                 new_x1 = MID_X - offset
                 if new_x1 < 0 :
@@ -103,7 +103,7 @@ def find_nearby_boxes(boxes, cur_page):
                 if new_x2 > cur_page.image_width:
                     edge_left = True
                 else:
-                    chars_x_update(x_index[new_x1].boxes_id)
+                    chars_x.update(x_index[new_x2].boxes_id)
             if not edge_top:
                 new_y1 = MID_Y - offset
                 if new_y1 < 0:
@@ -113,10 +113,12 @@ def find_nearby_boxes(boxes, cur_page):
             if not edge_bottom:
                 new_y2 = MID_Y + offset
                 if new_y2 > cur_page.image_length:
-                    edge_bottom = True:
+                    edge_bottom = True
                 else:
                     y_range.add(new_y2)
             offset += 1
+            for char_x in chars_x:
+                print(char_x)
             
 
         
