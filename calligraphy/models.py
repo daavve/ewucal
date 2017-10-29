@@ -47,30 +47,7 @@ class FlagForReview(models.Model):
     flagged_by = models.ForeignKey(User)
     parent_page = models.ForeignKey(Page)
     
-# Integer Max: 2147483647
 
-class DetectedBox(models.Model):
-    inside_currated_box = models.BooleanField()  # True if overlap rating is > 80%
-    inside_orig_box = models.BooleanField()      # True if overlap rating is > 80%
-    predict_using_good = models.NullBooleanField() # Currently only used for the collected characters set
-    predict_using_bad  = models.NullBooleanField()
-    parent_page = models.ForeignKey(Page)
-    area_norm = models.IntegerField()
-    #convex_area_norm = models.IntegerField()   #don't think it's important because it correlates so strongly with area_norm
-    eccentricity_norm = models.IntegerField()
-    #extant_norm = models.IntegerField()        #TODO: Accedentally set to zero a while ago, can go back and recover it.
-    x1 = models.IntegerField()
-    y1 = models.IntegerField()
-    x2 = models.IntegerField()
-    y2 = models.IntegerField()
-    major_axis_length_norm = models.IntegerField()
-    minor_axis_length_norm = models.IntegerField()
-    orientation_norm = models.IntegerField()
-    solidity_norm = models.IntegerField()
-    local_centroid_x_norm = models.IntegerField()
-    local_centroid_y_norm = models.IntegerField()
-    li_threshold_bottom_norm = models.IntegerField()
-    li_threshold_top_norm = models.IntegerField()
 
 # This one represents what happens when we build boxes using merged smaller-boxes
 class DetectedCombinedBox(models.Model):
@@ -140,7 +117,34 @@ class Character(models.Model):
 
     def get_rel_chars(self):
         return Character.objects.filter(mark=self.mark, parent_author=self.parent_author).exclude(id=self.id)
-        
+
+
+# Integer Max: 2147483647
+
+class DetectedBox(models.Model):
+    parent_char = models.ForeignKey(Character, null=True) # Poor references primary key of Character
+    inside_currated_box = models.BooleanField()  # True if overlap rating is > 80%
+    inside_orig_box = models.BooleanField()      # True if overlap rating is > 80%
+    predict_using_good = models.NullBooleanField() # Currently only used for the collected characters set
+    predict_using_bad  = models.NullBooleanField()
+    parent_page = models.ForeignKey(Page)
+    area_norm = models.IntegerField()
+    #convex_area_norm = models.IntegerField()   #don't think it's important because it correlates so strongly with area_norm
+    eccentricity_norm = models.IntegerField()
+    #extant_norm = models.IntegerField()        #TODO: Accedentally set to zero a while ago, can go back and recover it.
+    x1 = models.IntegerField()
+    y1 = models.IntegerField()
+    x2 = models.IntegerField()
+    y2 = models.IntegerField()
+    major_axis_length_norm = models.IntegerField()
+    minor_axis_length_norm = models.IntegerField()
+    orientation_norm = models.IntegerField()
+    solidity_norm = models.IntegerField()
+    local_centroid_x_norm = models.IntegerField()
+    local_centroid_y_norm = models.IntegerField()
+    li_threshold_bottom_norm = models.IntegerField()
+    li_threshold_top_norm = models.IntegerField()
+
 class ReasonCharDeleted(models.Model):
     user_deleted = models.ForeignKey(User)
     target_char = models.ForeignKey(Character)
