@@ -21,7 +21,45 @@ class Box(object):
 class BoxIndex(object):
     def __init__(self):
         self.boxes_id = set()
-        
+
+def build_np(boxes, nearby, same_char):
+    features = np.zeros((len(boxes), 22), dtype=np.int32)
+    same_char = np.zeros(len(boxes), dtype=np.bool)
+    bin_bad  = np.zeros(len(boxes), dtype=np.bool)
+    for i in range(len(boxes)):
+        bin_good[i] = boxes[i].inside_currated_box
+        bin_bad[i]  = boxes[i].inside_orig_box
+        features[i][0] = boxes[i].area_norm
+        features[i][1] = boxes[i].eccentricity_norm
+        features[i][2] = boxes[i].solidity_norm
+        features[i][3] = boxes[i].orientation_norm
+        features[i][4] = boxes[i].li_threshold_bottom_norm
+        features[i][5] = boxes[i].li_threshold_top_norm
+        features[i][6] = boxes[i].local_centroid_x_norm
+        features[i][7] = boxes[i].local_centroid_y_norm
+        features[i][8] = boxes[i].major_axis_length_norm
+        features[i][9] = boxes[i].minor_axis_length_norm
+        features[i][10] = int((boxes[i].y1 - nearby.parent.y1) * 2147483647 /  curPage.image_length)
+        features[i][11] = int((boxes[i].x1 - nearby.parent.x1) * 2147483647 /  curPage.image_width)
+        features[i][12] = nearby.parent.area_norm
+        features[i][13] = nearby.parent.eccentricity_norm
+        features[i][14] = nearby.parent.solidity_norm
+        features[i][15] = nearby.parent.orientation_norm
+        features[i][16] = nearby.parent.li_threshold_bottom_norm
+        features[i][17] = nearby.parent.li_threshold_top_norm
+        features[i][18] = nearby.parent.local_centroid_x_norm
+        features[i][19] = nearby.parent.local_centroid_y_norm
+        features[i][20] = nearby.parent.major_axis_length_norm
+        features[i][21] = nearby.parent.minor_axis_length_norm
+
+def compare_boxes(box, boxcomp):
+    same_char = False
+    if box.parent_char:
+        if boxcomp.parent_char:
+            if box.parent_char.id == boxcomp.parent_char.id:
+                same_char = True
+    
+
 NUM_NEARBY_GLYPHS = 1
 
 def do_stuff(apps, schemd_editor):
@@ -78,7 +116,8 @@ def do_stuff(apps, schemd_editor):
                     for char_cur in chars_x:
                         if box_by_id[char_cur].y_range.intersection(y_range):
                             chars_confirmed.add(char_cur)
-            print(len(chars_confirmed))
+            for boxcomp in chars_confirmed:
+                compare_boxes(box.parent, box_by_id[boxcomp].parent)
     raise Exception("stop here")
 
 
