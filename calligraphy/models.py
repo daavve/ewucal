@@ -129,9 +129,7 @@ class DetectedBox(models.Model):
     predict_using_bad  = models.NullBooleanField()
     parent_page = models.ForeignKey(Page)
     area_norm = models.IntegerField()
-    #convex_area_norm = models.IntegerField()   #don't think it's important because it correlates so strongly with area_norm
     eccentricity_norm = models.IntegerField()
-    #extant_norm = models.IntegerField()        #TODO: Accedentally set to zero a while ago, can go back and recover it.
     x1 = models.IntegerField()
     y1 = models.IntegerField()
     x2 = models.IntegerField()
@@ -144,6 +142,15 @@ class DetectedBox(models.Model):
     local_centroid_y_norm = models.IntegerField()
     li_threshold_bottom_norm = models.IntegerField()
     li_threshold_top_norm = models.IntegerField()
+
+#Models edges of boxes which are close to together
+class BoxEdges(models.Model):
+    edge_from = models.IntegerField()
+    edge_to = models.ForeignKey(DetectedBox)
+    quadrants = models.IntegerField()  # Represents the n-th more distant edge
+    same_character = models.BooleanField()
+    parent_character = models.ForeignKey(Character, null=True)
+    parent_page = models.ForeignKey(Page)
 
 class ReasonCharDeleted(models.Model):
     user_deleted = models.ForeignKey(User)
