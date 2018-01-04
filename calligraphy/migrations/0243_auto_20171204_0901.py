@@ -36,6 +36,9 @@ class BoxIndex(object):
     def __init__(self):
         self.boxes_id = set()
 
+def find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc):
+    
+
 def do_stuff(apps, schemd_editor):
     Pages = apps.get_model('calligraphy', 'Page').objects
     DetectedBox = apps.get_model('calligraphy', 'DetectedBox').objects
@@ -71,48 +74,49 @@ def do_stuff(apps, schemd_editor):
             box_x_half= (box_x2 - box_x1) / 2
             box_y_half = (box_y2 - box_y1) / 2
             y_inc   = 1     # Search box always grows downward
+            nearby_glyphs = set()
             # Quadrant 1
             x_start = box_x2
             x_end   = page_x
             y_start = box_y1 + box_y_half
             y_end   = box_y2
             x_inc   = 1
-            glyph_1 = find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc)
+            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 2
             x_start = box_x2
             x_end   = page_x
             y_start = box_y2
             y_end   = page_y
             x_inc   = 1
-            glyph_2 = find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc)
+            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 3
             x_start = box_x1 + box_x_half
             x_end   = box_x2
             y_start = box_y2
             y_end   = page_y
             x_inc   = 1
-            glyph_3 = find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc)
+            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 4
             x_start = box_x1 + box_x_half
             x_end   = box_x1
             y_start = box_y2
             y_end   = page_y
             x_inc   = -1
-            glyph_4 = find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc)
+            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 5
             x_start = box_x1
             x_end   = 0
             y_start = box_y2
             y_end   = page_y
             x_inc   = -1
-            glyph_5 = find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc)
+            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 6
             x_start = box_x1
             x_end   = 0
             y_start = box_y1 + box_y_half
             y_end   = box_y2
             x_inc   = -1
-            glyph_6 = find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc)
+            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
             
             
             
