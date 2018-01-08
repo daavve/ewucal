@@ -36,7 +36,67 @@ class BoxIndex(object):
     def __init__(self):
         self.boxes_id = set()
 
-def find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc):
+
+    #        chars_x = set()
+    #        chars_x_ys = set()
+    #        chars_confirmed = set()
+    #        y_range = set()
+    #        while len(chars_confirmed) < NUM_NEARBY_GLYPHS and not (edge_right and edge_bottom):
+    #            if not edge_right:
+    #                cur_x += 1
+    #                if cur_x > cur_page.image_width:
+    #                    edge_right = True
+    #                else:
+    #                    if len(x_index[cur_x].boxes_id):
+    #                        diff = x_index[cur_x].boxes_id.difference(chars_x)
+    #                        if diff:
+    #                            chars_x.update(diff)
+    #                            for dif in diff:
+    #                                chars_x_ys.update(box_by_id[dif].y_range)
+    #            if not edge_bottom:
+    #                cur_y += 1
+    #                if cur_y > cur_page.image_length:
+    #                    edge_bottom = True
+    #                else:
+    #                    y_range.add(cur_y)
+    #            if chars_x_ys.intersection(y_range):
+    #                for char_cur in chars_x:
+    #                    if box_by_id[char_cur].y_range.intersection(y_range):
+    #                        chars_confirmed.add(char_cur)
+    #        box_parent = box.parent
+    #        for boxcomp in chars_confirmed:
+    #            edge = BoxEdges(edge_from = box_parent.id,
+    #                            edge_to = box_by_id[boxcomp].parent,
+    #                            edge_right = True
+    #                            parent_page = cur_page)
+def find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc):
+    x_found = set()
+    y_search_space = set()
+    chars_verified = set()
+    not_found_any = True
+    x_cur = x_start
+    y_cur = y_start
+    x_active = True
+    y_active = True
+    while not_found_any:
+        if x_active:
+            x_cur += 1
+            if x_cur < x_end:
+                x_found.add(x_index[x_cur])
+            else:
+                x_active = False
+        else:
+            if not y_active:
+                return None
+        if y_active:
+            y_cur += y_inc
+            if y_cur < y_end:
+                y_search_space.add(y_cur)
+            else:
+                y_active = false
+        for this_x_found in x_found:
+            if len(this_x_found.y_range.intersection(y_search_space)):
+                return this_x_found.parent.id
     
 
 def do_stuff(apps, schemd_editor):
@@ -64,16 +124,16 @@ def do_stuff(apps, schemd_editor):
             box_by_id[box.id] = mybox
             for i in range(box.x1, box.x2):
                 x_index[i].boxes_id.add(box.id)
+        page_x = cur_page.image_width
+        page_y = cur_page.image_length
+        y_inc   = 1     # Search box always grows downward
         for box in box_list:
-            page_x = cur_page.image_width
-            page_y = cur_page.image_length
             box_x1 = box.parent.x1
             box_x2 = box.parent.x2
             box_y1 = box.parent.y1
             box_y2 = box.parent.y2
             box_x_half= (box_x2 - box_x1) / 2
             box_y_half = (box_y2 - box_y1) / 2
-            y_inc   = 1     # Search box always grows downward
             nearby_glyphs = set()
             # Quadrant 1
             x_start = box_x2
@@ -81,118 +141,42 @@ def do_stuff(apps, schemd_editor):
             y_start = box_y1 + box_y_half
             y_end   = box_y2
             x_inc   = 1
-            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
+            nearby_glyphs.add(find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 2
             x_start = box_x2
             x_end   = page_x
             y_start = box_y2
             y_end   = page_y
             x_inc   = 1
-            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
+            nearby_glyphs.add(find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 3
             x_start = box_x1 + box_x_half
             x_end   = box_x2
             y_start = box_y2
             y_end   = page_y
             x_inc   = 1
-            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
+            nearby_glyphs.add(find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 4
             x_start = box_x1 + box_x_half
             x_end   = box_x1
             y_start = box_y2
             y_end   = page_y
             x_inc   = -1
-            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
+            nearby_glyphs.add(find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 5
             x_start = box_x1
             x_end   = 0
             y_start = box_y2
             y_end   = page_y
             x_inc   = -1
-            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
+            nearby_glyphs.add(find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc))
             # Quadrant 6
             x_start = box_x1
             x_end   = 0
             y_start = box_y1 + box_y_half
             y_end   = box_y2
             x_inc   = -1
-            nearby_glyphs.add(find_nearby_glyph(x_start, x_end, x_inc, y_start, y_end, y_inc))
-            
-            
-            
-            
-            
-            edge_right = False
-            edge_bottom = False
-            chars_x = set()
-            chars_x_ys = set()
-            chars_confirmed = set()
-            y_range = set()
-            while len(chars_confirmed) < NUM_NEARBY_GLYPHS and not (edge_right and edge_bottom):
-                if not edge_right:
-                    cur_x += 1
-                    if cur_x > cur_page.image_width:
-                        edge_right = True
-                    else:
-                        if len(x_index[cur_x].boxes_id):
-                            diff = x_index[cur_x].boxes_id.difference(chars_x)
-                            if diff:
-                                chars_x.update(diff)
-                                for dif in diff:
-                                    chars_x_ys.update(box_by_id[dif].y_range)
-                if not edge_bottom:
-                    cur_y += 1
-                    if cur_y > cur_page.image_length:
-                        edge_bottom = True
-                    else:
-                        y_range.add(cur_y)
-                if chars_x_ys.intersection(y_range):
-                    for char_cur in chars_x:
-                        if box_by_id[char_cur].y_range.intersection(y_range):
-                            chars_confirmed.add(char_cur)
-            box_parent = box.parent
-            for boxcomp in chars_confirmed:
-                edge = BoxEdges(edge_from = box_parent.id,
-                                edge_to = box_by_id[boxcomp].parent,
-                                edge_right = True
-                                parent_page = cur_page)
-                edge.save()
-            edge_left = False
-            edge_bottom = False
-            chars_x = set()
-            chars_x_ys = set()
-            chars_confirmed = set()
-            y_range = set()
-            while len(chars_confirmed) < NUM_NEARBY_GLYPHS and not (edge_left and edge_bottom):
-                if not edge_left:
-                    cur_x -= 1
-                    if cur_x < 0:
-                        edge_left = True
-                    else:
-                        if len(x_index[cur_x].boxes_id):
-                            diff = x_index[cur_x].boxes_id.difference(chars_x)
-                            if diff:
-                                chars_x.update(diff)
-                                for dif in diff:
-                                    chars_x_ys.update(box_by_id[dif].y_range)
-                if not edge_bottom:
-                    cur_y += 1
-                    if cur_y > cur_page.image_length:
-                        edge_bottom = True
-                    else:
-                        y_range.add(cur_y)
-                if chars_x_ys.intersection(y_range):
-                    for char_cur in chars_x:
-                        if box_by_id[char_cur].y_range.intersection(y_range):
-                            chars_confirmed.add(char_cur)
-            box_parent = box.parent
-            for boxcomp in chars_confirmed:
-                xx = 1
-                #edge = BoxEdges(edge_from = box_parent.id,
-                #                edge_to = box_by_id[boxcomp].parent,
-                #                edge_right = True
-                #                parent_page = cur_page)
-                #edge.save()
+            nearby_glyphs.add(find_nearby_glyph(x_index, x_start, x_end, x_inc, y_start, y_end, y_inc))
     raise Exception("brake here")
 
 class Migration(migrations.Migration):
